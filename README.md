@@ -1,7 +1,10 @@
 # leetCode
 leetcode 
 
-## 704. 二分查找
+## 一、有关数组的题目 
+
+
+### （1）704. 二分查找
 
 题目链接：https://leetcode-cn.com/problems/binary-search/
 
@@ -139,4 +142,107 @@ class Solution:
                 return mid
         return -1
 ```
+
+
+
+### （2）35. 搜索插入位置
+
+题目链接：https://leetcode-cn.com/problems/search-insert-position/
+
+**Java版本：**
+（版本一）左闭右闭区间
+```Java
+class Solution {
+    public int searchInsert(int[] nums, int target) {
+     int n = nums.length;
+     int left = 0,right=n-1;
+     int ans = n;
+     //如果不存在数组中，将返回按顺序插入的位置pos
+     //则有 nums[pos-1]<target<=nums[pos]
+     //也就是遍历有序数组，找到第一个大于等于target的pos值即可，使用二分法
+     //此时为左区间闭，右区间闭的情况
+     while(left<=right){
+         int mid = ((right-left)>>1)+left;//防止溢出
+         if(nums[mid]>=target){//每次循环，逐次逼近第一个大于等于target的mid值,此时的mid值便是pos值，也就是target将要插入的位置
+             ans = mid;
+             right = mid -1;//[left,right]->[left,mid-1],说明
+         }
+         else{
+             left = mid+1;//[left,right]->[mid+1,right]
+         }
+    
+     }
+     return ans;
+    }
+}
+
+```
+（版本二）左闭右开区间
+```Java
+class Solution {
+    public int searchInsert(int[] nums, int target) {
+     int n = nums.length;
+     int left = 0,right=n;
+     int ans = n;
+     //如果不存在数组中，将返回按顺序插入的位置pos
+     //择优 nums[pos-1]<target<=nums[pos]
+     //也就是遍历有序数组，找到第一个大于等于target的pos值即可，使用二分法
+     //此时为左区间闭，右区间开的情况
+     while(left<right){
+         int mid = ((right-left)>>1)+left;//防止溢出
+         if(nums[mid]>=target){//每次循环，逐次逼近第一个大于等于target的mid值,此时的mid值便是pos值，也就是target将要插入的位置
+             ans = mid;
+             right = mid;//[left,right)>[left,mid)
+         }
+         else{
+             left = mid+1;//[left,right)->[mid+1,right)
+         }
+    
+     }
+     return ans;
+    }
+}
+```
+
+
+### （3）34.在排序数组中查找元素的第一个和最后一个位置
+
+题目链接：https://leetcode-cn.com/problems/find-first-and-last-position-of-element-in-sorted-array/
+
+
+**Java：**
+```Java
+class Solution {
+    //分析题目，可以得到，
+    //Leftidx满足:nums[leftIdx-1]<target<=nums[leftIdx],代表第一个等于target的位置
+    //rightIdx满足：nums[rightIdx]<=target<nums[rightIdx+1],代表第一个大于target的位置-1
+    public int[] searchRange(int[] nums, int target) {
+        int leftIdx = binarySearch(nums, target, true);//输出第一个等于target的位置
+        int rightIdx = binarySearch(nums, target, false) - 1;//输出第一个大于target的位置-1
+        if (leftIdx <= rightIdx && rightIdx < nums.length && nums[leftIdx] == target && nums[rightIdx] == target) {
+            return new int[]{leftIdx, rightIdx};
+        } 
+        return new int[]{-1, -1};
+    }
+
+    //二分查找法，输入，Nums数组，target,
+    //lower=true表示nums[mid] >= target,此时循环判断输出为第一个等于target的位置
+    //lower=false表示nums[mid] > target，此时循环判断输出为第一个大于target的位置
+    public int binarySearch(int[] nums, int target, boolean lower) {
+        int left = 0, right = nums.length - 1, ans = nums.length;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (nums[mid] > target || (lower && nums[mid] >= target)) {
+                right = mid - 1;
+                ans = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return ans;
+    }
+}
+```
+
+
 
