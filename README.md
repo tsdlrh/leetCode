@@ -276,7 +276,6 @@ class Solution {
     public int mySqrt(int x) {
         if(x==0)
          return 0;
-         
          double C=x,x0=x;
          while(true){
              double xi = 0.5*(x0+C/x0);
@@ -295,7 +294,9 @@ class Solution {
 
 题目链接：https://leetcode-cn.com/problems/valid-perfect-square/submissions/
 
-···Java
+
+**方法一：二分查找法**
+```Java
 class Solution {
     public boolean isPerfectSquare(int num) {
       //在0-num中，使用二分查找法，查找一个数的平方等于Num
@@ -311,6 +312,25 @@ class Solution {
           }
       }
       return false;
+    }
+}
+```
+
+**方法二：牛顿迭代法**
+```Java
+class Solution {
+    public boolean isPerfectSquare(int num) {
+      //使用牛顿迭代法，快速逼近平方根数，如果这个数存在，则返回true，否则false
+    
+      if(num<2){//num=0,1都是完全平方数
+          return true;
+      }
+      long C = num,x0 = num/2;
+      while(x0*x0>num){//循环的跳出条件是x0*x0<=num
+         long xi = (x0+C/x0)/2;
+          x0 = xi;
+      }
+      return (x0*x0==num);
     }
 }
 ```
