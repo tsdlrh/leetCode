@@ -249,7 +249,7 @@ class Solution {
 
 题目链接：https://leetcode-cn.com/problems/sqrtx/submissions/
 
-**f方法一：二分查找法 **
+**f方法一：二分查找法**
 ```Java
 class Solution {
     public int mySqrt(int x) {
@@ -270,7 +270,7 @@ class Solution {
 }
 ```
 
-**方法二：牛顿迭代法 **
+**方法二：牛顿迭代法**
 
 ```Java
 class Solution {
