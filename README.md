@@ -390,7 +390,7 @@ class Solution {
 
 #### （3）283.移动零
 
-题目链接：
+题目链接：https://leetcode-cn.com/problems/move-zeroes/
 
 ```Java
 class Solution {
