@@ -335,3 +335,55 @@ class Solution {
     }
 }
 ```
+
+
+
+
+### 2. 移除元素
+
+#### （1）27.移除元素
+
+题目链接：https://leetcode-cn.com/problems/remove-element/submissions/
+
+```Java
+class Solution {
+    public int removeElement(int[] nums, int val) {
+     //双指针法，遍历数组，如果快指针指向的数字==val，此时快指针加一，否则慢指针加一
+     int n = nums.length;
+     if(n==0)
+       return 0;
+     int slow = 0,fast = 0;
+     while(fast<n){
+         if(nums[fast]!=val){
+             nums[slow]=nums[fast];
+             slow++;
+         }
+         fast++;
+     } 
+     return slow; 
+    }
+}
+```
+
+#### (2)26.删除有序数组中的重复项
+
+题目链接：https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/submissions/
+
+```Java
+class Solution {
+    public int removeDuplicates(int[] nums) {
+      //双指针
+      int n = nums.length;
+      int slow =1,fast=1;
+      while(fast<n){
+          if(nums[fast]!=nums[fast-1]){
+              nums[slow] = nums[fast];
+              slow++;
+          }
+          fast++;
+      }
+      return slow;
+    }
+}
+```
+
