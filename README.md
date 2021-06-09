@@ -3,8 +3,9 @@ leetcode
 
 ## 一、有关数组的题目 
 
+### 1. 二分查找法的应用
 
-### （1）704. 二分查找
+#### （1）704. 二分查找
 
 题目链接：https://leetcode-cn.com/problems/binary-search/
 
@@ -57,7 +58,7 @@ public:
 };
 ```
 
-## 其他语言版本
+#### 其他语言版本
 
 **Java：**
 
@@ -145,7 +146,7 @@ class Solution:
 
 
 
-### （2）35. 搜索插入位置
+#### （2）35. 搜索插入位置
 
 题目链接：https://leetcode-cn.com/problems/search-insert-position/
 
@@ -205,7 +206,7 @@ class Solution {
 ```
 
 
-### （3）34.在排序数组中查找元素的第一个和最后一个位置
+#### （3）34.在排序数组中查找元素的第一个和最后一个位置
 
 题目链接：https://leetcode-cn.com/problems/find-first-and-last-position-of-element-in-sorted-array/
 
@@ -244,7 +245,7 @@ class Solution {
 }
 ```
 
-### (4)69.x的平方根
+#### (4)69.x的平方根
 
 题目链接：https://leetcode-cn.com/problems/sqrtx/submissions/
 
@@ -290,7 +291,7 @@ class Solution {
 }
 ```
 
-### (5)367.有效的完全平方数
+#### (5)367.有效的完全平方数
 
 题目链接：https://leetcode-cn.com/problems/valid-perfect-square/submissions/
 
