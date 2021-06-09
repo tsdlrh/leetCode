@@ -244,5 +244,73 @@ class Solution {
 }
 ```
 
+### (4)69.x的平方根
 
+题目链接：https://leetcode-cn.com/problems/sqrtx/submissions/
 
+**f方法一：二分查找法 **
+```Java
+class Solution {
+    public int mySqrt(int x) {
+     //在0-x的整数中寻找一个数，它是的平方是最大的小于等于x的值
+     int left = 0, right = x;
+     int res = x;
+    while(left<=right){
+        int mid = left+((right-left)>>2);
+        if(（long）mid*mid<=x){//long防止x的值大于Integer.MAX_VALUE
+           res = mid;
+           left = mid +1;
+        }else{
+           right = mid -1;
+        }
+    }
+    return res;
+    }
+}
+```
+
+**方法二：牛顿迭代法 **
+
+```Java
+class Solution {
+    public int mySqrt(int x) {
+        if(x==0)
+         return 0;
+         
+         double C=x,x0=x;
+         while(true){
+             double xi = 0.5*(x0+C/x0);
+             if(Math.abs(x0-xi)<1e-7){
+                 break;
+             } 
+             x0 = xi;
+         }
+        
+        return (int)x0;
+    }
+}
+```
+
+### (5)367.有效的完全平方数
+
+题目链接：https://leetcode-cn.com/problems/valid-perfect-square/submissions/
+
+···Java
+class Solution {
+    public boolean isPerfectSquare(int num) {
+      //在0-num中，使用二分查找法，查找一个数的平方等于Num
+      int left =0,right=num,res=-1;
+      while(left<=right){
+          int mid = left+((right-left)>>2);
+          if((long)mid*mid>num){
+              right = mid-1;
+          }else if(mid*mid<num){
+              left = mid+1;
+          }else{
+             return true;
+          }
+      }
+      return false;
+    }
+}
+```
