@@ -387,3 +387,108 @@ class Solution {
 }
 ```
 
+
+#### （3）283.移动零
+
+题目链接：
+
+```Java
+class Solution {
+    public void moveZeroes(int[] nums) {
+     int n = nums.length;
+     //双指针，去除0，之后再加上0
+     int slow = 0,fast = 0;
+     while(fast<n){
+         if(nums[fast]!=0){
+             nums[slow] = nums[fast];
+             slow++;
+         }
+         fast++;
+     }
+    for(int i=slow;i<n;i++){
+        nums[i] = 0;
+    }
+  
+    }
+}
+```
+
+
+#### （4）844.比较含退格的字符串
+
+题目链接：https://leetcode-cn.com/problems/backspace-string-compare/submissions/
+
+**方法一：重构字符串**
+```Java
+class Solution {
+    public boolean backspaceCompare(String s, String t) {
+    //双指针，去除空格后比较
+    return build(s).equals(build(t));
+    }
+
+    //输入字符串，输出删除空格后的字符串
+    public String build(String str){
+        StringBuffer ret = new StringBuffer();
+        int length = str.length();
+        for(int i=0;i<length;i++){
+            char ch = str.charAt(i);
+            if(ch!='#'){
+                ret.append(ch);
+            }else{
+                if(ret.length()>0){
+                    ret.deleteCharAt(ret.length()-1);
+                }
+            }
+        }
+        return ret.toString();
+    }
+}
+```
+**方法二：双指针**
+**明天看看**
+```Java
+class Solution {
+    public boolean backspaceCompare(String S, String T) {
+        int i = S.length() - 1, j = T.length() - 1;
+        int skipS = 0, skipT = 0;
+
+        while (i >= 0 || j >= 0) {
+            while (i >= 0) {
+                if (S.charAt(i) == '#') {
+                    skipS++;
+                    i--;
+                } else if (skipS > 0) {
+                    skipS--;
+                    i--;
+                } else {
+                    break;
+                }
+            }
+            while (j >= 0) {
+                if (T.charAt(j) == '#') {
+                    skipT++;
+                    j--;
+                } else if (skipT > 0) {
+                    skipT--;
+                    j--;
+                } else {
+                    break;
+                }
+            }
+            if (i >= 0 && j >= 0) {
+                if (S.charAt(i) != T.charAt(j)) {
+                    return false;
+                }
+            } else {
+                if (i >= 0 || j >= 0) {
+                    return false;
+                }
+            }
+            i--;
+            j--;
+        }
+        return true;
+    }
+}
+```
+
