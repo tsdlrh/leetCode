@@ -531,7 +531,7 @@ class Solution {
 
 题目链接：https://leetcode-cn.com/problems/squares-of-a-sorted-array/submissions/
 
-
+**方法一：使用归并排序法**
 ```Java
 class Solution {
     public int[] sortedSquares(int[] nums) {
@@ -576,6 +576,130 @@ class Solution {
       return ans;
     }
 }
+```
+**方法二：使用左右指针法**
+
+```Java
+class Solution {
+    public int[] sortedSquares(int[] nums) {
+     //双指针法
+     //平方后的数组最大值，或者在最右端或者在最左端
+     //考虑使用双指针，一个指向起始位置，一个指向终止位置
+     int right = nums.length-1;
+     int left = 0;
+     int[] res = new int[nums.length];
+     int index = res.length-1;
+
+     while(left<=right){
+         if(nums[left]*nums[left]>nums[right]*nums[right]){
+             res[index--] = nums[left]*nums[left];
+             left++;
+         }else{
+             res[index--] = nums[right]*nums[right];
+             right--;
+         }
+     }
+     return res;
+    }
+}
+```
+
+
+### 3.滑动窗口
+
+#### （1）209.长度最小的数组
+
+题目链接：https://leetcode-cn.com/problems/minimum-size-subarray-sum/submissions/
+
+**使用滑动窗口法**
+
+C++版本
+```C++
+class Solution {
+public:
+    int minSubArrayLen(int target, vector<int>& nums) {
+    int result = INT32_MAX;
+    int sum = 0;//滑动窗口的数值之和
+    int i = 0;//活动窗口的起始位置
+    int sublength = 0;//滑动窗口的长度
+    for(int j=0;j<nums.size();j++){
+        sum += nums[j];
+        //这里使用while，每次更新i起始位置，并不断比较子序列是否符合条件
+        while(sum>=target){
+            sublength = (j-i+1);//取子序列的长度
+            result = result<sublength ? result : sublength;
+            sum -= nums[i++];//这是体现滑动窗口的精髓，不断变更i的位置
+        }
+        
+    }
+    //如果result没有被赋值的话，返回0，否则返回符合条件的最小子序列
+    return result == INT32_MAX ? 0: result;
+    }
+};
+```
+
+Java版本
+
+```Java
+class Solution {
+    public int minSubArrayLen(int target, int[] nums) {
+      int n = nums.length;
+      int res = Integer.MAX_VALUE;
+      int i = 0,sum =0,subLength = 0;
+      for(int j = 0;j<n;j++){
+        sum += nums[j];
+        while(sum>=target){
+          subLength = (j-i+1);//获取子序列的长度
+          res = res<subLength ? res:subLength;
+          sum -= nums[i++];//体现了滑动窗口的精髓，每次更新i的位置
+        }
+      }
+      return res == Integer.MAX_VALUE ? 0 :res;
+    }
+}
+```
+
+#### (2)904.水果成篮
+
+题目链接 ：https://leetcode-cn.com/problems/fruit-into-baskets/submissions/
+
+**滑动窗口+哈希表**
+
+```Java
+class Solution {
+    public int totalFruit(int[] tree) {
+     int n = tree.length;//树的长度
+     int res =0,i = 0;//res是窗口的长度，i是起始位置
+     Counter count = new Counter();//新创建了衣蛾count类，重写了add和get方法
+     for(int j=0;j<n;j++){//j代表窗口的终止位置
+         count.add(tree[j],1);//将第一个树的类型，对应的value=1放入mao中
+         while(count.size()>=3){//当时counte中的种类超过2时，跳出循环，比较大小
+             count.add(tree[i],-1);//将起始位置i的类型，对应的value=-1，加入counter中
+             if(count.get(tree[i])==0){//如果value等于0，有重复的类型，删去上一个类型
+               count.remove(tree[i]);
+            }
+            i++;//起始位置加一
+         }
+         res = res> j-i+1 ? res : j-i+1; //返回最大致
+     }
+     return res;
+    }
+
+
+//Counter类继承了HashMap，key值不可重复，如果重复覆盖前一个值
+class Counter extends HashMap<Integer,Integer>{
+    //重写了get方法，如果Map存在k，则返回k对应的value值，,否则返回0，也就是不存在
+    public int get(int k){
+        return containsKey(k)?super.get(k):0;
+    }
+
+    //重写add方法，将key 和 key对应的value + v之和得值放入新的key,value中
+    public void add(int k,int v){
+        put(k,get(k)+v);
+    }
+}
+}
+
 ```
 
 
