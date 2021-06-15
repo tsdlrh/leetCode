@@ -702,7 +702,87 @@ class Counter extends HashMap<Integer,Integer>{
 
 ```
 
+#### （3）76.最小覆盖子串
 
+题目链接：https://leetcode-cn.com/problems/minimum-window-substring/
+
+```Java
+class Solution {
+     //使用滑动窗口
+     //借助哈希表
+     Map<Character,Integer> ori = new HashMap<Character,Integer>();
+     Map<Character,Integer> cnt = new HashMap<Character,Integer>();
+
+     public String minWindow(String s, String t){
+         int tLen = t.length();
+         //将t字符创存入哈希表中，key对应字符，value对应字符出现的次数，返回ori哈希表
+         for(int i=0;i<tLen;i++){
+             char c = t.charAt(i);
+             //getOrDefault() 方法获取指定 key 对应对 value，如果找不到 key ，则返回设置的默认值。
+
+             ori.put(c,ori.getOrDefault(c,0)+1);
+         }   
+    //双指针，l用于收缩窗口，r用于延伸窗口 窗口的位置[l,r]
+     int l = 0,r=-1;
+     //初始化最小窗口的长度len,左边窗口的位置ansL,右边窗口的位置ansR
+     int len = Integer.MAX_VALUE,ansL = -1,ansR = -1;
+     int slen = s.length();
+     //延伸指针循环遍历s字符创
+     while(r<slen){
+         //每次循环r增加一
+         ++r;
+         //如果延伸指针在字符创长度内，并且s字符串该位置对应的字符，在t字符哈希表中
+         if(r<slen && ori.containsKey(s.charAt(r))){
+            //cnt用于存储所有包含t字符的字符串
+            //将s字符串对应的该位置r的对应字符，以及字符出现的次数放入cnt哈希表中
+             cnt.put(s.charAt(r),cnt.getOrDefault(s.charAt(r),0)+1);
+         }
+         //check用于判断cnt中字符出现的次数是不是小于ori中对应字符出现的次数
+         while(check() && l<=r){
+             //r-l+1为滑动窗口的长度
+             if(r-l+1<len){
+                 len = r-l+1;//子字符串的最小长度为len
+                 ansL = l;//子字符串窗口的左边位置
+                 ansR = l+len;//子字符串窗口的右边位置
+             }
+             //如果ori总共包含子字符串最左边的字符
+             if(ori.containsKey(s.charAt(l))){
+                 //收缩窗口
+                 //cnt哈希表中最左边的字符所对应的次数减一，表示窗口向右滑动
+                 cnt.put(s.charAt(l),cnt.getOrDefault(s.charAt(l),0)-1);
+             }
+             //窗口的起始位置每次循环加一
+             ++l;
+         }
+     }
+     //如果ansl没有变化，说明s字符串不包含涵盖t字符串的子串，返回空串，否则返回子串
+     return ansL == -1?"":s.substring(ansL,ansR);
+
+     }
+ 
+    //判断cnt中字符出现的次数是不是小于ori中对应字符出现的次数
+    public boolean check(){
+        //entrySet()返回set视图，诸如[1=Google, 2=Runoob, 3=Taobao]
+        //iterator()获取Set视图的迭代器，用于每次循环使用
+        Iterator iter = ori.entrySet().iterator();
+        //循环HashMap,如果map存在元素
+        while(iter.hasNext()){
+            //Map.Entry是Map的一个内部接口,具有getKey(),getValue()方法
+            Map.Entry entry = (Map.Entry) iter.next();
+            //返回key值
+            Character key = (Character) entry.getKey();
+            //返回val值
+            Integer val = (Integer)entry.getValue();
+            //如果滑动窗口哈希表中对应的字符出现的次数小于t字符串哈希表中的出现的次数，返回false,否则为true
+            if(cnt.getOrDefault(key,0)<val){
+                return false;
+            }
+        }
+        return true;
+    }
+
+ }
+ ```
 
 
 
