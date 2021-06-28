@@ -784,6 +784,113 @@ class Solution {
  }
  ```
 
+### 4、螺旋矩阵
+
+#### （1）59、螺旋矩阵II
+
+题目链接：https://leetcode-cn.com/problems/spiral-matrix-ii/submissions/
+
+
+```Java
+class Solution {
+    public int[][] generateMatrix(int n) {
+     int[][] res = new int[n][n];
+     int offset = 1;//控制每一圈循环的长度
+     int startX = 0;//初始化行
+     int startY = 0;//初始化列
+     int num = 1;//初始化填充数字
+     int mid = n/2;//中间需要填充数字的位置
+     int loop = n/2;//需要循环的圈数
+     while(loop>0){
+
+         int i = startX;
+         int j = startY;
+
+         //上，从左到右
+         for(;j<startY+n-offset;j++){
+             res[startX][j] = num++;
+         }
+         //右侧，从上到下
+         for(;i<startX+n-offset;i++){
+             res[i][j] = num++;
+         }
+         //下侧，从右到左
+         for(;j>startY;j--){
+             res[i][j] = num++;
+         }
+         //左侧，从下到上
+         for(;i>startX;i--){
+             res[i][j] = num++;
+         }
+
+         startX++;
+         startY++;
+
+         offset += 2;
+         loop--;
+
+     }
+    //如果n为奇数，中间的值需要另外填充
+     if(n%2==1){
+         res[mid][mid] = num;
+     }
+     return res;
+    }
+}
+```
+
+### (2)54、螺旋矩阵
+
+题目连接：https://leetcode-cn.com/problems/spiral-matrix/submissions/
+
+```Java
+class Solution {
+    public List<Integer> spiralOrder(int[][] matrix) {
+     //按层模拟
+     //首先输出最外层，其次输出次外层，最后输出最内层
+     //对于每层，从左上方开始顺时针遍历
+     //上：
+     List<Integer> order = new ArrayList<Integer>();
+     if(matrix==null || matrix.length==0 || matrix[0].length==0){
+         return order;//判断非空条件
+     }
+
+     int rows = matrix.length;
+     int cols = matrix[0].length;
+
+     int left = 0,right = cols-1,top = 0,bottom = rows-1;
+     while(left<=right && top<=bottom){
+         //最上侧，从左往右  
+         for(int col=left;col<=right;col++){
+          order.add(matrix[top][col]);
+         }
+         //最右侧，从上到下
+         for(int row = top+1;row<=bottom;row++){
+             order.add(matrix[row][right]);
+         }
+         //如果left<right且top<bottom,则从右到左，遍历下面元素
+         if(left<right && top<bottom){
+             //则从右到左，遍历下面元素
+             for(int col = right-1;col>left;col--){
+              order.add(matrix[bottom][col]);
+             }
+             //从下到上，遍历左侧元素
+             for(int row=bottom;row>top;row--){
+                 order.add(matrix[row][left]);
+             }
+
+         }
+
+         left++;
+         right--;
+         top++;
+         bottom--;
+     }
+     return order;
+
+    }
+}
+```
 
 
 
