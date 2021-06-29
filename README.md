@@ -892,6 +892,59 @@ class Solution {
 }
 ```
 
+### （3）29、顺时针打印矩阵
+
+题目连接：https://leetcode-cn.com/problems/shun-shi-zhen-da-yin-ju-zhen-lcof/submissions/
+
+```Java
+
+class Solution {
+    public int[] spiralOrder(int[][] matrix) {
+        //判断非空条件
+        if(matrix==null || matrix.length==0 || matrix[0].length ==0){
+            return new int[0];
+        }
+
+        int rows  = matrix.length;//矩阵的行数
+        int cols = matrix[0].length;//矩阵的列数
+
+        int [] res = new int[rows*cols];//存储遍历值的矩阵
+
+        int n = 0;//需要填充的位置
+        int left=0,right=cols-1,top=0,bottom=rows-1;
+        
+        while(left<=right && top<=bottom){
+            //上侧，从左到右
+            for(int col = left;col<=right;col++){
+                res[n++] = matrix[top][col];
+            }
+            //右侧，从上到下
+            for(int row = top+1;row<=bottom;row++){
+                res[n++] = matrix[row][right];
+            }
+
+            //判断left<right和top<bottom
+            if(left<right && top<bottom){
+                //下侧，从右到左
+                for(int col = right-1;col>left;col--){
+                    res[n++] = matrix[bottom][col];
+                }
+                //左侧，从下到上
+                for(int row = bottom;row>top;row--){
+                    res[n++] = matrix[row][left];
+                }
+            }
+
+            left++;
+            top++;
+            right--;
+            bottom--;
+        }
+        return res;
+    }
+}
+```
+
 
 
 
