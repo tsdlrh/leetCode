@@ -946,5 +946,231 @@ class Solution {
 ```
 
 
+## 二、链表
+### 1、移除链表
+
+#### 203.移除俩表
+题目链接：https://leetcode-cn.com/problems/remove-linked-list-elements/submissions/
+
+ ``` Java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode removeElements(ListNode head, int val) {
+        //判断链表非空
+        if(head==null){
+            return head;
+        }
+
+        //借助虚拟节点
+        ListNode dummy = new ListNode(-1,head);
+        ListNode pre = dummy;
+        ListNode cur = head;
+        while(cur!=null){
+            if(cur.val==val){
+                pre.next = cur.next;
+            }else{
+                pre = cur;
+            }
+            cur = cur.next;
+        }
+        return dummy.next;
+    }
+}
+```
+
+### （2）707、设计链表
+
+题目链接:https://leetcode-cn.com/problems/design-linked-list/submissions/
+
+```Java
+class MyLinkedList {
+
+    int size;//初始化链表的元素
+    ListNode head;//虚拟化头结点
+    /**初始化链表 */
+    public MyLinkedList() {
+      size = 0;
+      head = new ListNode(0);
+
+    }
+    
+    /** 获取链表中第 index 个节点的值。如果索引无效，则返回-1 */
+    public int get(int index) {
+      if(index>=size || index<0){
+          return -1;
+      }
+      ListNode cur = head;
+      for(int i=0; i<=index; i++){
+          cur = cur.next;
+      }
+      return cur.val;
+    }
+    
+    /** 在链表的第一个元素之前添加一个值为 val 的节点。插入后，新节点将成为链表的第一个节点 */
+    public void addAtHead(int val) {
+      addAtIndex(0,val);
+    }
+    
+    /**将值为 val 的节点追加到链表的最后一个元素 */
+    public void addAtTail(int val) {
+      addAtIndex(size,val);
+    }
+    
+    /** 在链表中的第 index 个节点之前添加值为 val  的节点。如果 index 等于链表的长度，则该节点将附加到链表的末尾。如果 index 大于链表长度，则不会插入节点。如果index小于0，则在头部插入节点 */
+    public void addAtIndex(int index, int val) {
+     if(index>size){
+         return;
+     }
+     if(index<0){
+         index = 0;
+     }
+     size++;
+     ListNode cur = head;
+     for(int i=0;i<index;i++){
+         cur = cur.next;
+     }
+     ListNode add = new ListNode(val);
+     add.next = cur.next;
+     cur.next = add;
+    }
+    
+    /** 如果索引 index 有效，则删除链表中的第 index 个节点 */
+    public void deleteAtIndex(int index) {
+    if(index>=size ||index<0){
+        return;
+    }
+    size--;
+    ListNode cur = head;
+    for(int i=0;i<index;i++){
+        cur = cur.next;
+    }
+     cur.next = cur.next.next;
+    }
+}
+
+/**
+ * Your MyLinkedList object will be instantiated and called as such:
+ * MyLinkedList obj = new MyLinkedList();
+ * int param_1 = obj.get(index);
+ * obj.addAtHead(val);
+ * obj.addAtTail(val);
+ * obj.addAtIndex(index,val);
+ * obj.deleteAtIndex(index);
+ */
+ ```
+ 
+ ### (3) 206、反转链表
+ 题目链接：https://leetcode-cn.com/problems/reverse-linked-list/
+ 
+ 
+ ```Java
+ //双指针法
+ class Solution {
+    public ListNode reverseList(ListNode head) {
+    ListNode tmp = null;
+    ListNode pre = null;
+    ListNode cur = head;
+    while(cur!=null){
+        tmp = cur.next;//保存下一个节点
+        cur.next = pre;
+        pre = cur;
+        cur = tmp;
+    }
+    return pre;
+
+    }
+}
+```
 
 
+
+### (4) 24、两两交换链表中的节点
+题目链接：https://leetcode-cn.com/problems/swap-nodes-in-pairs/
+
+```Java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode swapPairs(ListNode head) {
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode pre = dummy;
+
+        while(pre.next!=null && pre.next.next!=null){
+            ListNode tmp1 = pre.next.next.next;
+            ListNode tmp2 = pre.next;
+
+            //步骤一
+            pre.next = pre.next.next;
+            //步骤二
+            pre.next.next = tmp2;
+            //步骤三
+            pre.next.next.next = tmp1;
+
+            //移动两位，进行下一步循环
+            pre = pre.next.next;
+        }
+
+        return dummy.next;
+
+    }
+}
+ 
+```
+
+### (5)19、删除链表中倒数第N个节点
+题目链接：https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/submissions/
+
+```Java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+     //定义虚拟化头结点
+     ListNode dummy = new ListNode(0);
+     dummy.next = head;
+     ListNode slow = dummy;//初始化慢指针
+     ListNode fast = dummy;//初始化快指针
+
+     //先将快指针移动n+1步
+     while(n-->0){
+         fast = fast.next;
+     }
+     //之后，快慢指针一起移动，直到快指针指向Null,此时慢指针指向的节点是要删除节点的上一个节点
+     ListNode pre = null;
+     while(fast!=null){
+       pre = slow;
+       slow = slow.next;
+       fast = fast.next;
+     }
+
+     pre.next = slow.next;//删除节点
+
+     return dummy.next;
+    }
+ ```
