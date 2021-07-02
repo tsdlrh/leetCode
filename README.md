@@ -1215,3 +1215,66 @@ public class Solution {
     }
 }
 ```
+
+
+## 三、哈希表
+
+### （1）242、有效的字母异位词
+题目链接:https://leetcode-cn.com/problems/valid-anagram/submissions/
+
+```Java
+class Solution {
+    public boolean isAnagram(String s, String t) {
+         //使用哈希表的方法
+         int[] record = new int[26];
+
+        //将s字符串中的每一个字符出现的次数，添加+1到数组中
+         for(char c:s.toCharArray()){
+             record[c-'a'] += 1;
+         }
+         //将t字符串中每一个字符出现的次数，添加-1到数组中
+         for(char c:t.toCharArray()){
+             record[c-'a'] -=1;
+         }
+
+         for(int i:record){
+             //如果数组中次数都是0，说明两个字符串为异位词
+             if(i!=0){
+                 return false;
+             }
+         }
+         return true;
+    }
+}
+```
+
+
+### （2）383、赎金信
+题目链接：https://leetcode-cn.com/problems/ransom-note/
+
+``` Java
+class Solution {
+    public boolean canConstruct(String ransomNote, String magazine) {
+     //使用哈希表
+     int[] record = new int[26];
+
+     //添加ransdomNote
+     for(char c:ransomNote.toCharArray()){
+         record[c-'a'] += 1;
+     }
+
+     //添加magazine
+     for(char c:magazine.toCharArray()){
+         record[c-'a'] -= 1;
+     }
+
+     for(int i:record){
+         //i>=1表示赎金信中有字符没有被杂志覆盖
+         if(i>=1){
+            return false;
+         }
+     }
+     return true;
+    }
+}
+```
