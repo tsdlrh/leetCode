@@ -283,7 +283,7 @@ class Solution {
 }
 ```
 
-#### (4)69.x的平方根
+#### （4）69.x的平方根
 
 题目链接：https://leetcode-cn.com/problems/sqrtx/submissions/
 
@@ -329,7 +329,7 @@ class Solution {
 }
 ```
 
-#### (5)367.有效的完全平方数
+#### （5）367.有效的完全平方数
 
 题目链接：https://leetcode-cn.com/problems/valid-perfect-square/submissions/
 
@@ -403,7 +403,7 @@ class Solution {
 }
 ```
 
-#### (2)26.删除有序数组中的重复项
+#### （2）26.删除有序数组中的重复项
 
 题目链接：https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/submissions/
 
@@ -683,7 +683,7 @@ class Solution {
 }
 ```
 
-#### (2)904.水果成篮
+#### （2）904.水果成篮
 
 题目链接 ：https://leetcode-cn.com/problems/fruit-into-baskets/submissions/
 
@@ -863,7 +863,7 @@ class Solution {
 }
 ```
 
-### (2)54、螺旋矩阵
+#### （2）54、螺旋矩阵
 
 题目连接：https://leetcode-cn.com/problems/spiral-matrix/submissions/
 
@@ -916,7 +916,7 @@ class Solution {
 }
 ```
 
-### （3）29、顺时针打印矩阵
+#### （3）29、顺时针打印矩阵
 
 题目连接：https://leetcode-cn.com/problems/shun-shi-zhen-da-yin-ju-zhen-lcof/submissions/
 
@@ -971,9 +971,8 @@ class Solution {
 
 
 ## 二、链表
-### 1、移除链表
 
-#### 203.移除俩表
+### （1）203.移除俩表
 题目链接：https://leetcode-cn.com/problems/remove-linked-list-elements/submissions/
 
  ``` Java
@@ -1245,7 +1244,7 @@ public class Solution {
 
 ### 1、异位词
 
-### （1）242、有效的字母异位词
+#### （1）242、有效的字母异位词
 题目链接:https://leetcode-cn.com/problems/valid-anagram/submissions/
 
 ```Java
@@ -1274,10 +1273,10 @@ class Solution {
 }
 ```
 
-### 
 
 
-### （2）383、赎金信
+
+#### （2）383、赎金信
 题目链接：https://leetcode-cn.com/problems/ransom-note/
 
 ``` Java
@@ -1308,7 +1307,7 @@ class Solution {
 ```
 
 
-### （4）242、字母异位词分组
+#### （3）242、字母异位词分组
 
 题目链接：https://leetcode-cn.com/problems/group-anagrams/submissions/
 
@@ -1344,7 +1343,7 @@ class Solution {
 }
 ```
 
-### (5)438、找到字符串中所有字母异位词
+#### (4)438、找到字符串中所有字母异位词
 题目链接：https://leetcode-cn.com/problems/find-all-anagrams-in-a-string/submissions/
 
 ```Java
@@ -1381,7 +1380,7 @@ class Solution {
 
 ### 2、数组交集
 
-### （1）349、两个数组的交集
+#### （1）349、两个数组的交集
 题目链接：https://leetcode-cn.com/problems/intersection-of-two-arrays/
 
 ```Java
