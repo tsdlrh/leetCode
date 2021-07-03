@@ -1219,6 +1219,8 @@ public class Solution {
 
 ## 三、哈希表
 
+### 1、异位词
+
 ### （1）242、有效的字母异位词
 题目链接:https://leetcode-cn.com/problems/valid-anagram/submissions/
 
@@ -1351,3 +1353,46 @@ class Solution {
     }
 }
 ```
+
+
+### 2、数组交集
+
+### （1）349、两个数组的交集
+题目链接：https://leetcode-cn.com/problems/intersection-of-two-arrays/
+
+```Java
+class Solution {
+    public int[] intersection(int[] nums1, int[] nums2) {
+    if(nums1.length==0 || nums1==null || nums2==null || nums2.length==0){
+        return new int[0];
+    }
+
+    //创建哈希Set
+    Set<Integer> set1 = new HashSet<>();
+    Set<Integer> res = new HashSet<>();
+
+    //将Nums1数组放入set1中
+    for(int i:nums1){
+        set1.add(i);
+    }
+
+    //遍历Nums2数组，判断是否有相同的元素
+    for(int n:nums2){
+        if(set1.contains(n)){
+            res.add(n);
+        }
+    }
+
+    //把set转成数组
+    int[] ans = new int[res.size()];
+    int index = 0;
+    for(int j:res){
+        ans[index++] = j;
+    }
+    return ans;
+    }
+}
+```
+  
+
+
