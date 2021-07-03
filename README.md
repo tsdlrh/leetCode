@@ -1248,6 +1248,8 @@ class Solution {
 }
 ```
 
+### 
+
 
 ### （2）383、赎金信
 题目链接：https://leetcode-cn.com/problems/ransom-note/
@@ -1275,6 +1277,77 @@ class Solution {
          }
      }
      return true;
+    }
+}
+```
+
+
+### （4）242、字母异位词分组
+
+题目链接：https://leetcode-cn.com/problems/group-anagrams/submissions/
+
+```Java
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+    Map<String,List<String>> map = new HashMap<String,List<String>>();
+    for(String str:strs){
+        int[] counts = new int[26];
+        int length =str.length();
+        for(int i=0;i<length;i++){
+            counts[str.charAt(i)-'a']++;
+        }
+        //将每个出现次数大于0的字母和出现的次数按顺序拼接成字符串，作为哈希表的键值
+        //比如“eat”的键值为“a1e1t1”    "tea"的键值为“a1e1t1”
+        StringBuffer sb = new StringBuffer();
+        for(int i=0;i<26;i++){
+            if(counts[i]!=0){
+                sb.append((char)('a'+i));
+                sb.append(counts[i]);
+            }
+        }
+
+        String key = sb.toString();
+        //如果两者的键值相等，调用list.add叠加字符串1+字符串2，否则null+字符串3
+        List<String> list = map.getOrDefault(key,new ArrayList<String>());
+        list.add(str);
+        map.put(key,list);
+    }
+    return new ArrayList<List<String>>(map.values());
+     
+    }
+}
+```
+
+### (5)438、找到字符串中所有字母异位词
+题目链接：
+
+```Java
+class Solution {
+    public List<Integer> findAnagrams(String s, String p) {
+      int n = s.length(),m=p.length();
+      List<Integer> res = new ArrayList<>();
+      if(n<m) return res;
+      //记录字母出现的次数
+      int[] pCnt = new int[26];
+      int[] sCnt = new int[26];
+      for(int i=0;i<m;i++){
+          pCnt[p.charAt(i)-'a']++;
+          sCnt[s.charAt(i)-'a']++;
+      }
+      //如果两者相等，找到第一个异位词索引0
+      if(Arrays.equals(sCnt,pCnt)){
+          res.add(0);
+      }
+      //继续遍历s字符串索引为[m,n)的字母，在sCnt中每增加一个新字母，去除一个旧字母
+      for(int i=m;i<n;i++){
+          sCnt[s.charAt(i-m)-'a']--;
+          sCnt[s.charAt(i)-'a']++;
+          //如果相等，返回res中的索引值i-m+1
+          if(Arrays.equals(sCnt,pCnt)){
+              res.add(i-m+1);
+          }
+      }
+      return res;
     }
 }
 ```
