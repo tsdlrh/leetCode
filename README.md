@@ -1306,7 +1306,7 @@ class Solution {
 ```
 
 
-#### （3）242、字母异位词分组
+#### （3）49、字母异位词分组
 
 题目链接：https://leetcode-cn.com/problems/group-anagrams/submissions/
 
