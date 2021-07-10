@@ -1744,6 +1744,108 @@ class Solution {
 }
 ```
 
+### (5)58、左旋字符串
+题目链接：https://leetcode-cn.com/problems/zuo-xuan-zhuan-zi-fu-chuan-lcof/submissions/
+
+```Java
+class Solution {
+    public String reverseLeftWords(String s, int n) {
+     int len = s.length();
+     StringBuilder sb = new StringBuilder(s);
+     //1、反转区间为前n的子串
+     reverString(sb,0,n-1);
+     //2、反转区间为n到末尾的子串
+     reverString(sb,n,len-1);
+     //3、反转整个字符串
+     return sb.reverse().toString();
+    }
+
+    private void reverString(StringBuilder sb,int left,int right){
+        while(left<right){
+           char temp = sb.charAt(left);
+           sb.setCharAt(left,sb.charAt(right));
+           sb.setCharAt(right,temp);
+           left++;
+           right--; 
+        }
+    }
+}
+```
+
+### (6)28、实现strStr()
+题目链接：https://leetcode-cn.com/problems/implement-strstr/submissions/
+
+```Java
+class Solution {
+
+    //kmp算法
+    //得到前缀表
+    public void getNext(int[] next,String s){
+       int j =-1;
+       next[0]= j;
+       for(int i=1;i<s.length();i++){
+           while(j>=0 && s.charAt(i)!=s.charAt(j+1)){
+               j = next[j];
+           }
+           if(s.charAt(i)==s.charAt(j+1)){
+               j++;
+           }
+           next[i] = j;
+       }
+    }
+    public int strStr(String haystack, String needle) {
+     if(needle.length()==0){
+       return 0;
+     }
+
+     int[] next = new int[needle.length()];
+     getNext(next,needle);
+     int j = -1;
+     for(int i=0;i<haystack.length();i++){
+         while(j>=0 && haystack.charAt(i)!=needle.charAt(j+1)){
+             j = next[j];
+         }
+         if(haystack.charAt(i)==needle.charAt(j+1)){
+             j++;
+         }
+         if(j==needle.length()-1){
+             return (i-needle.length()+1);
+         }
+     }
+     return -1;
+    }
+}
+```
+### (6)459、重复的字符串
+题目链接：
+
+```Java
+class Solution {
+    public boolean repeatedSubstringPattern(String s) {
+      if(s.equals("")) return false;
+
+      int len = s.length();
+      s = " "+s;
+      char[] c = s.toCharArray();
+      int[] next = new int[len+1];
+
+      for(int i=2,j=0;i<=len;i++){
+          while(j>0 && c[i]!=c[j+1]){
+              j = next[j];
+          }
+          if(c[i]==c[j+1]){
+              j++;
+          }
+          next[i] = j;
+      }
+
+      if(next[len]>0 && len%(len-next[len])==0){
+          return true;
+      } 
+      return false;   
+   }
+}
+```
 
 
   
