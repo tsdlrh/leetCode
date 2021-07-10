@@ -1421,7 +1421,179 @@ class Solution {
 ### 3、快乐数
 
 ### （1）202、快乐数
-题目链接：
+题目链接：https://leetcode-cn.com/problems/happy-number/
+
+```Java
+class Solution {
+    public boolean isHappy(int n) {
+        Set<Integer> record = new HashSet<>();
+        while (n != 1 && !record.contains(n)) {
+            record.add(n);
+            n = getNextNumber(n);
+        }
+        return n == 1;
+    }
+
+    private int getNextNumber(int n) {
+        int res = 0;
+        while (n > 0) {
+            int temp = n % 10;
+            res += temp * temp;
+            n = n / 10;
+        }
+        return res;
+    }
+}
+```
+
+### 4、数的和
+
+### （1）1、两数之和
+题目链接：https://leetcode-cn.com/problems/two-sum/
+```Java
+public int[] twoSum(int[] nums, int target) {
+    int[] res = new int[2];
+    if(nums == null || nums.length == 0){
+        return res;
+    }
+    Map<Integer, Integer> map = new HashMap<>();
+    for(int i = 0; i < nums.length; i++){
+        int temp = target - nums[i];
+        if(map.containsKey(temp)){
+            res[1] = i;
+            res[0] = map.get(temp);
+        }
+        map.put(nums[i], i);
+    }
+    return res;
+}
+```
+
+### （2）454、四数相加II
+题目链接：https://leetcode-cn.com/problems/4sum-ii/
+
+```Java
+class Solution {
+    public int fourSumCount(int[] nums1, int[] nums2, int[] nums3, int[] nums4) {
+        Map<Integer, Integer> map = new HashMap<>();
+        int temp;
+        int res = 0;
+        //统计两个数组中的元素之和，同时统计出现的次数，放入map
+        for (int i : nums1) {
+            for (int j : nums2) {
+                temp = i + j;
+                if (map.containsKey(temp)) {
+                    map.put(temp, map.get(temp) + 1);
+                } else {
+                    map.put(temp, 1);
+                }
+            }
+        }
+        //统计剩余的两个元素的和，在map中找是否存在相加为0的情况，同时记录次数
+        for (int i : nums3) {
+            for (int j : nums4) {
+                temp = i + j;
+                if (map.containsKey(0 - temp)) {
+                    res += map.get(0 - temp);
+                }
+            }
+        }
+        return res;
+    }
+}
+```
+
+### (3)15、三数之和
+题目链接：https://leetcode-cn.com/problems/3sum/
+
+```Java
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(nums);
+
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] > 0) {
+                return result;
+            }
+
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+
+            int left = i + 1;
+            int right = nums.length - 1;
+            while (right > left) {
+                int sum = nums[i] + nums[left] + nums[right];
+                if (sum > 0) {
+                    right--;
+                } else if (sum < 0) {
+                    left++;
+                } else {
+                    result.add(Arrays.asList(nums[i], nums[left], nums[right]));
+
+                    while (right > left && nums[right] == nums[right - 1]) right--;
+                    while (right > left && nums[left] == nums[left + 1]) left++;
+                    
+                    right--; 
+                    left++;
+                }
+            }
+        }
+        return result;
+    }
+}
+```
+
+### (4)18、四数之和
+题目链接：https://leetcode-cn.com/problems/4sum/
+
+```Java
+class Solution {
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(nums);
+       
+        for (int i = 0; i < nums.length; i++) {
+
+            if (i > 0 && nums[i - 1] == nums[i]) {
+                continue;
+            }
+            
+            for (int j = i + 1; j < nums.length; j++) {
+
+                if (j > i + 1 && nums[j - 1] == nums[j]) {
+                    continue;
+                }
+
+                int left = j + 1;
+                int right = nums.length - 1;
+                while (right > left) {
+                    int sum = nums[i] + nums[j] + nums[left] + nums[right];
+                    if (sum > target) {
+                        right--;
+                    } else if (sum < target) {
+                        left++;
+                    } else {
+                        result.add(Arrays.asList(nums[i], nums[j], nums[left], nums[right]));
+                        
+                        while (right > left && nums[right] == nums[right - 1]) right--;
+                        while (right > left && nums[left] == nums[left + 1]) left++;
+
+                        left++;
+                        right--;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+}
+```
+
+
+
+
 
 
   
