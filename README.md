@@ -38,7 +38,7 @@ leetcode
     * [2、数组交集](#2数组交集)
       * [（1）349、两个数组的交集](#1349两个数组的交集)
       
-## 一、有关数组的题目 
+### 一、有关数组的题目 
 
 ### 1. 二分查找法的应用
 
@@ -1592,7 +1592,157 @@ class Solution {
 ```
 
 
+### 四、字符串的题目
 
+### （1）344、反转字符串
+题目链接：https://leetcode-cn.com/problems/reverse-string/
+
+```Java
+class Solution {
+    public void reverseString(char[] s) {
+
+       int left = 0;
+       int right = s.length-1;
+       while(left<right){
+           char tmp1 = s[left];
+           char tmp2 = s[right];
+           s[right] = tmp1;
+           s[left] = tmp2;
+
+           left++;
+           right--;
+
+       }
+    }
+}
+```
+
+### (2)541、反转字符串II
+题目链接：https://leetcode-cn.com/problems/reverse-string-ii/
+
+```Java
+class Solution {
+    public String reverseStr(String s, int k) {
+     StringBuffer res = new StringBuffer();
+     int length = s.length();
+     int start = 0;
+     while(start<length){
+         StringBuffer temp = new StringBuffer();
+         //找到k和2k处
+         int firstK = (start + k >length)?length:start+k;
+         int secondK = (start + (2*k) >length )? length : start+(2*k);
+
+         //start开始的位置，肯定套反转
+         temp.append(s.substring(start,firstK));
+         res.append(temp.reverse());
+
+         //如果fisrtK 到 secondK 之间有元素，这些元素放入res之间即可
+         if(firstK<secondK){
+             res.append(s.substring(firstK,secondK));
+         }
+         start += (2*k);
+     }
+     return res.toString();
+    }
+}
+```
+
+### (3)05、替换空格
+题目链接：https://leetcode-cn.com/problems/ti-huan-kong-ge-lcof/submissions/
+
+```Java
+class Solution {
+    public String replaceSpace(String s) {
+     if(s==null){
+         return null;
+     }
+
+     StringBuffer sb = new StringBuffer();
+     for(int i= 0;i<s.length();i++){
+        if(" ".equals(String.valueOf(s.charAt(i)))){
+            sb.append("%20");
+        }else{
+            sb.append(s.charAt(i));
+        }
+
+     }
+     return sb.toString();
+}
+}
+
+```
+
+### (4)151、翻转字符串里的单词
+题目链接：https://leetcode-cn.com/problems/reverse-words-in-a-string/submissions/
+
+```Java
+class Solution {
+   /**
+     * 不使用Java内置方法实现
+     * <p>
+     * 1.去除首尾以及中间多余空格
+     * 2.反转整个字符串
+     * 3.反转各个单词
+     */
+    public String reverseWords(String s) {
+        // System.out.println("ReverseWords.reverseWords2() called with: s = [" + s + "]");
+        // 1.去除首尾以及中间多余空格
+        StringBuilder sb = removeSpace(s);
+        // 2.反转整个字符串
+        reverseString(sb, 0, sb.length() - 1);
+        // 3.反转各个单词
+        reverseEachWord(sb);
+        return sb.toString();
+    }
+
+    private StringBuilder removeSpace(String s) {
+        // System.out.println("ReverseWords.removeSpace() called with: s = [" + s + "]");
+        int start = 0;
+        int end = s.length() - 1;
+        while (s.charAt(start) == ' ') start++;
+        while (s.charAt(end) == ' ') end--;
+        StringBuilder sb = new StringBuilder();
+        while (start <= end) {
+            char c = s.charAt(start);
+            if (c != ' ' || sb.charAt(sb.length() - 1) != ' ') {
+                sb.append(c);
+            }
+            start++;
+        }
+        // System.out.println("ReverseWords.removeSpace returned: sb = [" + sb + "]");
+        return sb;
+    }
+
+    /**
+     * 反转字符串指定区间[start, end]的字符
+     */
+    public void reverseString(StringBuilder sb, int start, int end) {
+        // System.out.println("ReverseWords.reverseString() called with: sb = [" + sb + "], start = [" + start + "], end = [" + end + "]");
+        while (start < end) {
+            char temp = sb.charAt(start);
+            sb.setCharAt(start, sb.charAt(end));
+            sb.setCharAt(end, temp);
+            start++;
+            end--;
+        }
+        // System.out.println("ReverseWords.reverseString returned: sb = [" + sb + "]");
+    }
+
+    private void reverseEachWord(StringBuilder sb) {
+        int start = 0;
+        int end = 1;
+        int n = sb.length();
+        while (start < n) {
+            while (end < n && sb.charAt(end) != ' ') {
+                end++;
+            }
+            reverseString(sb, start, end - 1);
+            start = end + 1;
+            end = start + 1;
+        }
+    }
+}
+```
 
 
 
