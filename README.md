@@ -95,6 +95,8 @@ public:
 };
 ```
 
+
+
 #### 其他语言版本
 
 **Java：**
@@ -242,6 +244,23 @@ class Solution {
 }
 ```
 
+**Python版本**
+```python
+class Solution:
+    def searchInsert(self, nums: List[int], target: int) -> int:
+        n = len(nums)
+        left,right,ans=0,n-1,n
+
+        while left<=right:
+            mid = (right+left)//2
+            if nums[mid]>=target:
+                ans=mid
+                right=mid-1
+            else:
+                left=mid+1
+        return ans                       
+             
+```
 
 #### （3）34.在排序数组中查找元素的第一个和最后一个位置
 
@@ -281,6 +300,30 @@ class Solution {
     }
 }
 ```
+**Python版本**
+```python
+class Solution:
+    def searchRange(self, nums: List[int], target: int) -> List[int]:
+        n=len(nums)
+        def binarySearch(nums,target,flag):
+            left,right,ans=0,n-1,n
+            while left<=right:
+                mid=(left+right)//2
+                if (nums[mid]>target)or(flag and nums[mid]>=target):
+                    ans=mid
+                    right=mid-1
+                else:
+                    left=mid+1
+            return ans
+
+        leftindex=binarySearch(nums,target,flag=True)
+        rightindex=binarySearch(nums,target,flag=False)-1
+        if leftindex<=rightindex and nums[leftindex]==target and nums[rightindex]==target:
+            return [leftindex,rightindex]
+        else:
+            return [-1,-1]  
+```
+
 
 #### （4）69.x的平方根
 
@@ -306,6 +349,20 @@ class Solution {
     }
 }
 ```
+```python
+class Solution:
+    def mySqrt(self, x: int) -> int:
+        left,right,ans=0,x,x
+        while left<=right:
+            mid=(left+right)//2
+            if mid*mid<=x:
+                ans=mid
+                left=mid+1
+            else:
+                right=mid-1
+        return ans           
+···
+        
 
 **方法二：牛顿迭代法**
 
@@ -327,6 +384,21 @@ class Solution {
     }
 }
 ```
+```python
+class Solution:
+    def mySqrt(self, x: int) -> int:
+        if x==0:
+            return x
+        C,x0=x,x
+        while(True):
+            x1 = 0.5*(x0+C/x0)
+            if abs(x0-x1)<1e-7:
+                break
+            x0=x1
+        return int(x0)        
+```        
+        
+       
 
 #### （5）367.有效的完全平方数
 
@@ -353,6 +425,20 @@ class Solution {
     }
 }
 ```
+```python
+class Solution:
+    def isPerfectSquare(self, num: int) -> bool:
+        left,right=0,num
+        while left<=right:
+            mid=(left+right)//2
+            if mid*mid>num:
+                right=mid-1
+            elif mid*mid<num:
+                left=mid+1
+            else:
+                return True
+        return False                
+```
 
 **方法二：牛顿迭代法**
 ```Java
@@ -372,7 +458,17 @@ class Solution {
     }
 }
 ```
-
+```python
+class Solution:
+    def isPerfectSquare(self, num: int) -> bool:
+        if num<2:
+            return True
+        C,x0=num,num//2
+        while x0*x0>num:
+            x1=(x0+C/x0)//2
+            x0=x1
+        return x0*x0==num    
+ ```
 
 
 
@@ -402,6 +498,20 @@ class Solution {
 }
 ```
 
+```python
+class Solution:
+    def removeElement(self, nums: List[int], val: int) -> int:
+        if len(nums)==0:
+            return 0
+        slow,fast=0,0
+        while(fast<len(nums)):
+            if nums[fast]!=val:
+                nums[slow]=nums[fast]
+                slow +=1
+            fast+=1
+        return slow
+ ```
+
 #### （2）26.删除有序数组中的重复项
 
 题目链接：https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/submissions/
@@ -422,6 +532,21 @@ class Solution {
       return slow;
     }
 }
+```
+
+```python
+class Solution:
+    def removeDuplicates(self, nums: List[int]) -> int:
+        if len(nums)==0:
+            return 0
+        slow,fast=1,1
+        while fast<len(nums):
+            if nums[fast]!=nums[fast-1]:
+                nums[slow]=nums[fast]
+                slow+=1
+            fast+=1
+        return slow      
+           
 ```
 
 
@@ -448,6 +573,22 @@ class Solution {
   
     }
 }
+```
+```python
+class Solution:
+    def moveZeroes(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        n=len(nums)
+        slow,fast=0,0
+        while fast<n:
+            if nums[fast]!=0:
+                nums[slow]=nums[fast]
+                slow+=1
+            fast+=1
+        for i in range(slow,n):
+            nums[i]=0
 ```
 
 
@@ -481,6 +622,20 @@ class Solution {
     }
 }
 ```
+
+```python
+class Solution:
+    def backspaceCompare(self, s: str, t: str) -> bool:
+        def build(s:str)->str:
+            res=list()
+            for ch in s:
+                if ch!='#':
+                    res.append(ch)
+                elif res:
+                    res.pop()
+            return "".join(res)
+        return build(s)==build(t)                
+```
 **方法二：双指针**
 
 ```Java
@@ -492,7 +647,7 @@ class Solution {
 若该字符为退格符，则我们需要多删除一个普通字符，我们让skip 加 1；
 若该字符为普通字符：
 若 skip 为 0，则说明当前字符不需要删去；
-若 skip 不为 0，则说明当前字符需要删去，我们让 skip 减 11。
+若 skip 不为 0，则说明当前字符需要删去，我们让 skip 减 1。
 这样，我们定义两个指针，分别指向两字符串的末尾。每次我们让两指针逆序地遍历两字符串，直到两字符串能够各自确定一个字符，
 然后将这两个字符进行比较。重复这一过程直到找到的两个字符不相等，或遍历完字符串为止。
  */
@@ -548,6 +703,41 @@ class Solution {
 
     }
 }
+```
+
+```python
+class Solution:
+    def backspaceCompare(self, s: str, t: str) -> bool:
+        i,j=len(s)-1,len(t)-1
+        skipS=skipT=0
+        while i>=0 or j>=0:
+            while i>=0:
+                if s[i]=="#":
+                    skipS+=1
+                    i-=1
+                elif skipS>0:
+                    skipS-=1
+                    i-=1
+                else:
+                    break
+            while j>=0:
+                if t[j]=="#":
+                    skipT+=1
+                    j-=1
+                elif skipT>0:
+                    skipT-=1
+                    j-=1
+                else:
+                    break
+            if i>=0 and j>=0:
+                if s[i]!=t[j]:
+                    return False
+            elif i>=0 or j>=0:
+                return False
+            i-=1
+            j-=1
+        return True
+
 ```
 
 #### （5）977.有序数组的平方
