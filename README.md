@@ -790,6 +790,36 @@ class Solution {
     }
 }
 ```
+
+```python
+class Solution:
+    def sortedSquares(self, nums: List[int]) -> List[int]:
+        n=len(nums)
+        neg=-1
+        #计算得到正负数的分界点
+        for i in range(0,n):
+            if nums[i]<0:
+                neg=i
+            else:
+                break
+        ans=[0]*n
+        index,i,j=0,neg,neg+1
+        while i>=0 or j<n:
+            if i<0:#说明没有负数
+               ans[index]=nums[j]**2
+               j+=1
+            elif j==n:#说明没有正数
+               ans[index]=nums[i]**2
+               i-=1
+            elif nums[i]**2<nums[j]**2:
+               ans[index]=nums[i]**2
+               i-=1
+            else:
+               ans[index]=nums[j]**2
+               j+=1
+            index+=1
+        return ans      
+```        
 **方法二：使用左右指针法**
 
 ```Java
@@ -815,6 +845,26 @@ class Solution {
      return res;
     }
 }
+```
+
+```python
+class Solution:
+    def sortedSquares(self, nums: List[int]) -> List[int]:
+        #左右指针
+        n=len(nums)
+        left,right,index=0,n-1,n-1
+        res=[0]*n
+
+        while left<=right:
+            if nums[left]**2>nums[right]**2:
+                res[index]=nums[left]**2
+                index-=1
+                left+=1
+            else:
+                res[index]=nums[right]**2
+                index-=1
+                right-=1
+        return res            
 ```
 
 
@@ -872,6 +922,20 @@ class Solution {
 }
 ```
 
+```python
+class Solution:
+    def minSubArrayLen(self, target: int, nums: List[int]) -> int:
+        n=len(nums)
+        res,i,Sum,sublen=n+1,0,0,0
+        for j in range(0,n):
+            Sum+=nums[j]
+            while Sum>=target:
+                sublen=j-i+1
+                res= res if res<sublen else sublen
+                Sum-=nums[i]
+                i+=1
+        return 0 if res==n+1 else res    
+```
 #### （2）904.水果成篮
 
 题目链接 ：https://leetcode-cn.com/problems/fruit-into-baskets/submissions/
@@ -914,6 +978,22 @@ class Counter extends HashMap<Integer,Integer>{
 }
 
 ```
+
+```python
+class Solution:
+    def totalFruit(self, fruits: List[int]) -> int:
+        ans=i=0
+        count=collections.Counter()
+        for j,x in enumerate(fruits):
+            count[x]+=1
+            while len(count)>=3:
+                count[fruits[i]]-=1
+                if count[fruits[i]]==0:
+                    del count[fruits[i]]
+                i+=1
+            ans=max(ans,j-i+1)
+        return ans            
+  ```      
 
 #### （3）76.最小覆盖子串
 
@@ -996,6 +1076,33 @@ class Solution {
 
  }
  ```
+ 
+ ```python
+ def minWindow(self, s: str, t: str) -> str:
+        need=collections.defaultdict(int)
+        for c in t:
+            need[c]+=1
+        needCnt=len(t)
+        i=0
+        res=(0,float('inf'))
+        for j,c in enumerate(s):
+            if need[c]>0:
+                needCnt-=1
+            need[c]-=1
+            if needCnt==0:       #步骤一：滑动窗口包含了所有T元素
+                while True:      #步骤二：增加i，排除多余元素
+                    c=s[i] 
+                    if need[c]==0:
+                        break
+                    need[c]+=1
+                    i+=1
+                if j-i<res[1]-res[0]:   #记录结果
+                    res=(i,j)
+                need[s[i]]+=1  #步骤三：i增加一个位置，寻找新的满足条件滑动窗口
+                needCnt+=1
+                i+=1
+        return '' if res[1]>len(s) else s[res[0]:res[1]+1]    #如果res始终没被更新过，代表无满足条件的结果
+```
 
 ### 4、螺旋矩阵
 
@@ -1105,6 +1212,30 @@ class Solution {
 }
 ```
 
+```python
+class Solution:
+    def spiralOrder(matrix):
+        if not matrix or not matrix[0]:
+            return list()
+        rows,colums=len(matrix),len(matrix[0])
+        visited=[[False]*colums for _ in range(rows)]#辅助矩阵，标记该位置是否已经被访问过
+        total = rows*colums
+        order=[0]*total
+
+        dirs = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # 控制顺时针旋转
+        r,c,dirIdx=0,0,0
+        for i in range(total):
+            order[i]=matrix[r][c]
+            visited[r][c]=True
+            dx,dy=dirs[dirIdx]
+            nextR,nextC=r+dx,c+dy
+            if nextR<0 or nextR>=rows or nextC<0 or nextC>=colums or visited[nextR][nextC]:
+                dirIdx=(dirIdx+1)%4
+                dx, dy = dirs[dirIdx]
+            r,c=r+dx,c+dy
+        return order
+```        
+
 #### （3）29、顺时针打印矩阵
 
 题目连接：https://leetcode-cn.com/problems/shun-shi-zhen-da-yin-ju-zhen-lcof/submissions/
@@ -1158,6 +1289,32 @@ class Solution {
 }
 ```
 
+```python
+class Solution:
+    def spiralOrder(matrix):
+        if not matrix or not matrix[0]:
+            return list()
+        rows,colums=len(matrix),len(matrix[0])
+        visited=[[False]*colums for _ in range(rows)]#辅助矩阵，标记该位置是否已经被访问过
+        total = rows*colums
+        order=[0]*total
+
+        dirs = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # 控制顺时针旋转
+        r,c,dirIdx=0,0,0
+        for i in range(total):
+            order[i]=matrix[r][c]
+            visited[r][c]=True
+            dx,dy=dirs[dirIdx]
+            nextR,nextC=r+dx,c+dy
+            if nextR<0 or nextR>=rows or nextC<0 or nextC>=colums or visited[nextR][nextC]:
+                dirIdx=(dirIdx+1)%4
+                dx, dy = dirs[dirIdx]
+            r,c=r+dx,c+dy
+        return order
+```        
+        
+        
+
 
 ## 二、链表
 
@@ -1198,6 +1355,20 @@ class Solution {
     }
 }
 ```
+
+```python
+class Solution:
+    def removeElements(head:ListNode,val:int):
+        dummy=ListNode(0)
+        dummy.next=head
+        p=dummy
+        while p is not None:
+            if p.next and p.next.value == val:
+                p.next=p.next.next
+            else:
+                p=p.next
+        return dummy.next
+```        
 
 ### （2）707、设计链表
 
@@ -1280,6 +1451,78 @@ class MyLinkedList {
  */
  ```
  
+ ```python
+ class MyLinkedList:
+
+    def __init__(self):
+        """
+        初始化链表
+        """
+        self.size=0
+        self.head=ListNode(0)
+
+
+    def get(self, index: int) -> int:
+        """
+       得到第index位置的值
+        """
+        if index<0 or index>=self.size:
+            return -1
+        curr=self.head
+        for _ in range(index+1):
+            curr=curr.next
+        return curr.val
+
+
+
+    def addAtHead(self, val: int) -> None:
+        """
+        Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list.
+        """
+        self.addAtIndex(0,val)
+
+
+    def addAtTail(self, val: int) -> None:
+        """
+        Append a node of value val to the last element of the linked list.
+        """
+        self.addAtIndex(self.size,val)
+
+
+    def addAtIndex(self, index: int, val: int) -> None:
+        """
+        Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list, the node will be appended to the end of linked list. If index is greater than the length, the node will not be inserted.
+        """
+        if index>self.size:
+            return
+
+        if index<0:
+            index=0
+
+        self.size+=1
+        pred=self.head
+        for _ in range(index):
+            pred=pred.next
+
+        to_add=ListNode(val)
+        to_add.next=pred.next
+        pred.next=to_add
+
+
+    def deleteAtIndex(self, index: int) -> None:
+        """
+        Delete the index-th node in the linked list, if the index is valid.
+        """
+        if index<0 or index>self.size:
+            return
+        self.size-=1
+        pred=self.head
+        for _ in range(index):
+            pred=pred.next
+
+        pred.next=pred.next.next
+```        
+ 
  ### (3) 206、反转链表
  题目链接：https://leetcode-cn.com/problems/reverse-linked-list/
  
@@ -1302,6 +1545,20 @@ class MyLinkedList {
     }
 }
 ```
+
+```python
+class Solution:
+    def reverseList(head):
+        pre=None
+        cur=head
+        while cur:
+            tmp=cur.next
+            cur.next=pre
+            pre=cur
+            cur=tmp
+        return pre
+```
+
 
 
 
@@ -1347,6 +1604,31 @@ class Solution {
  
 ```
 
+```python
+class Solution:
+    def swapPairs(head:ListNode)->ListNode:
+        dummy=ListNode(0)
+        dummy.next=head
+        pre=dummy
+
+        while pre.next and pre.next.next:
+            tmp1=pre.next.next.next
+            tmp2=pre.next
+
+            #步骤一
+            pre.next=pre.next.next
+            #步骤二
+            pre.next.next=tmp2
+            #步骤三
+            pre.next.next.next=tmp1
+
+            #移动两位,进行下一步循环
+            pre=pre.next.next
+
+        return dummy.next
+```
+
+
 ### (5)19、删除链表中倒数第N个节点
 题目链接：https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/submissions/
 
@@ -1386,6 +1668,33 @@ class Solution {
      return dummy.next;
     }
  ```
+ 
+ ```python
+ class Solution:
+    def removeNthFromEnd(head:ListNode,n:int)->ListNode:
+        #定义虚拟头节点
+        dummy=ListNode(0)
+        dummy.next=head
+        slow=dummy#定义慢指针
+        fast=dummy#定义快指针
+
+        #快指针先移动n+1步
+        while n>0:
+            fast=fast.next
+            n-=1
+
+        #之后快慢指针一起移动
+        #直到快指针指向NULL,此时 慢指针指向的节点是要删除节点的上一个节点
+        pre=ListNode(None)
+        while fast:
+            pre=slow
+            slow=slow.next
+            fast=fast.next
+
+        pre.next=slow.next#删除节点
+        return dummy.next
+```
+ 
  
  ### (6)142.环形链表
  
@@ -1428,6 +1737,24 @@ public class Solution {
 }
 ```
 
+```python
+class Solution:
+    def detectCycle(head:ListNode)->ListNode:
+        slow,fast=head,head#定义快慢指针
+        #快指针走两步，慢指针走一步，两者相遇即是有环
+        while fast and fast.next:
+            slow=slow.next
+            fast=fast.next.next
+            if slow==fast:#此时表示有环的存在
+                index1=fast
+                index2=head
+                #两个指针，从头结点和相遇节点，各走一步，直到相遇，相遇点即为环入口
+                while index1!=index2:
+                    index1=index1.next
+                    index2=index2.next
+                return index1
+        return None
+```
 
 ## 三、哈希表
 
@@ -1462,6 +1789,19 @@ class Solution {
 }
 ```
 
+```python
+class Solution:
+    def isAnagram(s:str,t:str)->bool:
+        record=[0]*26
+        for i in range(len(s)):
+            record[ord(s[i])-ord("a")]+=1
+        for i in range(len(t)):
+            record[ord(t[i])-ord("a")]-=1
+        for i in range(26):
+            if record[i]!=0:
+                return False
+        return True
+```
 
 
 
@@ -1493,6 +1833,23 @@ class Solution {
      return true;
     }
 }
+```
+
+```python
+class Solution:
+    def canConstruct(self,ransomNote:str,managine:str)->bool:
+        n,m=len(ransomNote),len(managine)
+        if n>m or n==0:
+            return False
+        rec=[0]*26
+        for i in range(n):
+            rec[ord(ransomNote[i])-ord("a")]+=1
+        for i in range(m):
+            rec[ord(managine[i])-ord("a")]-=1
+        for i in range(26):
+            if rec[i]>=1:
+                return False
+        return True
 ```
 
 
@@ -1532,6 +1889,20 @@ class Solution {
 }
 ```
 
+```python
+class Solution:
+    def groupAnagram(strs:List[str])->List[List[str]]:
+        mp=collections.defaultdict(list)
+
+        for st in strs:
+            counts = [0]*26
+            for ch in st:
+                counts[ord(ch)-ord("a")]+=1
+            mp[tuple(counts)].append(st)
+        return list(mp.values())
+```
+
+
 #### (4)438、找到字符串中所有字母异位词
 题目链接：https://leetcode-cn.com/problems/find-all-anagrams-in-a-string/submissions/
 
@@ -1565,8 +1936,28 @@ class Solution {
     }
 }
 ```
+```python
+class Solution:
+    def findAnagrams(s: str, p: str) -> List[int]:
+        n,m,res=len(s),len(p),[]
+        if n<m: return res
+        pcnt=[0]*26
+        scnt=[0]*26
+        for i in range(m):
+            pcnt[ord(p[i])-ord("a")]+=1
+            scnt[ord(s[i])-ord("a")]+=1
 
+        if pcnt==scnt:
+            res.append(0)
 
+        for i in range(m,n):
+            scnt[ord(s[i-m])-ord("a")]-=1
+            scnt[ord(s[i])-ord("a")]+=1
+            if scnt==pcnt:
+                res.append(i-m+1)
+
+        return res
+```
 ### 2、数组交集
 
 #### （1）349、两个数组的交集
@@ -1605,6 +1996,17 @@ class Solution {
     }
 }
 ```
+
+```python
+class Solution:
+    def intersection(nums1:List[int],nums2:List[int])->List[int]:
+        result_set=set()
+        set1=set(nums1)
+        for num in nums2:
+            if num in set1:
+                result_set.add(num)
+        return list(result_set)
+```
   
   
   
@@ -1636,6 +2038,33 @@ class Solution {
 }
 ```
 
+```python
+class Solution:
+    def isHappy(n:int)->bool:
+        def get_next(n):
+            total_sum=0
+            while n>0:
+                n,digit=divmod(n,10)
+                total_sum+=digit**2
+            return total_sum
+
+        #方法一：哈希表
+        # seen=set()
+        # while n!=1 and n not in seen:
+        #     seen.add(n)
+        #     n=get_next(n)
+        # return n==1
+
+        #方法二：快慢指针
+        slow=n
+        fast=get_next(n)
+        while fast!=1 and slow!=fast:
+            slow=get_next(slow)
+            fast=get_next(get_next(fast))
+        return fast==1
+
+```
+
 ### 4、数的和
 
 ### （1）1、两数之和
@@ -1657,6 +2086,20 @@ public int[] twoSum(int[] nums, int target) {
     }
     return res;
 }
+```
+
+```python
+class Solution:
+    def twoSum(nums:List[int],target:int)->List[int]:
+        res=dict()
+        for i,num in enumerate(nums):
+            print("i=",i)
+            print("num=",num)
+            print("res=",res)
+            if target-num in res:
+                return [res[target-num],i]
+            res[nums[i]]=i
+        return []
 ```
 
 ### （2）454、四数相加II
@@ -1691,6 +2134,18 @@ class Solution {
         return res;
     }
 }
+```
+
+```python
+class Solution:
+    def fourSumCount(nums1: List[int], nums2: List[int], nums3: List[int], nums4: List[int]) -> int:
+        countAB=collections.Counter(u+v for u in nums1 for v in nums2)
+        ans=0
+        for u in nums3:
+            for v in nums4:
+                if -u-v in countAB:
+                    ans+=countAB[-u-v]
+        return ans
 ```
 
 ### (3)15、三数之和
@@ -1734,6 +2189,35 @@ class Solution {
     }
 }
 ```
+
+```python
+class Solution:
+    def threeSum(nums:List[int])->List[List[int]]:
+        ans=[]
+        n=len(nums)
+        nums.sort()
+        for i in range(n):
+            left=i+1
+            right=n-1
+            if nums[i]>0:
+                break
+            if i>=1 and nums[i]==nums[i-1]:
+                continue
+            while left<right:
+                total=nums[i]+nums[left]+nums[right]
+                if total>0:
+                    right-=1
+                elif total<0:
+                    left+=1
+                else:
+                    ans.append([nums[i],nums[left],nums[right]])
+                    while left!=right and nums[left]==nums[left+1]:left+=1
+                    while left!=right and nums[right]==nums[right-1]:right-=1
+                    left+=1
+                    right-=1
+        return ans
+```
+
 
 ### (4)18、四数之和
 题目链接：https://leetcode-cn.com/problems/4sum/
@@ -1781,6 +2265,30 @@ class Solution {
 }
 ```
 
+```python
+class Solution:
+    def fourSum(nums:List[int],target:int)->List[List[int]]:
+        hashmap=dict()
+        for n in nums:
+            if n in hashmap:
+                hashmap[n]+=1
+            else:
+                hashmap[n]=1
+
+        ans=set()
+        for i in range(len(nums)):
+            for j in range(i+1,len(nums)):
+                for k in range(j+1,len(nums)):
+                    val =target-(nums[i]+nums[j]+nums[k])
+                    if val in hashmap:
+                        count=(nums[i]==val)+(nums[j]==val)+(nums[k]==val)
+                        if hashmap[val]>count:
+                            ans.add(tuple(sorted([nums[i],nums[j],nums[k],val])))
+                    else:
+                        continue
+        return ans
+```
+
 
 ### 四、字符串的题目
 
@@ -1806,6 +2314,20 @@ class Solution {
     }
 }
 ```
+```python
+class Solution:
+    def reverseString(s:List[str])->None:
+        left,right=0,len(s)-1
+        while left<right:
+            tmp1=s[left]
+            tmp2=s[right]
+            s[right]=tmp1
+            s[left]=tmp2
+
+            left+=1
+            right-=1
+```
+
 
 ### (2)541、反转字符串II
 题目链接：https://leetcode-cn.com/problems/reverse-string-ii/
@@ -1837,6 +2359,25 @@ class Solution {
 }
 ```
 
+```python
+class Solution:
+    def reverseStr(s:str,k:int)->str:
+
+        def reverseString(s1):
+            left, right = 0, len(s1) - 1
+            while left < right:
+                s1[left],s1[right]=s1[right],s1[left]
+                left += 1
+                right -= 1
+            return s1
+
+        t=list(s)
+        print(t)
+        for i in range(0,len(t),2*k):
+            t[i:i+k]=reverseString(t[i:i+k])
+        return "".join(t)
+```
+
 ### (3)05、替换空格
 题目链接：https://leetcode-cn.com/problems/ti-huan-kong-ge-lcof/submissions/
 
@@ -1861,6 +2402,22 @@ class Solution {
 }
 
 ```
+
+```python
+class Solution:
+    def replaceSpace(s:str)->str:
+        #方法一：
+        # t=list(s)
+        # for i in range(0,len(t)):
+        #     if t[i]==' ':
+        #         t[i]="%20"
+        # return "".join(t)
+        #
+        #方法二：
+        t=s.split(' ')
+        return "%20".join(t)
+```
+
 
 ### (4)151、翻转字符串里的单词
 题目链接：https://leetcode-cn.com/problems/reverse-words-in-a-string/submissions/
@@ -1934,6 +2491,37 @@ class Solution {
 }
 ```
 
+```python
+class Solution:
+    def reverseWords(s:str)->str:
+        # return " ".join(reversed(s.split()))  #调用API实现单词翻转
+        #使用双端队列
+        left,right=0,len(s)-1
+        #去掉字符串开头的空白字符
+        while left<=right and s[left]==' ':
+            left+=1
+        #去掉字符串末尾的空白字符
+        while left<=right and s[right]==' ':
+            right-=1
+
+        d,word= collections.deque(),[]
+        #将单词push到队列的头部
+        while left<=right:
+            print("left=",left)
+            print("s[left]=",s[left])
+            print("word=",word)
+            print("d=",d)
+            if s[left]==' 'and word:
+                d.appendleft("".join(word))
+                word=[]
+            elif s[left]!=" ":
+                word.append(s[left])
+            left+=1
+        d.appendleft("".join(word))
+
+        return " ".join(d)
+```
+
 ### (5)58、左旋字符串
 题目链接：https://leetcode-cn.com/problems/zuo-xuan-zhuan-zi-fu-chuan-lcof/submissions/
 
@@ -1960,6 +2548,39 @@ class Solution {
         }
     }
 }
+```
+
+```python
+class Solution:
+    def reversedLeftWords(s:str,n:int):
+        #方法一
+        # leng= len(s)
+        # t=list(s)
+        #
+        # def reverString(s,left,right):
+        #     while left<=right:
+        #         s[left],s[right]=s[right],s[left]
+        #         left+=1
+        #         right-=1
+        #     return list("".join(s))
+        #
+        # #翻转区间为前n的子串
+        # r1=reverString(t,0,n-1)
+        # #翻转区间为n到末尾的子串
+        # r2=reverString(r1,n,leng-1)
+        # #翻转整个字符串
+        # return "".join(reverString(r2,0,leng-1))
+
+       #方法二：字符串切片
+       # return s[n:]+s[:n]
+
+       #方法三：列表遍历
+       res=[]
+       for i in range(n,len(s)):
+           res.append(s[i])
+       for i in range(n):
+           res.append(s[i])
+       return "".join(res)
 ```
 
 ### (6)28、实现strStr()
@@ -2006,6 +2627,41 @@ class Solution {
     }
 }
 ```
+
+```python
+class Solution:
+    #KMP算法
+    def strStr(self, haystack: str, needle: str) -> int:
+        a=len(needle)
+        b=len(haystack)
+        if a==0:
+            return 0
+        next=self.getnext(a,needle)
+        p=-1
+        for j in range(b):
+            while p>=0 and needle[p+1]!=haystack[j]:
+                p=next[p]
+            if needle[p+1]==haystack[j]:
+                p+=1
+            if p==a-1:
+                return j-a+1
+        return -1
+
+    def getnext(self,a,needle):
+        next=['' for i in range(a)]
+        k=-1
+        next[0]=k
+        for i in range(1,len(needle)):
+            while (k>-1 and needle[k+1]!=needle[i]):
+                k=next[k]
+            if needle[k+1]==needle[i]:
+                k+=1
+            next[i]=k
+        return next
+```
+
+
+
 ### (6)459、重复的字符串
 题目链接：
 
@@ -2035,6 +2691,17 @@ class Solution {
       return false;   
    }
 }
+```
+
+```python
+class Solution:
+    def repeatedSubstringPattern(self,s:str)->bool:
+        n=len(s)
+        for i in range(1,n//2+1):
+            if n%i==0:
+                if all(s[j]==s[j-i] for j in range(i,n)):
+                    return True
+        return False
 ```
 
 
