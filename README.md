@@ -2959,9 +2959,996 @@ class Solution:
     
 ### (9) 15、三数之和
 题目链接：https://leetcode-cn.com/problems/3sum/
+```python
+class Solution:
+    def threeSum(self, nums):
+        ans = []
+        n = len(nums)
+        nums.sort()
+        for i in range(n):
+            left = i + 1
+            right = n - 1
+            if nums[i] > 0:
+                break
+            if i >= 1 and nums[i] == nums[i - 1]:
+                continue
+            while left < right:
+                total = nums[i] + nums[left] + nums[right]
+                if total > 0:
+                    right -= 1
+                elif total < 0:
+                    left += 1
+                else:
+                    ans.append([nums[i], nums[left], nums[right]])
+                    while left != right and nums[left] == nums[left + 1]: left += 1
+                    while left != right and nums[right] == nums[right - 1]: right -= 1
+                    left += 1
+                    right -= 1
+        return ans
+ ```
+ ### (10) 18、四数之和
+ 题目链接：https://leetcode-cn.com/problems/4sum/
+ ```python
+ class Solution(object):
+    def fourSum(self, nums, target):
+        """
+        :type nums: List[int]
+        :type target: int
+        :rtype: List[List[int]]
+        """
+        # use a dict to store value:showtimes
+        hashmap = dict()
+        for n in nums:
+            if n in hashmap:
+                hashmap[n] += 1
+            else: 
+                hashmap[n] = 1
+        
+        # good thing about using python is you can use set to drop duplicates.
+        ans = set()
+        for i in range(len(nums)):
+            for j in range(i + 1, len(nums)):
+                for k in range(j + 1, len(nums)):
+                    val = target - (nums[i] + nums[j] + nums[k])
+                    if val in hashmap:
+                        # make sure no duplicates.
+                        count = (nums[i] == val) + (nums[j] == val) + (nums[k] == val)
+                        if hashmap[val] > count:
+                            ans.add(tuple(sorted([nums[i], nums[j], nums[k], val])))
+                    else:
+                        continue
+        return ans
+  ```
+  
+### 六、栈与队列
 
+### （1）232、用栈实现队列
+题目链接：https://leetcode-cn.com/problems/implement-queue-using-stacks/
+```python
+# 使用两个栈实现先进先出的队列
+class MyQueue:
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.stack1 = list()
+        self.stack2 = list()
+
+    def push(self, x: int) -> None:
+        """
+        Push element x to the back of queue.
+        """
+        # self.stack1用于接受元素
+        self.stack1.append(x)
+
+    def pop(self) -> int:
+        """
+        Removes the element from in front of queue and returns that element.
+        """
+        # self.stack2用于弹出元素，如果self.stack2为[],则将self.stack1中元素全部弹出给self.stack2
+        if self.stack2 == []:
+            while self.stack1:
+                tmp = self.stack1.pop()
+                self.stack2.append(tmp)
+        return self.stack2.pop()
+
+    def peek(self) -> int:
+        """
+        Get the front element.
+        """
+        if self.stack2 == []:
+            while self.stack1:
+                tmp = self.stack1.pop()
+                self.stack2.append(tmp)
+        return self.stack2[-1]
+
+    def empty(self) -> bool:
+        """
+        Returns whether the queue is empty.
+        """
+        return self.stack1 == [] and self.stack2 == []
+ ```
+ 
+ ### (2) 225、用队列实现栈
+ 题目链接：https://leetcode-cn.com/problems/implement-stack-using-queues/
+ 
+ ```python
+ from collections import deque
+class MyStack:
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        #使用两个队列来实现
+        self.que1 = deque()
+        self.que2 = deque()
+
+    def push(self, x: int) -> None:
+        """
+        Push element x onto stack.
+        """
+        self.que1.append(x)
+
+    def pop(self) -> int:
+        """
+        Removes the element on top of the stack and returns that element.
+        """
+        size = len(self.que1)
+        size -= 1#这里先减一是为了保证最后面的元素
+        while size > 0:
+            size -= 1
+            self.que2.append(self.que1.popleft())
+
+
+        result = self.que1.popleft()
+        self.que1, self.que2= self.que2, self.que1#将que2和que1交换 que1经过之前的操作应该是空了
+        #一定注意不能直接使用que1 = que2 这样que2的改变会影响que1 可以用浅拷贝
+        return result
+
+    def top(self) -> int:
+        """
+        Get the top element.
+        """
+        return self.que1[-1]
+
+    def empty(self) -> bool:
+        """
+        Returns whether the stack is empty.
+        """
+        #print(self.que1)
+        if len(self.que1) == 0:
+            return True
+        else:
+            return False
+
+
+# Your MyStack object will be instantiated and called as such:
+# obj = MyStack()
+# obj.push(x)
+# param_2 = obj.pop()
+# param_3 = obj.top()
+# param_4 = obj.empty()
+```
+
+### (3) 20、有效的括号
+题目链接：https://leetcode-cn.com/problems/valid-parentheses/
+```python
+class Solution:
+    def isValid(self, s: str) -> bool:
+        stack = []  # 保存还未匹配的左括号
+        mapping = {")": "(", "]": "[", "}": "{"}
+        for i in s:
+            if i in "([{":  # 当前是左括号，则入栈
+                stack.append(i)
+            elif stack and stack[-1] == mapping[i]:  # 当前是配对的右括号则出栈
+                stack.pop()
+            else:  # 不是匹配的右括号或者没有左括号与之匹配，则返回false
+                return False
+        return stack == []  # 最后必须正好把左括号匹配完
+```
+
+### (4) 1047、删除字符串中的所有相邻重复项
+题目链接：https://leetcode-cn.com/problems/remove-all-adjacent-duplicates-in-string/
+```python
+class Solution:
+    def removeDuplicates(self, s: str) -> str:
+        t = list()
+        for i in s:
+            if t and t[-1] == i:
+                t.pop(-1)
+            else:
+                t.append(i)
+        return "".join(t)  # 字符串拼接
+```
+
+### (5) 150、逆波兰表达式求值
+题目链接：https://leetcode-cn.com/problems/evaluate-reverse-polish-notation/
+```python
+def evalRPN(tokens) -> int:
+    stack = list()
+    for i in range(len(tokens)):
+        if tokens[i] not in ["+", "-", "*", "/"]:
+            stack.append(tokens[i])
+        else:
+            tmp1 = stack.pop()
+            tmp2 = stack.pop()
+            res = eval(tmp2+tokens[i]+tmp1)
+            stack.append(str(int(res)))
+    return stack[-1]
+```
+ 
+### (6) 239、滑动窗口最大值
+题目链接：https://leetcode-cn.com/problems/sliding-window-maximum/
+```python
+ class MyQueue: #单调队列（从大到小
+    def __init__(self):
+        self.queue = [] #使用list来实现单调队列
+    
+    #每次弹出的时候，比较当前要弹出的数值是否等于队列出口元素的数值，如果相等则弹出。
+    #同时pop之前判断队列当前是否为空。
+    def pop(self, value):
+        if self.queue and value == self.queue[0]:
+            self.queue.pop(0)#list.pop()时间复杂度为O(n),这里可以使用collections.deque()
+            
+    #如果push的数值大于入口元素的数值，那么就将队列后端的数值弹出，直到push的数值小于等于队列入口元素的数值为止。
+    #这样就保持了队列里的数值是单调从大到小的了。
+    def push(self, value):
+        while self.queue and value > self.queue[-1]:
+            self.queue.pop()
+        self.queue.append(value)
         
+    #查询当前队列里的最大值 直接返回队列前端也就是front就可以了。
+    def front(self):
+        return self.queue[0]
+    
+class Solution:
+    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+        que = MyQueue()
+        result = []
+        for i in range(k): #先将前k的元素放进队列
+            que.push(nums[i])
+        result.append(que.front()) #result 记录前k的元素的最大值
+        for i in range(k, len(nums)):
+            que.pop(nums[i - k]) #滑动窗口移除最前面元素
+            que.push(nums[i]) #滑动窗口前加入最后面的元素
+            result.append(que.front()) #记录对应的最大值
+        return result
+```
+
+### (7) 347、前K个高频元素
+题目链接：https://leetcode-cn.com/problems/top-k-frequent-elements/
+```python
+#时间复杂度：O(nlogk)
+#空间复杂度：O(n)
+import heapq
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        #要统计元素出现频率
+        map_ = {} #nums[i]:对应出现的次数
+        for i in range(len(nums)):
+            map_[nums[i]] = map_.get(nums[i], 0) + 1
         
+        #对频率排序
+        #定义一个小顶堆，大小为k
+        pri_que = [] #小顶堆
+        
+        #用固定大小为k的小顶堆，扫面所有频率的数值
+        for key, freq in map_.items():
+            heapq.heappush(pri_que, (freq, key))
+            if len(pri_que) > k: #如果堆的大小大于了K，则队列弹出，保证堆的大小一直为k
+                heapq.heappop(pri_que)
+        
+        #找出前K个高频元素，因为小顶堆先弹出的是最小的，所以倒叙来输出到数组
+        result = [0] * k
+        for i in range(k-1, -1, -1):
+            result[i] = heapq.heappop(pri_que)[1]
+        return result
+```
+
+### 七、二叉树的题目
+
+### （1）144、二叉树的前序遍历
+题目链接：https://leetcode-cn.com/problems/binary-tree-preorder-traversal/
+
+```python
+class Solution:
+    def preorderTraversal(self, root: TreeNode) -> List[int]:
+        result = []
+        st= []
+        if root:
+            st.append(root)
+        while st:
+            node = st.pop()
+            if node != None:
+                if node.right: #右
+                    st.append(node.right)
+                if node.left: #左
+                    st.append(node.left)
+                st.append(node) #中
+                st.append(None)
+            else:
+                node = st.pop()
+                result.append(node.val)
+        return result
+```        
+
+### （2）145、二叉树的后序遍历
+题目链接：https://leetcode-cn.com/problems/binary-tree-postorder-traversal/
+```python
+class Solution:
+    def postorderTraversal(self, root: TreeNode) -> List[int]:
+        result = []
+        st = []
+        if root:
+            st.append(root)
+        while st:
+            node = st.pop()
+            if node != None:
+                st.append(node) #中
+                st.append(None)
+                
+                if node.right: #右
+                    st.append(node.right)
+                if node.left: #左
+                    st.append(node.left)
+            else:
+                node = st.pop()
+                result.append(node.val)
+        return result
+```
+
+
+### （3）94、二叉树的中序遍历
+题目链接：https://leetcode-cn.com/problems/binary-tree-inorder-traversal/
+
+```python
+class Solution:
+    def inorderTraversal(self, root: TreeNode) -> List[int]:
+        result = []
+        st = []
+        if root:
+            st.append(root)
+        while st:
+            node = st.pop()
+            if node != None:
+                if node.right: #添加右节点（空节点不入栈）
+                    st.append(node.right)
+                
+                st.append(node) #添加中节点
+                st.append(None) #中节点访问过，但是还没有处理，加入空节点做为标记。
+                
+                if node.left: #添加左节点（空节点不入栈）
+                    st.append(node.left)
+            else: #只有遇到空节点的时候，才将下一个节点放进结果集
+                node = st.pop() #重新取出栈中元素
+                result.append(node.val) #加入到结果集
+        return result
+ ```
+
+### （4）102、二叉树的层序遍历
+题目链接：https://leetcode-cn.com/problems/binary-tree-level-order-traversal/
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def levelOrder(self, root: TreeNode) -> List[List[int]]:
+        if not root:
+            return []
+
+        quene = [root]
+        out_list = []
+
+        while quene:
+            length = len(queue)  # 这里一定要先求出队列的长度，不能用range(len(queue))，因为queue长度是变化的
+            in_list = []
+            for _ in range(length):
+                curnode = queue.pop(0)  # （默认移除列表最后一个元素）这里需要移除队列最头上的那个
+                in_list.append(curnode.val)
+                if curnode.left: queue.append(curnode.left)
+                if curnode.right: queue.append(curnode.right)
+            out_list.append(in_list)
+
+        return out_list
+```
+
+### （5）107、二叉树的层序遍历II
+题目链接：https://leetcode-cn.com/problems/binary-tree-level-order-traversal-ii/
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def levelOrderBottom(self, root: TreeNode) -> List[List[int]]:
+        if not root:
+            return []
+        quene = [root]
+        out_list = []
+        
+        while quene:
+            in_list = []
+            for _ in range(len(quene)):
+                node = quene.pop(0)
+                in_list.append(node.val)
+                if node.left:
+                    quene.append(node.left)
+                if node.right:
+                    quene.append(node.right)
+ 
+            out_list.append(in_list)
+    
+        out_list.reverse()
+        return out_list
+```
+
+### (6) 199、二叉树的右视图
+题目链接：https://leetcode-cn.com/problems/binary-tree-right-side-view/
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def rightSideView(self, root: TreeNode) -> List[int]:
+        if not root:
+            return []
+        
+        # deque来自collections模块，不在力扣平台时，需要手动写入
+        # 'from collections import deque' 导入
+        # deque相比list的好处是，list的pop(0)是O(n)复杂度，deque的popleft()是O(1)复杂度
+
+        quene = deque([root])
+        out_list = []
+
+        while quene:
+            # 每次都取最后一个node就可以了
+            node = quene[-1]
+            out_list.append(node.val)
+
+            # 执行这个遍历的目的是获取下一层所有的node
+            for _ in range(len(quene)):
+                node = quene.popleft()
+                if node.left:
+                    quene.append(node.left)
+                if node.right:
+                    quene.append(node.right)
+        
+        return out_list
+```
+
+### (7) 637、二叉树的层平均值
+题目链接：https://leetcode-cn.com/problems/average-of-levels-in-binary-tree/
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def averageOfLevels(self, root: TreeNode) -> List[float]:
+        if not root:
+            return []
+        
+        quene = deque([root])
+        out_list = []
+
+        while quene:
+            in_list = []
+
+            for _ in range(len(quene)):
+                node = quene.popleft()
+                in_list.append(node.val)
+                if node.left:
+                    quene.append(node.left)
+                if node.right:
+                    quene.append(node.right)
+
+            out_list.append(in_list)
+
+        out_list = map(lambda x: sum(x) / len(x), out_list)
+    
+        return out_list
+```
+
+### (8) 429、N叉树的层序遍历
+题目链接：https://leetcode-cn.com/problems/n-ary-tree-level-order-traversal/
+```python
+"""
+# Definition for a Node.
+class Node:
+    def __init__(self, val=None, children=None):
+        self.val = val
+        self.children = children
+"""
+
+class Solution:
+    def levelOrder(self, root: 'Node') -> List[List[int]]:
+        if not root:
+            return []
+        
+        quene = deque([root])
+        out_list = []
+
+        while quene:
+            in_list = []
+
+            for _ in range(len(quene)):
+                node = quene.popleft()
+                in_list.append(node.val)
+                if node.children:
+                    # 这个地方要用extend而不是append，我们看下面的例子：
+                    # In [18]: alist=[]
+                    # In [19]: alist.append([1,2,3])
+                    # In [20]: alist
+                    # Out[20]: [[1, 2, 3]]
+                    # In [21]: alist.extend([4,5,6])
+                    # In [22]: alist
+                    # Out[22]: [[1, 2, 3], 4, 5, 6]
+                    # 可以看到extend对要添加的list进行了一个解包操作
+                    # print(root.children)，可以得到children是一个包含
+                    # 孩子节点地址的list，我们使用for遍历quene的时候，
+                    # 希望quene是一个单层list，所以要用extend
+                    # 使用extend的情况，如果print(quene),结果是
+                    # deque([<__main__.Node object at 0x7f60763ae0a0>])
+				   # deque([<__main__.Node object at 0x7f607636e6d0>, <__main__.Node object at 0x7f607636e130>, <__main__.Node object at 0x7f607636e310>])
+				  # deque([<__main__.Node object at 0x7f607636e880>, <__main__.Node object at 0x7f607636ef10>])
+				  # 可以看到是单层list
+                    # 如果使用append，print(quene)的结果是
+                    # deque([<__main__.Node object at 0x7f18907530a0>])
+				  # deque([[<__main__.Node object at 0x7f18907136d0>, <__main__.Node object at 0x7f1890713130>, <__main__.Node object at 0x7f1890713310>]])
+				  # 可以看到是两层list，这样for的遍历就会报错
+                    
+                    quene.extend(node.children)
+                
+            out_list.append(in_list)
+        
+        return out_list
+```
+
+### (9) 515、在每个树行中找最大值
+题目链接：https://leetcode-cn.com/problems/find-largest-value-in-each-tree-row/
+
+```c++
+class Solution {
+public:
+    vector<int> largestValues(TreeNode* root) {
+        queue<TreeNode*> que;
+        if (root != NULL) que.push(root);
+        vector<int> result;
+        while (!que.empty()) {
+            int size = que.size();
+            int maxValue = INT_MIN; // 取每一层的最大值
+            for (int i = 0; i < size; i++) {
+                TreeNode* node = que.front();
+                que.pop();
+                maxValue = node->val > maxValue ? node->val : maxValue;
+                if (node->left) que.push(node->left);
+                if (node->right) que.push(node->right);
+            }
+            result.push_back(maxValue); // 把最大值放进数组
+        }
+        return result;
+    }
+};
+```
+### (10) 116、填充每个节点的下一个右侧节点指针
+题目链接：https://leetcode-cn.com/problems/populating-next-right-pointers-in-each-node/
+
+```python
+class Solution {
+public:
+    Node* connect(Node* root) {
+        queue<Node*> que;
+        if (root != NULL) que.push(root);
+        while (!que.empty()) {
+            int size = que.size();
+            vector<int> vec;
+            Node* nodePre;
+            Node* node;
+            for (int i = 0; i < size; i++) {
+                if (i == 0) {
+                    nodePre = que.front(); // 取出一层的头结点
+                    que.pop();
+                    node = nodePre;
+                } else {
+                    node = que.front();
+                    que.pop();
+                    nodePre->next = node; // 本层前一个节点next指向本节点
+                    nodePre = nodePre->next;
+                }
+                if (node->left) que.push(node->left);
+                if (node->right) que.push(node->right);
+            }
+            nodePre->next = NULL; // 本层最后一个节点指向NULL
+        }
+        return root;
+
+    }
+};
+```
+
+### （11）117、填充每个节点的下一个右侧节点指针II
+题目链接：https://leetcode-cn.com/problems/populating-next-right-pointers-in-each-node-ii/
+
+```C++
+class Solution {
+public:
+    Node* connect(Node* root) {
+        queue<Node*> que;
+        if (root != NULL) que.push(root);
+        while (!que.empty()) {
+            int size = que.size();
+            vector<int> vec;
+            Node* nodePre;
+            Node* node;
+            for (int i = 0; i < size; i++) {
+                if (i == 0) {
+                    nodePre = que.front(); // 取出一层的头结点
+                    que.pop();
+                    node = nodePre;
+                } else {
+                    node = que.front();
+                    que.pop();
+                    nodePre->next = node; // 本层前一个节点next指向本节点
+                    nodePre = nodePre->next;
+                }
+                if (node->left) que.push(node->left);
+                if (node->right) que.push(node->right);
+            }
+            nodePre->next = NULL; // 本层最后一个节点指向NULL
+        }
+        return root;
+    }
+};
+```
+
+### (12) 226、翻转二叉树
+题目链接：https://leetcode-cn.com/problems/invert-binary-tree/
+
+```python
+#递归法：前序遍历
+
+class Solution:
+    def invertTree(self, root: TreeNode) -> TreeNode:
+        if not root:
+            return None
+        root.left, root.right = root.right, root.left #中
+        self.invertTree(root.left) #左
+        self.invertTree(root.right) #右
+        return root
+#迭代法：深度优先遍历（前序遍历）
+
+class Solution:
+    def invertTree(self, root: TreeNode) -> TreeNode:
+        if not root:
+            return root
+        st = []
+        st.append(root)
+        while st:
+            node = st.pop()
+            node.left, node.right = node.right, node.left #中
+            if node.right:
+                st.append(node.right) #右
+            if node.left:
+                st.append(node.left) #左
+        return root
+#迭代法：广度优先遍历（层序遍历）
+
+import collections
+class Solution:
+    def invertTree(self, root: TreeNode) -> TreeNode:
+        queue = collections.deque() #使用deque()
+        if root:
+            queue.append(root)
+        while queue:
+            size = len(queue)
+            for i in range(size):
+                node = queue.popleft()
+                node.left, node.right = node.right, node.left #节点处理
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+        return root
+```
+
+### (13) 101、对称二叉树
+题目链接：https://leetcode-cn.com/problems/symmetric-tree/
+```python
+
+#递归法
+
+class Solution:
+    def isSymmetric(self, root: TreeNode) -> bool:
+        if not root:
+            return True
+        return self.compare(root.left, root.right)
+        
+    def compare(self, left, right):
+        #首先排除空节点的情况
+        if left == None and right != None: return False
+        elif left != None and right == None: return False
+        elif left == None and right == None: return True
+        #排除了空节点，再排除数值不相同的情况
+        elif left.val != right.val: return False
+        
+        #此时就是：左右节点都不为空，且数值相同的情况
+        #此时才做递归，做下一层的判断
+        outside = self.compare(left.left, right.right) #左子树：左、 右子树：右
+        inside = self.compare(left.right, right.left) #左子树：右、 右子树：左
+        isSame = outside and inside #左子树：中、 右子树：中 （逻辑处理）
+        return isSame
+#迭代法： 使用队列
+
+import collections
+class Solution:
+    def isSymmetric(self, root: TreeNode) -> bool:
+        if not root:
+            return True
+        queue = collections.deque()
+        queue.append(root.left) #将左子树头结点加入队列
+        queue.append(root.right) #将右子树头结点加入队列
+        while queue: #接下来就要判断这这两个树是否相互翻转
+            leftNode = queue.popleft()
+            rightNode = queue.popleft()
+            if not leftNode and not rightNode: #左节点为空、右节点为空，此时说明是对称的
+                continue
+            
+            #左右一个节点不为空，或者都不为空但数值不相同，返回false
+            if not leftNode or not rightNode or leftNode.val != rightNode.val:
+                return False
+            queue.append(leftNode.left) #加入左节点左孩子
+            queue.append(rightNode.right) #加入右节点右孩子
+            queue.append(leftNode.right) #加入左节点右孩子
+            queue.append(rightNode.left) #加入右节点左孩子
+        return True
+#迭代法：使用栈
+
+class Solution:
+    def isSymmetric(self, root: TreeNode) -> bool:
+        if not root:
+            return True
+        st = [] #这里改成了栈
+        st.append(root.left)
+        st.append(root.right)
+        while st:
+            leftNode = st.pop()
+            rightNode = st.pop()
+            if not leftNode and not rightNode:
+                continue
+            if not leftNode or not rightNode or leftNode.val != rightNode.val:
+                return False
+            st.append(leftNode.left)
+            st.append(rightNode.right)
+            st.append(leftNode.right)
+            st.append(rightNode.left)
+        return True
+```
+
+### (14) 104、二叉树的最大深度
+题目链接：https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/
+
+```python
+#递归法：
+
+class Solution:
+    def maxDepth(self, root: TreeNode) -> int:
+        return self.getDepth(root)
+        
+    def getDepth(self, node):
+        if not node:
+            return 0
+        leftDepth = self.getDepth(node.left) #左
+        rightDepth = self.getDepth(node.right) #右
+        depth = 1 + max(leftDepth, rightDepth) #中
+        return depth
+#递归法；精简代码
+
+class Solution:
+    def maxDepth(self, root: TreeNode) -> int:
+        if not root:
+            return 0
+        return 1 + max(self.maxDepth(root.left), self.maxDepth(root.right))
+#迭代法：
+
+import collections
+class Solution:
+    def maxDepth(self, root: TreeNode) -> int:
+        if not root:
+            return 0
+        depth = 0 #记录深度
+        queue = collections.deque()
+        queue.append(root)
+        while queue:
+            size = len(queue)
+            depth += 1
+            for i in range(size):
+                node = queue.popleft()
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+        return depth
+        
+```
+
+### (15）559、N叉树的最大深度
+题目链接：https://leetcode-cn.com/problems/maximum-depth-of-n-ary-tree/
+
+```python
+#递归法：
+
+class Solution:
+    def maxDepth(self, root: 'Node') -> int:
+        if not root:
+            return 0
+        depth = 0
+        for i in range(len(root.children)):
+            depth = max(depth, self.maxDepth(root.children[i]))
+        return depth + 1
+#迭代法：
+
+import collections
+class Solution:
+    def maxDepth(self, root: 'Node') -> int:
+        queue = collections.deque()
+        if root:
+            queue.append(root)
+        depth = 0 #记录深度
+        while queue:
+            size = len(queue)
+            depth += 1
+            for i in range(size):
+                node = queue.popleft()
+                for j in range(len(node.children)):
+                    if node.children[j]:
+                        queue.append(node.children[j])
+        return depth
+#使用栈来模拟后序遍历依然可以
+
+class Solution:
+    def maxDepth(self, root: 'Node') -> int:
+        st = []
+        if root:
+            st.append(root)
+        depth = 0
+        result = 0
+        while st:
+            node = st.pop()
+            if node != None:
+                st.append(node) #中
+                st.append(None)
+                depth += 1
+                for i in range(len(node.children)): #处理孩子
+                    if node.children[i]:
+                        st.append(node.children[i])
+                    
+            else:
+                node = st.pop()
+                depth -= 1
+            result = max(result, depth)
+        return result
+```
+
+### (16) 111、二叉树的最小深度
+题目链接：https://leetcode-cn.com/problems/minimum-depth-of-binary-tree/
+
+```python
+#递归法：
+
+class Solution:
+    def minDepth(self, root: TreeNode) -> int:
+        if not root:
+            return 0
+        if not root.left and not root.right:
+            return 1
+
+        min_depth = 10**9
+        if root.left:
+            min_depth = min(self.minDepth(root.left), min_depth) # 获得左子树的最小高度
+        if root.right:
+            min_depth = min(self.minDepth(root.right), min_depth) # 获得右子树的最小高度
+        return min_depth + 1
+#迭代法：
+
+class Solution:
+    def minDepth(self, root: TreeNode) -> int:
+        if not root:
+            return 0
+        que = deque()
+        que.append(root)
+        res = 1
+
+        while que:
+            for _ in range(len(que)):
+                node = que.popleft()
+                # 当左右孩子都为空的时候，说明是最低点的一层了，退出
+                if not node.left and not node.right:
+                    return res
+                if node.left is not None:
+                    que.append(node.left)
+                if node.right is not None:
+                    que.append(node.right)
+            res += 1
+        return res
+```
+### (17) 222、完全二叉树的节点个数
+题目链接：https://leetcode-cn.com/problems/count-complete-tree-nodes/
+
+```python
+递归法：
+
+class Solution:
+    def countNodes(self, root: TreeNode) -> int:
+        return self.getNodesNum(root)
+        
+    def getNodesNum(self, cur):
+        if not cur:
+            return 0
+        leftNum = self.getNodesNum(cur.left) #左
+        rightNum = self.getNodesNum(cur.right) #右
+        treeNum = leftNum + rightNum + 1 #中
+        return treeNum
+递归法：精简版
+
+class Solution:
+    def countNodes(self, root: TreeNode) -> int:
+        if not root:
+            return 0
+        return 1 + self.countNodes(root.left) + self.countNodes(root.right)
+迭代法：
+
+import collections
+class Solution:
+    def countNodes(self, root: TreeNode) -> int:
+        queue = collections.deque()
+        if root:
+            queue.append(root)
+        result = 0
+        while queue:
+            size = len(queue)
+            for i in range(size):
+                node = queue.popleft()
+                result += 1 #记录节点数量
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+        return result
+完全二叉树
+
+class Solution:
+    def countNodes(self, root: TreeNode) -> int:
+        if not root:
+            return 0
+        left = root.left
+        right = root.right
+        leftHeight = 0 #这里初始为0是有目的的，为了下面求指数方便
+        rightHeight = 0
+        while left: #求左子树深度
+            left = left.left
+            leftHeight += 1
+        while right: #求右子树深度
+            right = right.right
+            rightHeight += 1
+        if leftHeight == rightHeight:
+            return (2 << leftHeight) - 1 #注意(2<<1) 相当于2^2，所以leftHeight初始为0
+        return self.countNodes(root.left) + self.countNodes(root.right) + 1
+```
+
         
   
 
