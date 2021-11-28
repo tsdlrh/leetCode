@@ -2663,7 +2663,7 @@ class Solution:
 
 
 ### (6)459、重复的字符串
-题目链接：
+题目链接：https://leetcode-cn.com/problems/repeated-substring-pattern/
 
 ```Java
 class Solution {
@@ -2705,6 +2705,264 @@ class Solution:
 ```
 
 
+### 五、双指针法的题目
+
+### (1) 27、移除元素
+题目链接：https://leetcode-cn.com/problems/remove-element/
+```python
+class Solution:
+    def removeElement(self, nums: List[int], val: int) -> int:
+        i,n = 0,len(nums)
+        for j in range(n):
+            if nums[j] != val:
+                nums[i] = nums[j]
+                i += 1
+        return i
+```
+
+### (2) 344、反转字符串
+题目链接：https://leetcode-cn.com/problems/reverse-string/
+```python
+class Solution:
+    def reverseString(self, s: List[str]) -> None:
+        """
+        Do not return anything, modify s in-place instead.
+        """
+        left, right = 0, len(s) - 1
+        while(left < right):
+            s[left], s[right] = s[right], s[left]
+            left += 1
+            right -= 1
+```
+### (3) 剑指05、替换空格
+题目链接：https://leetcode-cn.com/problems/ti-huan-kong-ge-lcof/
+```c++
+class Solution {
+public:
+    string replaceSpace(string s) {
+        int count = 0; // 统计空格的个数
+        int sOldSize = s.size();
+        for (int i = 0; i < s.size(); i++) {
+            if (s[i] == ' ') {
+                count++;
+            }
+        }
+        // 扩充字符串s的大小，也就是每个空格替换成"%20"之后的大小
+        s.resize(s.size() + count * 2);
+        int sNewSize = s.size();
+        // 从后先前将空格替换为"%20"
+        for (int i = sNewSize - 1, j = sOldSize - 1; j < i; i--, j--) {
+            if (s[j] != ' ') {
+                s[i] = s[j];
+            } else {
+                s[i] = '0';
+                s[i - 1] = '2';
+                s[i - 2] = '%';
+                i -= 2;
+            }
+        }
+        return s;
+    }
+};
+```
+
+### (4) 151、翻转字符串里的单词
+题目链接：https://leetcode-cn.com/problems/reverse-words-in-a-string/
+```c++
+// 版本一
+class Solution {
+public:
+    // 反转字符串s中左闭又闭的区间[start, end]
+    void reverse(string& s, int start, int end) {
+        for (int i = start, j = end; i < j; i++, j--) {
+            swap(s[i], s[j]);
+        }
+    }
+
+    // 移除冗余空格：使用双指针（快慢指针法）O(n)的算法
+    void removeExtraSpaces(string& s) {
+        int slowIndex = 0, fastIndex = 0; // 定义快指针，慢指针
+        // 去掉字符串前面的空格
+        while (s.size() > 0 && fastIndex < s.size() && s[fastIndex] == ' ') {
+            fastIndex++;
+        }
+        for (; fastIndex < s.size(); fastIndex++) {
+            // 去掉字符串中间部分的冗余空格
+            if (fastIndex - 1 > 0
+                    && s[fastIndex - 1] == s[fastIndex]
+                    && s[fastIndex] == ' ') {
+                continue;
+            } else {
+                s[slowIndex++] = s[fastIndex];
+            }
+        }
+        if (slowIndex - 1 > 0 && s[slowIndex - 1] == ' ') { // 去掉字符串末尾的空格
+            s.resize(slowIndex - 1);
+        } else {
+            s.resize(slowIndex); // 重新设置字符串大小
+        }
+    }
+
+    string reverseWords(string s) {
+        removeExtraSpaces(s); // 去掉冗余空格
+        reverse(s, 0, s.size() - 1); // 将字符串全部反转
+        int start = 0; // 反转的单词在字符串里起始位置
+        int end = 0; // 反转的单词在字符串里终止位置
+        bool entry = false; // 标记枚举字符串的过程中是否已经进入了单词区间
+        for (int i = 0; i < s.size(); i++) { // 开始反转单词
+            if ((!entry))) {
+                start = i; // 确定单词起始位置
+                entry = true; // 进入单词区间
+            }
+            // 单词后面有空格的情况，空格就是分词符
+            if (entry && s[i] == ' ' && s[i - 1] != ' ') {
+                end = i - 1; // 确定单词终止位置
+                entry = false; // 结束单词区间
+                reverse(s, start, end);
+            }
+            // 最后一个结尾单词之后没有空格的情况
+            if (entry && (i == (s.size() - 1)) && s[i] != ' ' ) {
+                end = i;// 确定单词终止位置
+                entry = false; // 结束单词区间
+                reverse(s, start, end);
+            }
+        }
+        return s;
+    }
+    
+    /* 主函数简单写法
+    string reverseWords(string s) {
+        removeExtraSpaces(s);
+        reverse(s, 0, s.size() - 1);
+        for(int i = 0; i < s.size(); i++) {
+            int j = i;
+            // 查找单词间的空格，翻转单词
+            while(j < s.size() && s[j] != ' ') j++;
+            reverse(s, i, j - 1);
+            i = j;
+        }
+        return s;
+    }
+    */
+};
+```
+
+### (5) 206、翻转链表
+题目链接：https://leetcode-cn.com/problems/reverse-linked-list/
+```python
+#双指针
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def reverseList(self, head: ListNode) -> ListNode:
+        cur = head   
+        pre = None
+        while(cur!=None):
+            temp = cur.next # 保存一下 cur的下一个节点，因为接下来要改变cur->next
+            cur.next = pre #反转
+            #更新pre、cur指针
+            pre = cur
+            cur = temp
+        return pre
+```
+ 
+### (6) 19、删除链表的倒数第N个节点
+题目链接：https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def removeNthFromEnd(self, head: ListNode, n: int) -> ListNode:
+        head_dummy = ListNode()
+        head_dummy.next = head
+
+        slow, fast = head_dummy, head_dummy
+        while(n!=0): #fast先往前走n步
+            fast = fast.next
+            n -= 1
+        while(fast.next!=None):
+            slow = slow.next
+            fast = fast.next
+        #fast 走到结尾后，slow的下一个节点为倒数第N个节点
+        slow.next = slow.next.next #删除
+        return head_dummy.next
+```
+
+### （7）0207、链表相交
+题目链接：https://leetcode-cn.com/problems/intersection-of-two-linked-lists-lcci/
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:
+        lengthA,lengthB = 0,0
+        curA,curB = headA,headB
+        while(curA!=None): #求链表A的长度
+            curA = curA.next
+            lengthA +=1
+        
+        while(curB!=None): #求链表B的长度
+            curB = curB.next
+            lengthB +=1
+        
+        curA, curB = headA, headB
+
+        if lengthB>lengthA: #让curA为最长链表的头，lenA为其长度
+            lengthA, lengthB = lengthB, lengthA
+            curA, curB = curB, curA
+
+        gap = lengthA - lengthB #求长度差
+        while(gap!=0): 
+            curA = curA.next #让curA和curB在同一起点上
+            gap -= 1
+        
+        while(curA!=None):
+            if curA == curB:
+                return curA
+            else:
+                curA = curA.next
+                curB = curB.next
+        return None
+```
+
+### (8) 142、环形链表II
+题目链接：https://leetcode-cn.com/problems/linked-list-cycle-ii/
+```python
+class Solution:
+    def detectCycle(self, head: ListNode) -> ListNode:
+        slow, fast = head, head
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+            # 如果相遇
+            if slow == fast:
+                p = head
+                q = slow
+                while p!=q:
+                    p = p.next
+                    q = q.next
+                #你也可以return q
+                return p
+
+        return None
+ ```       
+    
+### (9) 15、三数之和
+题目链接：https://leetcode-cn.com/problems/3sum/
+
+        
+        
+        
   
 
 
