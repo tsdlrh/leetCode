@@ -1,57 +1,57 @@
 # LeetCode
 leetcode 目录
-  * [一、有关数组的题目](#一有关数组的题目)
+* [一、有关数组的题目](#一有关数组的题目)
   * [1\. 二分查找法的应用](#1-二分查找法的应用)
-    * [（1）704\. 二分查找](#1704-二分查找)
+    * [(1) 704\. 二分查找](#1704-二分查找)
     * [其他语言版本](#其他语言版本)
-    * [（2）35\. 搜索插入位置](#235-搜索插入位置)
-    * [（3）34\.在排序数组中查找元素的第一个和最后一个位置](#334在排序数组中查找元素的第一个和最后一个位置)
-    * [（4）69\.x的平方根](#469x的平方根)
-    * [（5）367\.有效的完全平方数](#5367有效的完全平方数)
+    * [(2) 35\. 搜索插入位置](#235-搜索插入位置)
+    * [(3) 34\.在排序数组中查找元素的第一个和最后一个位置](#334在排序数组中查找元素的第一个和最后一个位置)
+    * [(4) 69\.x的平方根](#469x的平方根)
+    * [(5) 367\.有效的完全平方数](#5367有效的完全平方数)
   * [2\. 移除元素](#2-移除元素)
-    * [（1）27\.移除元素](#127移除元素)
-    * [（2）26\.删除有序数组中的重复项](#226删除有序数组中的重复项)
-    * [（3）283\.移动零](#3283移动零)
-    * [（4）844\.比较含退格的字符串](#4844比较含退格的字符串)
-    * [（5）977\.有序数组的平方](#5977有序数组的平方)
+    * [(6) 27\.移除元素](#127移除元素)
+    * [(7) 26\.删除有序数组中的重复项](#226删除有序数组中的重复项)
+    * [(8) 283\.移动零](#3283移动零)
+    * [(9) 844\.比较含退格的字符串](#4844比较含退格的字符串)
+    * [(10) 977\.有序数组的平方](#5977有序数组的平方)
   * [3\.滑动窗口](#3滑动窗口)
-    * [（1）209\.长度最小的数组](#1209长度最小的数组)
-    * [（2）904\.水果成篮](#2904水果成篮)
-    * [（3）76\.最小覆盖子串](#376最小覆盖子串)
+    * [(11) 209\.长度最小的数组](#1209长度最小的数组)
+    * [(12) 904\.水果成篮](#2904水果成篮)
+    * [(13) 76\.最小覆盖子串](#376最小覆盖子串)
   * [4、螺旋矩阵](#4螺旋矩阵)
-    * [（1）59、螺旋矩阵II](#159螺旋矩阵ii)
-    * [（2）54、螺旋矩阵](#254螺旋矩阵)
-    * [（3）29、顺时针打印矩阵](#329顺时针打印矩阵)
+    * [(14) 59、螺旋矩阵II](#159螺旋矩阵ii)
+    * [(15) 54、螺旋矩阵](#254螺旋矩阵)
+    * [(16) 29、顺时针打印矩阵](#329顺时针打印矩阵)
 * [二、链表](#二链表)
-  * [（1）203\.移除俩表](#1203移除俩表)
-  * [（2）707、设计链表](#2707设计链表)
+  * [(1) 203\.移除俩表](#1203移除俩表)
+  * [(2) 707、设计链表](#2707设计链表)
   * [(3) 206、反转链表](#3-206反转链表)
   * [(4) 24、两两交换链表中的节点](#4-24两两交换链表中的节点)
-  * [(5)19、删除链表中倒数第N个节点](#519删除链表中倒数第n个节点)
-  * [(6)142\.环形链表](#6142环形链表)
+  * [(5) 19、删除链表中倒数第N个节点](#519删除链表中倒数第n个节点)
+  * [(6) 142\.环形链表](#6142环形链表)
 * [三、哈希表](#三哈希表)
   * [1、异位词](#1异位词)
-    * [（1）242、有效的字母异位词](#1242有效的字母异位词)
-    * [（2）383、赎金信](#2383赎金信)
-    * [（3）49、字母异位词分组](#349字母异位词分组)
-    * [(4)438、找到字符串中所有字母异位词](#4438找到字符串中所有字母异位词)
+    * [(1) 242、有效的字母异位词](#1242有效的字母异位词)
+    * [(2) 383、赎金信](#2383赎金信)
+    * [(3) 49、字母异位词分组](#349字母异位词分组)
+    * [(4) 438、找到字符串中所有字母异位词](#4438找到字符串中所有字母异位词)
   * [2、数组交集](#2数组交集)
-    * [（1）349、两个数组的交集](#1349两个数组的交集)
+    * [(5) 349、两个数组的交集](#1349两个数组的交集)
   * [3、快乐数](#3快乐数)
-    * [（1）202、快乐数](#1202快乐数)
+    * [(6) 202、快乐数](#1202快乐数)
   * [4、数的和](#4数的和)
-    * [（1）1、两数之和](#11两数之和)
-    * [（2）454、四数相加II](#2454四数相加ii)
-    * [(3)15、三数之和](#315三数之和)
-    * [(4)18、四数之和](#418四数之和)
+    * [(7) 1、两数之和](#11两数之和)
+    * [(8) 454、四数相加II](#2454四数相加ii)
+    * [(9) 15、三数之和](#315三数之和)
+    * [(10) 18、四数之和](#418四数之和)
 * [四、字符串的题目](#四字符串的题目)
-  * [(1)344、反转字符串](#1344反转字符串)
-  * [(2)541、反转字符串II](#2541反转字符串ii)
-  * [(3)05、替换空格](#305替换空格)
-  * [(4)151、翻转字符串里的单词](#4151翻转字符串里的单词)
-  * [(5)58、左旋字符串](#558左旋字符串)
-  * [(6)28、实现strStr()](#628实现strstr)
-  * [(6)459、重复的字符串](#6459重复的字符串)
+  * [(1) 344、反转字符串](#1344反转字符串)
+  * [(2) 541、反转字符串II](#2541反转字符串ii)
+  * [(3) 05、替换空格](#305替换空格)
+  * [(4) 151、翻转字符串里的单词](#4151翻转字符串里的单词)
+  * [(5) 58、左旋字符串](#558左旋字符串)
+  * [(6) 28、实现strStr()](#628实现strstr)
+  * [(7) 459、重复的字符串](#6459重复的字符串)
 * [五、双指针法的题目](#五双指针法的题目)
   * [(1) 27、移除元素](#1-27移除元素)
   * [(2) 344、反转字符串](#2-344反转字符串)
@@ -554,7 +554,7 @@ class Solution:
 
 ### 2. 移除元素
 
-#### （1）27.移除元素
+#### （6）27.移除元素
 
 题目链接：https://leetcode-cn.com/problems/remove-element/submissions/
 
@@ -592,7 +592,7 @@ class Solution:
         return slow
  ```
 
-#### （2）26.删除有序数组中的重复项
+#### （7）26.删除有序数组中的重复项
 
 题目链接：https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/submissions/
 
@@ -630,7 +630,7 @@ class Solution:
 ```
 
 
-#### （3）283.移动零
+#### （8）283.移动零
 
 题目链接：https://leetcode-cn.com/problems/move-zeroes/
 
@@ -672,7 +672,7 @@ class Solution:
 ```
 
 
-#### （4）844.比较含退格的字符串
+#### （9）844.比较含退格的字符串
 
 题目链接：https://leetcode-cn.com/problems/backspace-string-compare/submissions/
 
@@ -820,7 +820,7 @@ class Solution:
 
 ```
 
-#### （5）977.有序数组的平方
+#### （10）977.有序数组的平方
 
 题目链接：https://leetcode-cn.com/problems/squares-of-a-sorted-array/submissions/
 
@@ -950,7 +950,7 @@ class Solution:
 
 ### 3.滑动窗口
 
-#### （1）209.长度最小的数组
+#### （11）209.长度最小的数组
 
 题目链接：https://leetcode-cn.com/problems/minimum-size-subarray-sum/submissions/
 
@@ -1016,7 +1016,7 @@ class Solution:
                 i+=1
         return 0 if res==n+1 else res    
 ```
-#### （2）904.水果成篮
+#### （12）904.水果成篮
 
 题目链接 ：https://leetcode-cn.com/problems/fruit-into-baskets/submissions/
 
@@ -1075,7 +1075,7 @@ class Solution:
         return ans            
   ```      
 
-#### （3）76.最小覆盖子串
+#### （13）76.最小覆盖子串
 
 题目链接：https://leetcode-cn.com/problems/minimum-window-substring/
 
@@ -1186,7 +1186,7 @@ class Solution {
 
 ### 4、螺旋矩阵
 
-#### （1）59、螺旋矩阵II
+#### （14）59、螺旋矩阵II
 
 题目链接：https://leetcode-cn.com/problems/spiral-matrix-ii/submissions/
 
@@ -1239,7 +1239,7 @@ class Solution {
 }
 ```
 
-#### （2）54、螺旋矩阵
+#### （15）54、螺旋矩阵
 
 题目连接：https://leetcode-cn.com/problems/spiral-matrix/submissions/
 
@@ -1316,7 +1316,7 @@ class Solution:
         return order
 ```        
 
-#### （3）29、顺时针打印矩阵
+#### （16）29、顺时针打印矩阵
 
 题目连接：https://leetcode-cn.com/problems/shun-shi-zhen-da-yin-ju-zhen-lcof/submissions/
 
@@ -1709,7 +1709,7 @@ class Solution:
 ```
 
 
-### (5)19、删除链表中倒数第N个节点
+### (5) 19、删除链表中倒数第N个节点
 题目链接：https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/submissions/
 
 ```Java
@@ -1776,7 +1776,7 @@ class Solution {
 ```
  
  
- ### (6)142.环形链表
+ ### (6) 142.环形链表
  
  题目链接：https://leetcode-cn.com/problems/linked-list-cycle-ii/submissions/
  
@@ -1983,7 +1983,7 @@ class Solution:
 ```
 
 
-#### (4)438、找到字符串中所有字母异位词
+#### (4) 438、找到字符串中所有字母异位词
 题目链接：https://leetcode-cn.com/problems/find-all-anagrams-in-a-string/submissions/
 
 ```Java
@@ -2040,7 +2040,7 @@ class Solution:
 ```
 ### 2、数组交集
 
-#### （1）349、两个数组的交集
+#### （5）349、两个数组的交集
 题目链接：https://leetcode-cn.com/problems/intersection-of-two-arrays/
 
 ```Java
@@ -2092,7 +2092,7 @@ class Solution:
   
 ### 3、快乐数
 
-### （1）202、快乐数
+### （6）202、快乐数
 题目链接：https://leetcode-cn.com/problems/happy-number/
 
 ```Java
@@ -2147,7 +2147,7 @@ class Solution:
 
 ### 4、数的和
 
-### （1）1、两数之和
+### （7）1、两数之和
 题目链接：https://leetcode-cn.com/problems/two-sum/
 ```Java
 public int[] twoSum(int[] nums, int target) {
@@ -2182,7 +2182,7 @@ class Solution:
         return []
 ```
 
-### （2）454、四数相加II
+### （8）454、四数相加II
 题目链接：https://leetcode-cn.com/problems/4sum-ii/
 
 ```Java
@@ -2228,7 +2228,7 @@ class Solution:
         return ans
 ```
 
-### (3)15、三数之和
+### (9) 15、三数之和
 题目链接：https://leetcode-cn.com/problems/3sum/
 
 ```Java
@@ -2299,7 +2299,7 @@ class Solution:
 ```
 
 
-### (4)18、四数之和
+### (10) 18、四数之和
 题目链接：https://leetcode-cn.com/problems/4sum/
 
 ```Java
@@ -2409,7 +2409,7 @@ class Solution:
 ```
 
 
-### (2)541、反转字符串II
+### (2) 541、反转字符串II
 题目链接：https://leetcode-cn.com/problems/reverse-string-ii/
 
 ```Java
@@ -2458,7 +2458,7 @@ class Solution:
         return "".join(t)
 ```
 
-### (3)05、替换空格
+### (3) 05、替换空格
 题目链接：https://leetcode-cn.com/problems/ti-huan-kong-ge-lcof/submissions/
 
 ```Java
@@ -2499,7 +2499,7 @@ class Solution:
 ```
 
 
-### (4)151、翻转字符串里的单词
+### (4) 151、翻转字符串里的单词
 题目链接：https://leetcode-cn.com/problems/reverse-words-in-a-string/submissions/
 
 ```Java
@@ -2602,7 +2602,7 @@ class Solution:
         return " ".join(d)
 ```
 
-### (5)58、左旋字符串
+### (5) 58、左旋字符串
 题目链接：https://leetcode-cn.com/problems/zuo-xuan-zhuan-zi-fu-chuan-lcof/submissions/
 
 ```Java
@@ -2663,7 +2663,7 @@ class Solution:
        return "".join(res)
 ```
 
-### (6)28、实现strStr()
+### (6) 28、实现strStr()
 题目链接：https://leetcode-cn.com/problems/implement-strstr/submissions/
 
 ```Java
@@ -2742,7 +2742,7 @@ class Solution:
 
 
 
-### (6)459、重复的字符串
+### (6) 459、重复的字符串
 题目链接：https://leetcode-cn.com/problems/repeated-substring-pattern/
 
 ```Java
@@ -3327,7 +3327,7 @@ class Solution:
 
 ### 七、二叉树的题目
 
-### [1] 二叉树的遍历方式
+### 1、 二叉树的遍历方式
 
 ### （1）144、二叉树的前序遍历
 题目链接：https://leetcode-cn.com/problems/binary-tree-preorder-traversal/
@@ -3696,7 +3696,7 @@ public:
     }
 };
 ```
-### [2] 求二叉树的属性
+### 2、 求二叉树的属性
 
 ### (12) 226、翻转二叉树
 题目链接：https://leetcode-cn.com/problems/invert-binary-tree/
@@ -4264,7 +4264,7 @@ class Solution:
             return res
 ```
 
-### [3] 二叉树的修改与构造
+### 3、 二叉树的修改与构造
 
 ### (24) 106、从中序与后序遍历序列构造二叉树
 题目链接：https://leetcode-cn.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/
@@ -4349,7 +4349,7 @@ class Solution:
         return root1  //root1修改了结构和数值
 ```
 
-### [4] 求二叉搜索树的属性
+### 4、 求二叉搜索树的属性
 
 ### (28) 700、二叉搜索树中的搜索
 题目链接:https://leetcode-cn.com/problems/search-in-a-binary-search-tree/
@@ -4467,7 +4467,7 @@ class Solution:
         return self.res
 ```
 
-### [5] 二叉树的公共祖先问题
+### 5、 二叉树的公共祖先问题
 
 ### (32) 236、二叉树的最近公共祖先
 题目链接：https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-tree/
@@ -4510,7 +4510,7 @@ class Solution:
         else: return root
 ```
 
-### [6] 二叉搜索树的修改与构造
+### 6、 二叉搜索树的修改与构造
 
 ### (34) 701、二叉搜索树中的插入操作
 题目链接：https://leetcode-cn.com/problems/insert-into-a-binary-search-tree/
