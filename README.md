@@ -3247,6 +3247,8 @@ class Solution:
 
 ### 七、二叉树的题目
 
+### [1] 二叉树的遍历方式
+
 ### （1）144、二叉树的前序遍历
 题目链接：https://leetcode-cn.com/problems/binary-tree-preorder-traversal/
 
@@ -3614,6 +3616,7 @@ public:
     }
 };
 ```
+### [2] 求二叉树的属性
 
 ### (12) 226、翻转二叉树
 题目链接：https://leetcode-cn.com/problems/invert-binary-tree/
@@ -3889,7 +3892,7 @@ class Solution:
 题目链接：https://leetcode-cn.com/problems/count-complete-tree-nodes/
 
 ```python
-递归法：
+#递归法：
 
 class Solution:
     def countNodes(self, root: TreeNode) -> int:
@@ -3902,14 +3905,14 @@ class Solution:
         rightNum = self.getNodesNum(cur.right) #右
         treeNum = leftNum + rightNum + 1 #中
         return treeNum
-递归法：精简版
+#递归法：精简版
 
 class Solution:
     def countNodes(self, root: TreeNode) -> int:
         if not root:
             return 0
         return 1 + self.countNodes(root.left) + self.countNodes(root.right)
-迭代法：
+#迭代法：
 
 import collections
 class Solution:
@@ -3928,7 +3931,7 @@ class Solution:
                 if node.right:
                     queue.append(node.right)
         return result
-完全二叉树
+#完全二叉树
 
 class Solution:
     def countNodes(self, root: TreeNode) -> int:
@@ -3949,7 +3952,608 @@ class Solution:
         return self.countNodes(root.left) + self.countNodes(root.right) + 1
 ```
 
+### (18) 110、平衡二叉树
+题目链接：https://leetcode-cn.com/problems/balanced-binary-tree/
+
+```python
+#递归法：
+
+class Solution:
+    def isBalanced(self, root: TreeNode) -> bool:
+        return True if self.getDepth(root) != -1 else False
+    
+    #返回以该节点为根节点的二叉树的高度，如果不是二叉搜索树了则返回-1
+    def getDepth(self, node):
+        if not node:
+            return 0
+        leftDepth = self.getDepth(node.left)
+        if leftDepth == -1: return -1 #说明左子树已经不是二叉平衡树
+        rightDepth = self.getDepth(node.right)
+        if rightDepth == -1: return -1 #说明右子树已经不是二叉平衡树
+        return -1 if abs(leftDepth - rightDepth)>1 else 1 + max(leftDepth, rightDepth)
+#迭代法：
+
+class Solution:
+    def isBalanced(self, root: TreeNode) -> bool:
+        st = []
+        if not root:
+            return True
+        st.append(root)
+        while st:
+            node = st.pop() #中
+            if abs(self.getDepth(node.left) - self.getDepth(node.right)) > 1:
+                return False
+            if node.right:
+                st.append(node.right) #右（空节点不入栈）
+            if node.left:
+                st.append(node.left) #左（空节点不入栈）
+        return True
+    
+    def getDepth(self, cur):
+        st = []
+        if cur:
+            st.append(cur)
+        depth = 0
+        result = 0
+        while st:
+            node = st.pop()
+            if node:
+                st.append(node) #中
+                st.append(None)
+                depth += 1
+                if node.right: st.append(node.right) #右
+                if node.left: st.append(node.left) #左
+            else:
+                node = st.pop()
+                depth -= 1
+            result = max(result, depth)
+        return result
+```
+
+### (19) 257、二叉树的所有路径
+题目链接：https://leetcode-cn.com/problems/binary-tree-paths/
+```python
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def binaryTreePaths(self, root: TreeNode) -> List[str]:
+        path=[]
+        res=[]
+        def backtrace(root, path):
+            if not root:return 
+            path.append(root.val)
+            if (not root.left)and (not root.right):
+               res.append(path[:])
+            ways=[]
+            if root.left:ways.append(root.left)
+            if root.right:ways.append(root.right)
+            for way in ways:
+                backtrace(way,path)
+                path.pop()
+        backtrace(root,path)
+        return ["->".join(list(map(str,i))) for i in res]
+	
+#回溯法
+class Solution:
+    def binaryTreePaths(self, root: TreeNode) -> List[str]:
+        result = []
+        path = []
+        if not root:
+            return result
+        self.traversal(root, path, result)
+        return result
         
+    def traversal(self, cur, path, result):
+        path.append(cur.val)
+        #这才到了叶子节点
+        if not cur.left and not cur.right:
+            sPath = ""
+            for i in range(len(path)-1):
+                sPath += str(path[i])
+                sPath += "->"
+            sPath += str(path[len(path)-1])
+            result.append(sPath)
+            return
+        if cur.left:
+            self.traversal(cur.left, path, result)
+            path.pop() #回溯
+        if cur.right:
+            self.traversal(cur.right, path, result)
+            path.pop() #回溯
+
+  ```
   
+### (20) 404、左叶子之和
+题目链接：https://leetcode-cn.com/problems/sum-of-left-leaves/
+```python
+  **递归**
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def sumOfLeftLeaves(self, root: TreeNode) -> int:
+        self.res=0
+        def areleftleaves(root):
+            if not root:return
+            if root.left and (not root.left.left) and (not root.left.right):self.res+=root.left.val
+            areleftleaves(root.left)
+            areleftleaves(root.right)
+        areleftleaves(root)
+        return self.res
+```
+
+### (21) 513、找树左下角的值
+题目链接：https://leetcode-cn.com/problems/find-bottom-left-tree-value/
+```python
+//递归法
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def findBottomLeftValue(self, root: TreeNode) -> int:
+        depth=0
+        self.res=[]
+        def level(root,depth):
+            if not root:return
+            if depth==len(self.res):
+                self.res.append([])
+                self.res[depth].append(root.val)
+            level(root.left,depth+1)
+            level(root.right,depth+1)
+        level(root,depth)
+        return self.res[-1][0]
+```
+
+### (22) 112、路径总和
+题目链接：https://leetcode-cn.com/problems/path-sum/
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
+// 递归法
+
+class Solution:
+    def hasPathSum(self, root: TreeNode, targetSum: int) -> bool:
+        def isornot(root,targetSum)->bool:
+            if (not root.left) and (not root.right) and targetSum == 0:return True // 遇到叶子节点，并且计数为0
+            if (not root.left) and (not root.right):return False //遇到叶子节点，计数不为0
+            if root.left:
+                targetSum -= root.left.val  //左节点
+                if isornot(root.left,targetSum):return True  //递归，处理左节点
+                targetSum += root.left.val  //回溯
+            if root.right:
+                targetSum -= root.right.val //右节点
+                if isornot(root.right,targetSum):return True //递归，处理右节点
+                targetSum += root.right.val //回溯
+            return False
+            
+        if root == None:return False  //别忘记处理空TreeNode
+        else:return isornot(root,targetSum-root.val)
+```
+
+### (23) 113、路径总和II
+题目链接：https://leetcode-cn.com/problems/path-sum-ii/
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+//递归法
+class Solution:
+    def pathSum(self, root: TreeNode, targetSum: int) -> List[List[int]]:
+        path=[]
+        res=[]
+        def pathes(root,targetSum):
+            if (not root.left) and (not root.right) and targetSum == 0: // 遇到叶子节点，并且计数为0
+                res.append(path[:])  //找到一种路径，记录到res中，注意必须是path[:]而不是path
+                return 
+            if (not root.left) and (not root.right):return // 遇到叶子节点直接返回
+            if root.left:   //左
+                targetSum -= root.left.val
+                path.append(root.left.val)     //递归前记录节点
+                pathes(root.left,targetSum)    //递归
+                targetSum += root.left.val     //回溯
+                path.pop()                     //回溯
+            if root.right:  //右
+                targetSum -= root.right.val
+                path.append(root.right.val)    //递归前记录节点
+                pathes(root.right,targetSum)   //递归
+                targetSum += root.right.val    //回溯
+                path.pop()                     //回溯
+            return
+            
+        if root == None:return []             //处理空TreeNode
+        else:
+            path.append(root.val)             //首先处理根节点
+            pathes(root,targetSum-root.val)
+            return res
+```
+
+### [3] 二叉树的修改与构造
+
+### (24) 106、从中序与后序遍历序列构造二叉树
+题目链接：https://leetcode-cn.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+//递归法
+class Solution:
+    def buildTree(self, inorder: List[int], postorder: List[int]) -> TreeNode:
+            if not postorder: return None  //特殊情况
+            root = TreeNode(postorder[-1]) //新建父节点
+            p=inorder.index(postorder[-1]) //找到父节点在中序遍历的位置*因为没有重复的元素，才可以这样找
+            root.left = self.buildTree(inorder[:p],postorder[:p]) //分割中序数组和后续数组
+            root.right = self.buildTree(inorder[p+1:],postorder[p:-1]) //注意右节点时分割中序数组和后续数组的开闭环
+            return root
+```
+
+### (25) 105、从前序与中序遍历序列构造二叉树
+题目链接：https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+//递归法
+class Solution:
+    def buildTree(self, preorder: List[int], inorder: List[int]) -> TreeNode:
+            if not preorder: return None  //特殊情况
+            root = TreeNode(preorder[0])  //新建父节点
+            p=inorder.index(preorder[0])  //找到父节点在中序遍历的位置(因为没有重复的元素，才可以这样找)
+            root.left = self.buildTree(preorder[1:p+1],inorder[:p])  //注意左节点时分割中序数组和前续数组的开闭环
+            root.right = self.buildTree(preorder[p+1:],inorder[p+1:])  //分割中序数组和前续数组
+            return root
+```
+
+### (26) 654、最大二叉树
+题目链接：https://leetcode-cn.com/problems/maximum-binary-tree/
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+//递归法
+class Solution:
+    def constructMaximumBinaryTree(self, nums: List[int]) -> TreeNode:
+        if not nums: return None   //终止条件
+        root = TreeNode(max(nums))   //新建节点
+        p = nums.index(root.val)   //找到最大值位置
+        if p > 0: //保证有左子树
+            root.left = self.constructMaximumBinaryTree(nums[:p])   //递归
+        if p < len(nums): //保证有右子树
+            root.right = self.constructMaximumBinaryTree(nums[p+1:])  //递归
+        return root
+	
+```
+
+### (27) 617、合并二叉树
+题目链接：https://leetcode-cn.com/problems/merge-two-binary-trees/
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+//递归法*前序遍历
+class Solution:
+    def mergeTrees(self, root1: TreeNode, root2: TreeNode) -> TreeNode:
+        if not root1: return root2  // 如果t1为空，合并之后就应该是t2
+        if not root2: return root1  // 如果t2为空，合并之后就应该是t1
+        root1.val = root1.val + root2.val  //中
+        root1.left = self.mergeTrees(root1.left , root2.left)  //左
+        root1.right = self.mergeTrees(root1.right , root2.right)  //右
+        return root1  //root1修改了结构和数值
+```
+
+### [4] 求二叉搜索树的属性
+
+### (28) 700、二叉搜索树中的搜索
+题目链接:https://leetcode-cn.com/problems/search-in-a-binary-search-tree/
+```python
+
+#递归法：
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def searchBST(self, root: TreeNode, val: int) -> TreeNode:
+        if not root or root.val == val: return root  //为空或者已经找到都是直接返回root，所以合并了
+        if root.val > val: return self.searchBST(root.left,val)  //注意一定要加return
+        else: return self.searchBST(root.right,val)  
+#迭代法：
+
+class Solution:
+    def searchBST(self, root: TreeNode, val: int) -> TreeNode:
+        while root is not None:
+            if val < root.val: root = root.left
+            elif val > root.val: root = root.right
+            else: return root
+        return root
+
+```
+
+### (29) 98、验证二叉搜索树
+题目链接：https://leetcode-cn.com/problems/validate-binary-search-tree/
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+//递归法
+class Solution:
+    def isValidBST(self, root: TreeNode) -> bool:
+        res = []  //把二叉搜索树按中序遍历写成list
+        def buildalist(root):
+            if not root: return  
+            buildalist(root.left)  //左
+            res.append(root.val)  //中
+            buildalist(root.right)  //右
+            return res  
+        buildalist(root)
+        return res == sorted(res) and len(set(res)) == len(res) //检查list里的数有没有重复元素，以及是否按从小到大排列
+```
+
+### (30) 530、二叉搜索树的最小绝对差
+题目链接：https://leetcode-cn.com/problems/minimum-absolute-difference-in-bst/
+```python
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def getMinimumDifference(self, root: TreeNode) -> int:
+        res = []   
+        r = float("inf")
+        def buildaList(root):  //把二叉搜索树转换成有序数组
+            if not root: return None
+            if root.left: buildaList(root.left)  //左
+            res.append(root.val)  //中
+            if root.right: buildaList(root.right)  //右
+            return res
+            
+        buildaList(root)
+        for i in range(len(res)-1):  // 统计有序数组的最小差值
+            r = min(abs(res[i]-res[i+1]),r)
+        return r
+	
+```
+
+### (31) 501、二叉树搜索树中的众数
+题目链接：https://leetcode-cn.com/problems/find-mode-in-binary-search-tree/solution/
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+//递归法
+class Solution:
+    def findMode(self, root: TreeNode) -> List[int]:
+        if not root: return
+        self.pre = root
+        self.count = 0   //统计频率
+        self.countMax = 0  //最大频率
+        self.res = []
+        def findNumber(root):
+            if not root: return None  // 第一个节点
+            findNumber(root.left)  //左
+            if self.pre.val == root.val:  //中: 与前一个节点数值相同
+                self.count += 1
+            else:  // 与前一个节点数值不同
+                self.pre = root
+                self.count = 1
+            if self.count > self.countMax:  // 如果计数大于最大值频率
+                self.countMax = self.count  // 更新最大频率
+                self.res = [root.val]  //更新res
+            elif self.count == self.countMax:  // 如果和最大值相同，放进res中
+                self.res.append(root.val)
+            findNumber(root.right)  //右
+            return
+        findNumber(root)
+        return self.res
+```
+
+### [5] 二叉树的公共祖先问题
+
+### (32) 236、二叉树的最近公共祖先
+题目链接：https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-tree/
+```python
+ Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+//递归
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        if not root or root == p or root == q: return root  //找到了节点p或者q，或者遇到空节点
+        left = self.lowestCommonAncestor(root.left,p,q)  //左
+        right = self.lowestCommonAncestor(root.right,p,q)  //右
+        if left and right: return root  //中: left和right不为空，root就是最近公共节点
+        elif left and not right: return left  //目标节点是通过left返回的
+        elif not left and right: return right  //目标节点是通过right返回的
+        else: return None  //没找到
+```
+
+### (33) 235、二叉搜索树的最近公共祖先
+题目链接：https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-search-tree/
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        if not root: return root  //中
+        if root.val >p.val and root.val > q.val:
+            return self.lowestCommonAncestor(root.left,p,q)  //左
+        elif root.val < p.val and root.val < q.val:
+            return self.lowestCommonAncestor(root.right,p,q)  //右
+        else: return root
+```
+
+### [6] 二叉搜索树的修改与构造
+
+### (34) 701、二叉搜索树中的插入操作
+题目链接：https://leetcode-cn.com/problems/insert-into-a-binary-search-tree/
+```python
+class Solution:
+    def insertIntoBST(self, root: TreeNode, val: int) -> TreeNode:
+        if root is None:
+            return TreeNode(val) # 如果当前节点为空，也就意味着val找到了合适的位置，此时创建节点直接返回。
+        if root.val < val:
+            root.right = self.insertIntoBST(root.right, val) # 递归创建右子树
+        if root.val > val:
+            root.left = self.insertIntoBST(root.left, val) # 递归创建左子树
+        return root
+```
+
+### (35) 450、删除二叉搜索树中的节点
+题目链接：https://leetcode-cn.com/problems/delete-node-in-a-bst/
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def deleteNode(self, root: TreeNode, key: int) -> TreeNode:
+        if not root: return root  #第一种情况：没找到删除的节点，遍历到空节点直接返回了
+        if root.val == key:  
+            if not root.left and not root.right:  #第二种情况：左右孩子都为空（叶子节点），直接删除节点， 返回NULL为根节点
+                del root
+                return None
+            if not root.left and root.right:  #第三种情况：其左孩子为空，右孩子不为空，删除节点，右孩子补位 ，返回右孩子为根节点
+                tmp = root
+                root = root.right
+                del tmp
+                return root
+            if root.left and not root.right:  #第四种情况：其右孩子为空，左孩子不为空，删除节点，左孩子补位，返回左孩子为根节点
+                tmp = root
+                root = root.left
+                del tmp
+                return root
+            else:  #第五种情况：左右孩子节点都不为空，则将删除节点的左子树放到删除节点的右子树的最左面节点的左孩子的位置
+                v = root.right
+                while v.left:
+                    v = v.left
+                v.left = root.left
+                tmp = root
+                root = root.right
+                del tmp
+                return root
+        if root.val > key: root.left = self.deleteNode(root.left,key)  #左递归
+        if root.val < key: root.right = self.deleteNode(root.right,key)  #右递归
+        return root
+```
+
+### (36) 669、修剪二叉搜索树
+题目链接：https://leetcode-cn.com/problems/trim-a-binary-search-tree/
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def trimBST(self, root: TreeNode, low: int, high: int) -> TreeNode:
+        if not root: return root
+        if root.val < low: 
+            return self.trimBST(root.right,low,high)  // 寻找符合区间[low, high]的节点
+        if root.val > high:
+            return self.trimBST(root.left,low,high)  // 寻找符合区间[low, high]的节点
+        root.left = self.trimBST(root.left,low,high)  // root->left接入符合条件的左孩子
+        root.right = self.trimBST(root.right,low,high)   // root->right接入符合条件的右孩子
+        return root
+```
+
+### (37) 108、将有序数组转换为二叉搜索树
+题目链接：https://leetcode-cn.com/problems/convert-sorted-array-to-binary-search-tree/
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+#递归法
+class Solution:
+    def sortedArrayToBST(self, nums: List[int]) -> TreeNode:
+        def buildaTree(left,right):
+            if left > right: return None  #左闭右闭的区间，当区间 left > right的时候，就是空节点,当left = right的时候，不为空
+            mid = left + (right - left) // 2 #保证数据不会越界
+            val = nums[mid]
+            root = TreeNode(val)
+            root.left = buildaTree(left,mid - 1)
+            root.right = buildaTree(mid + 1,right)
+            return root
+        root = buildaTree(0,len(nums) - 1)  #左闭右闭区间
+        return root
+```
+
+### (38) 538、把二叉搜索树转换为累加树
+题目链接：https://leetcode-cn.com/problems/convert-bst-to-greater-tree/
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+#递归法
+class Solution:
+    def convertBST(self, root: TreeNode) -> TreeNode:
+        def buildalist(root): 
+            if not root: return None
+            buildalist(root.right)  #右中左遍历
+            root.val += self.pre
+            self.pre = root.val
+            buildalist(root.left)
+        self.pre = 0  #记录前一个节点的数值
+        buildalist(root)
+        return root
+```
+
+### (39)
 
 
