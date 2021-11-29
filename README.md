@@ -4564,7 +4564,7 @@ class Solution:
         if root.val < key: root.right = self.deleteNode(root.right,key)  #右递归
         return root
 ```
-[返回主目录](../README.md)
+
 ### (36) 669、修剪二叉搜索树
 题目链接：https://leetcode-cn.com/problems/trim-a-binary-search-tree/
 ```python
@@ -4675,6 +4675,6 @@ class Solution:
 
 ### 5.4 回文
 
-
+[返回主目录](./README.md)
 
 
