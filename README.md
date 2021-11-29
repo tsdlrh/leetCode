@@ -117,10 +117,10 @@ leetcode 目录
     * [(38) 538、把二叉搜索树转换为累加树](#38-538把二叉搜索树转换为累加树)
     * [(39)](#39)
       
-### 一、有关数组的题目 
-### 1、 二分查找法的应用
+### 一、有关数组的题目  [↑](./README.md)
+### 1、 二分查找法的应用 [↑](./README.md)
 
-#### （1）704. 二分查找
+#### （1）704. 二分查找 
 
 题目链接：https://leetcode-cn.com/problems/binary-search/
 
@@ -550,7 +550,7 @@ class Solution:
 
 
 
-### 2、 移除元素
+### 2、 移除元素 [↑](./README.md)
 
 #### （6）27.移除元素
 
@@ -946,7 +946,7 @@ class Solution:
 ```
 
 
-### 3、滑动窗口
+### 3、滑动窗口 [↑](./README.md)
 
 #### （11）209.长度最小的数组
 
@@ -1182,7 +1182,7 @@ class Solution {
         return '' if res[1]>len(s) else s[res[0]:res[1]+1]    #如果res始终没被更新过，代表无满足条件的结果
 ```
 
-### 4、螺旋矩阵
+### 4、螺旋矩阵 [↑](./README.md)
 
 #### （14）59、螺旋矩阵II
 
@@ -1394,7 +1394,7 @@ class Solution:
         
 
 
-## 二、链表
+## 二、链表 [↑](./README.md)
 
 ### （1）203.移除俩表
 题目链接：https://leetcode-cn.com/problems/remove-linked-list-elements/submissions/
@@ -1834,9 +1834,9 @@ class Solution:
         return None
 ```
 
-## 三、哈希表
+## 三、哈希表 [↑](./README.md)
 
-### 1、异位词
+### 1、异位词 [↑](./README.md)
 
 #### （1）242、有效的字母异位词
 题目链接:https://leetcode-cn.com/problems/valid-anagram/submissions/
@@ -2036,7 +2036,7 @@ class Solution:
 
         return res
 ```
-### 2、数组交集
+### 2、数组交集 [↑](./README.md)
 
 #### （5）349、两个数组的交集
 题目链接：https://leetcode-cn.com/problems/intersection-of-two-arrays/
@@ -2088,7 +2088,7 @@ class Solution:
   
   
   
-### 3、快乐数
+### 3、快乐数 [↑](./README.md)
 
 ### （6）202、快乐数
 题目链接：https://leetcode-cn.com/problems/happy-number/
@@ -2143,7 +2143,7 @@ class Solution:
 
 ```
 
-### 4、数的和
+### 4、数的和 [↑](./README.md)
 
 ### （7）1、两数之和
 题目链接：https://leetcode-cn.com/problems/two-sum/
@@ -2368,7 +2368,7 @@ class Solution:
 ```
 
 
-### 四、字符串的题目
+### 四、字符串的题目 [↑](./README.md)
 
 ### （1）344、反转字符串
 题目链接：https://leetcode-cn.com/problems/reverse-string/
@@ -3098,7 +3098,7 @@ class Solution:
         return ans
   ```
   
-### 六、栈与队列
+### 六、栈与队列 [↑](./README.md)
 
 ### （1）232、用栈实现队列
 题目链接：https://leetcode-cn.com/problems/implement-queue-using-stacks/
@@ -3323,9 +3323,9 @@ class Solution:
         return result
 ```
 
-### 七、二叉树的题目
+### 七、二叉树的题目 [↑](./README.md)
 
-### 1、 二叉树的遍历方式
+### 1、 二叉树的遍历方式 [↑](./README.md)
 
 ### （1）144、二叉树的前序遍历
 题目链接：https://leetcode-cn.com/problems/binary-tree-preorder-traversal/
@@ -3694,7 +3694,7 @@ public:
     }
 };
 ```
-### 2、 求二叉树的属性
+### 2、 求二叉树的属性 [↑](./README.md)
 
 ### (12) 226、翻转二叉树
 题目链接：https://leetcode-cn.com/problems/invert-binary-tree/
@@ -4262,7 +4262,7 @@ class Solution:
             return res
 ```
 
-### 3、 二叉树的修改与构造
+### 3、 二叉树的修改与构造 [↑](./README.md)
 
 ### (24) 106、从中序与后序遍历序列构造二叉树
 题目链接：https://leetcode-cn.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/
@@ -4347,7 +4347,7 @@ class Solution:
         return root1  //root1修改了结构和数值
 ```
 
-### 4、 求二叉搜索树的属性
+### 4、 求二叉搜索树的属性 [↑](./README.md)
 
 ### (28) 700、二叉搜索树中的搜索
 题目链接:https://leetcode-cn.com/problems/search-in-a-binary-search-tree/
@@ -4465,7 +4465,7 @@ class Solution:
         return self.res
 ```
 
-### 5、 二叉树的公共祖先问题
+### 5、 二叉树的公共祖先问题 [↑](./README.md)
 
 ### (32) 236、二叉树的最近公共祖先
 题目链接：https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-tree/
@@ -4508,7 +4508,7 @@ class Solution:
         else: return root
 ```
 
-### 6、 二叉搜索树的修改与构造
+### 6、 二叉搜索树的修改与构造 [↑](./README.md)
 
 ### (34) 701、二叉搜索树中的插入操作
 题目链接：https://leetcode-cn.com/problems/insert-into-a-binary-search-tree/
@@ -4632,47 +4632,47 @@ class Solution:
         return root
 ```
 
-### 八、回溯算法  ###### [↑](./README.md)
+### 八、回溯算法 [↑](./README.md)
 
-### 1、组合
+### 1、组合 [↑](./README.md)
 
-### 2、分割
+### 2、分割 [↑](./README.md)
 
-### 3、子集
+### 3、子集 [↑](./README.md)
 
-### 4、排列
+### 4、排列 [↑](./README.md)
 
-### 5、棋盘问题
+### 5、棋盘问题 [↑](./README.md)
 
-### 6、其他
+### 6、其他 [↑](./README.md)
 
-### 九、贪心算法
+### 九、贪心算法 [↑](./README.md)
 
-### 十、动态规划问题
+### 十、动态规划问题 [↑](./README.md)
 
-### 1、基础题目
+### 1、基础题目 [↑](./README.md)
 
-### 2、背包问题
+### 2、背包问题 [↑](./README.md)
 
-### 2.1 01背包
+### 2.1 01背包 [↑](./README.md)
 
-### 2.2 完全背包
+### 2.2 完全背包 [↑](./README.md)
 
-### 2.3 多重背包
+### 2.3 多重背包 [↑](./README.md)
 
-### 3、打家劫舍
+### 3、打家劫舍 [↑](./README.md)
 
-### 4、股票问题
+### 4、股票问题 [↑](./README.md)
 
-### 5、子序列问题
+### 5、子序列问题 [↑](./README.md)
 
-### 5.1 子序列不连续
+### 5.1 子序列不连续 [↑](./README.md)
 
-### 5.2 子序列连续
+### 5.2 子序列连续 [↑](./README.md)
 
-### 5.3 编辑距离
+### 5.3 编辑距离 [↑](./README.md)
 
-### 5.4 回文
+### 5.4 回文 [↑](./README.md)
 
 
 
