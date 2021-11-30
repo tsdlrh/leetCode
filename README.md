@@ -4636,18 +4636,746 @@ class Solution:
 
 ### 1、组合 [↑](./README.md)
 
+### (1) 77、组合
+题目链接：https://leetcode-cn.com/problems/combinations/
+```python
+#方法一：
+class Solution:
+    def combine(self, n: int, k: int) -> List[List[int]]:
+        res=[]  #存放符合条件结果的集合
+        path=[]  #用来存放符合条件结果
+        def backtrack(n,k,startIndex):
+            if len(path) == k:
+                res.append(path[:])
+                return 
+            for i in range(startIndex,n+1):
+                path.append(i)  #处理节点 
+                backtrack(n,k,i+1)  #递归
+                path.pop()  #回溯，撤销处理的节点
+        backtrack(n,k,1)
+        return res
+	
+#方法二：
+class Solution:
+    def combine(self, n: int, k: int) -> List[List[int]]:
+        res=[]  #存放符合条件结果的集合
+        path=[]  #用来存放符合条件结果
+        def backtrack(n,k,startIndex):
+            if len(path) == k:
+                res.append(path[:])
+            return 
+            for i in range(startIndex,n-(k-len(path))+2):  #优化的地方
+                path.append(i)  #处理节点 
+                backtrack(n,k,i+1)  #递归
+                path.pop()  #回溯，撤销处理的节点
+    backtrack(n,k,1)
+    return res
+    
+```
+
+### (2) 216、组合总和III
+题目链接：https://leetcode-cn.com/problems/combination-sum-iii/
+```python
+class Solution:
+    def combinationSum3(self, k: int, n: int) -> List[List[int]]:
+        res = []  #存放结果集
+        path = []  #符合条件的结果
+        def findallPath(n,k,sum,startIndex):
+            if sum > n: return  #剪枝操作
+            if sum == n and len(path) == k:  #如果path.size() == k 但sum != n 直接返回
+                return res.append(path[:])
+            for i in range(startIndex,9-(k-len(path))+2):  #剪枝操作
+                path.append(i)
+                sum += i 
+                findallPath(n,k,sum,i+1)  #注意i+1调整startIndex
+                sum -= i  #回溯
+                path.pop()  #回溯
+        
+        findallPath(n,k,0,1)
+        return res
+```
+
+### (3) 17、电话号码的字母组合
+题目链接：https://leetcode-cn.com/problems/letter-combinations-of-a-phone-number/
+```python
+class Solution:
+    ans = []
+    s = ''
+    letterMap = {
+        '2': 'abc',
+        '3': 'def',
+        '4': 'ghi',
+        '5': 'jkl',
+        '6': 'mno',
+        '7': 'pqrs',
+        '8': 'tuv',
+        '9': 'wxyz'
+    }
+
+    def letterCombinations(self, digits):
+        self.ans.clear()
+        if digits == '':
+            return self.ans
+        self.backtracking(digits, 0)
+        return self.ans
+
+    def backtracking(self, digits, index):
+        if index == len(digits):
+            self.ans.append(self.s)
+            return
+        else:
+            letters = self.letterMap[digits[index]]  # 取出数字对应的字符集
+            for letter in letters:
+                self.s = self.s + letter  # 处理
+                self.backtracking(digits, index + 1)
+                self.s = self.s[:-1]      # 回溯
+```
+
+### (4) 39、组合总和
+题目链接：https://leetcode-cn.com/problems/combination-sum/
+```python
+class Solution:
+    def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
+        res = []
+        path = []
+        def backtrack(candidates,target,sum,startIndex):
+            if sum > target: return 
+            if sum == target: return res.append(path[:])
+            for i in range(startIndex,len(candidates)):
+                if sum + candidates[i] >target: return  #如果 sum + candidates[i] > target 就终止遍历
+                sum += candidates[i] 
+                path.append(candidates[i])
+                backtrack(candidates,target,sum,i)  #startIndex = i:表示可以重复读取当前的数
+                sum -= candidates[i]  #回溯
+                path.pop()  #回溯
+        candidates = sorted(candidates)  #需要排序
+        backtrack(candidates,target,0,0)
+        return res
+```
+
+### (5) 40、组合总和II
+题目链接：https://leetcode-cn.com/problems/combination-sum-ii/
+```python
+class Solution:
+    def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
+        res = []
+        path = []
+        def backtrack(candidates,target,sum,startIndex):
+            if sum == target: res.append(path[:])
+            for i in range(startIndex,len(candidates)):  #要对同一树层使用过的元素进行跳过
+                if sum + candidates[i] > target: return 
+                if i > startIndex and candidates[i] == candidates[i-1]: continue  #直接用startIndex来去重,要对同一树层使用过的元素进行跳过
+                sum += candidates[i]
+                path.append(candidates[i])
+                backtrack(candidates,target,sum,i+1)  #i+1:每个数字在每个组合中只能使用一次
+                sum -= candidates[i]  #回溯
+                path.pop()  #回溯
+        candidates = sorted(candidates)  #首先把给candidates排序，让其相同的元素都挨在一起。
+        backtrack(candidates,target,0,0)
+        return res
+```
+
+
 ### 2、分割 [↑](./README.md)
+
+### (6) 131、分割回文串
+题目链接：https://leetcode-cn.com/problems/palindrome-partitioning/
+```python
+class Solution:
+    def partition(self, s: str) -> List[List[str]]:
+        res = []  
+        path = []  #放已经回文的子串
+        def backtrack(s,startIndex):
+            if startIndex >= len(s):  #如果起始位置已经大于s的大小，说明已经找到了一组分割方案了
+                return res.append(path[:])
+            for i in range(startIndex,len(s)):
+                p = s[startIndex:i+1]  #获取[startIndex,i+1]在s中的子串
+                if p == p[::-1]: path.append(p)  #是回文子串
+                else: continue  #不是回文，跳过
+                backtrack(s,i+1)  #寻找i+1为起始位置的子串
+                path.pop()  #回溯过程，弹出本次已经填在path的子串
+        backtrack(s,0)
+        return res
+```
+
+### (7) 93、复原IP地址
+题目链接：https://leetcode-cn.com/problems/restore-ip-addresses/
+```python
+class Solution(object):
+    def restoreIpAddresses(self, s):
+        """
+        :type s: str
+        :rtype: List[str]
+        """
+        ans = []
+        path = []
+        def backtrack(path, startIndex):
+            if len(path) == 4:
+                if startIndex == len(s):
+                    ans.append(".".join(path[:]))
+                    return
+            for i in range(startIndex+1, min(startIndex+4, len(s)+1)):  # 剪枝
+                string = s[startIndex:i]
+                if not 0 <= int(string) <= 255:
+                    continue
+                if not string == "0" and not string.lstrip('0') == string:
+                    continue
+                path.append(string)
+                backtrack(path, i)
+                path.pop()
+
+        backtrack([], 0)
+        return ans```
+```
+
 
 ### 3、子集 [↑](./README.md)
 
+### (8) 78、子集
+题目链接：https://leetcode-cn.com/problems/subsets/
+```python
+class Solution:
+    def subsets(self, nums: List[int]) -> List[List[int]]:
+        res = []  
+        path = []  
+        def backtrack(nums,startIndex):
+            res.append(path[:])  #收集子集，要放在终止添加的上面，否则会漏掉自己
+            for i in range(startIndex,len(nums)):  #当startIndex已经大于数组的长度了，就终止了，for循环本来也结束了，所以不需要终止条件
+                path.append(nums[i])
+                backtrack(nums,i+1)  #递归
+                path.pop()  #回溯
+        backtrack(nums,0)
+        return res
+```
+
+### (9) 90、子集II
+题目链接：https://leetcode-cn.com/problems/subsets-ii/
+```python
+class Solution:
+    def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
+        res = []  #存放符合条件结果的集合
+        path = []  #用来存放符合条件结果
+        def backtrack(nums,startIndex):
+            res.append(path[:])
+            for i in range(startIndex,len(nums)):
+                if i > startIndex and nums[i] == nums[i - 1]:  #我们要对同一树层使用过的元素进行跳过
+                    continue
+                path.append(nums[i])
+                backtrack(nums,i+1)  #递归
+                path.pop()  #回溯
+        nums = sorted(nums)  #去重需要排序
+        backtrack(nums,0)
+        return res
+```
+
 ### 4、排列 [↑](./README.md)
+
+### (10) 491、递增子序列
+题目链接：https://leetcode-cn.com/problems/increasing-subsequences/
+```python
+class Solution:
+    def findSubsequences(self, nums: List[int]) -> List[List[int]]:
+        res = []
+        path = []
+        def backtrack(nums,startIndex):
+            repeat = []  #这里使用数组来进行去重操作
+            if len(path) >=2:
+                res.append(path[:])  #注意这里不要加return，要取树上的节点
+            for i in range(startIndex,len(nums)):
+                if nums[i] in repeat:
+                    continue
+                if len(path) >= 1:
+                    if nums[i] < path[-1]:
+                        continue
+                repeat.append(nums[i])  #记录这个元素在本层用过了，本层后面不能再用了
+                path.append(nums[i])
+                backtrack(nums,i+1)
+                path.pop()
+        backtrack(nums,0)
+        return res
+```
+
+### (11) 46、全排列
+题目链接：https://leetcode-cn.com/problems/permutations/
+```python
+class Solution:
+    def permute(self, nums: List[int]) -> List[List[int]]:
+        res = []  #存放符合条件结果的集合
+        path = []  #用来存放符合条件的结果
+        used = []  #用来存放已经用过的数字
+        def backtrack(nums,used):
+            if len(path) == len(nums):
+                return res.append(path[:])  #此时说明找到了一组
+            for i in range(0,len(nums)):
+                if nums[i] in used:
+                    continue  #used里已经收录的元素，直接跳过
+                path.append(nums[i])
+                used.append(nums[i])
+                backtrack(nums,used)
+                used.pop()
+                path.pop()
+        backtrack(nums,used)
+        return res
+```
+
+### (12) 47、全排列II
+题目链接：https://leetcode-cn.com/problems/permutations-ii/
+```python
+class Solution:
+    def permuteUnique(self, nums: List[int]) -> List[List[int]]:
+        # res用来存放结果
+        if not nums: return []
+        res = []
+        used = [0] * len(nums)
+        def backtracking(nums, used, path):
+            # 终止条件
+            if len(path) == len(nums):
+                res.append(path.copy())
+                return
+            for i in range(len(nums)):
+                if not used[i]:
+                    if i>0 and nums[i] == nums[i-1] and not used[i-1]:
+                        continue
+                    used[i] = 1
+                    path.append(nums[i])
+                    backtracking(nums, used, path)
+                    path.pop()
+                    used[i] = 0
+        # 记得给nums排序
+        backtracking(sorted(nums),used,[])
+        return res
+```
+
+
+### (13) 332、重新安排行程
+题目链接：https://leetcode-cn.com/problems/reconstruct-itinerary/
+```python
+class Solution:
+    def findItinerary(self, tickets: List[List[str]]) -> List[str]:
+        # defaultdic(list) 是为了方便直接append
+        tickets_dict = defaultdict(list)
+        for item in tickets:
+            tickets_dict[item[0]].append(item[1])
+        '''
+        tickets_dict里面的内容是这样的
+         {'JFK': ['SFO', 'ATL'], 'SFO': ['ATL'], 'ATL': ['JFK', 'SFO']})
+        '''
+        path = ["JFK"]
+        def backtracking(start_point):
+            # 终止条件
+            if len(path) == len(tickets) + 1:
+                return True
+            tickets_dict[start_point].sort()
+            for _ in tickets_dict[start_point]:
+                #必须及时删除，避免出现死循环
+                end_point = tickets_dict[start_point].pop(0)
+                path.append(end_point)
+                # 只要找到一个就可以返回了
+                if backtracking(end_point):
+                    return True
+                path.pop()
+                tickets_dict[start_point].append(end_point)
+
+        backtracking("JFK")
+        return path
+```
 
 ### 5、棋盘问题 [↑](./README.md)
 
-### 6、其他 [↑](./README.md)
+### (14) 51、N皇后问题
+题目链接：https://leetcode-cn.com/problems/n-queens/
+```python
+class Solution:
+    def solveNQueens(self, n: int) -> List[List[str]]:
+        if not n: return []
+        board = [['.'] * n for _ in range(n)]
+        res = []
+        def isVaild(board,row, col):
+            #判断同一列是否冲突
+            for i in range(len(board)):
+                if board[i][col] == 'Q':
+                    return False
+            # 判断左上角是否冲突
+            i = row -1
+            j = col -1
+            while i>=0 and j>=0:
+                if board[i][j] == 'Q':
+                    return False
+                i -= 1
+                j -= 1
+            # 判断右上角是否冲突
+            i = row - 1
+            j = col + 1
+            while i>=0 and j < len(board):
+                if board[i][j] == 'Q':
+                    return False
+                i -= 1
+                j += 1
+            return True
+
+        def backtracking(board, row, n):
+            # 如果走到最后一行，说明已经找到一个解
+            if row == n:
+                temp_res = []
+                for temp in board:
+                    temp_str = "".join(temp)
+                    temp_res.append(temp_str)
+                res.append(temp_res)
+            for col in range(n):
+                if not isVaild(board, row, col):
+                    continue
+                board[row][col] = 'Q'
+                backtracking(board, row+1, n)
+                board[row][col] = '.'
+        backtracking(board, 0, n)
+        return res
+```
+### (15) 37、解数独
+题目链接：https://leetcode-cn.com/problems/sudoku-solver/
+```python
+class Solution:
+    def solveSudoku(self, board: List[List[str]]) -> None:
+        """
+        Do not return anything, modify board in-place instead.
+        """
+        def backtrack(board):
+            for i in range(len(board)):  #遍历行
+                for j in range(len(board[0])):  #遍历列
+                    if board[i][j] != ".": continue
+                    for k in range(1,10):  #(i, j) 这个位置放k是否合适
+                        if isValid(i,j,k,board):
+                            board[i][j] = str(k)  #放置k
+                            if backtrack(board): return True  #如果找到合适一组立刻返回
+                            board[i][j] = "."  #回溯，撤销k
+                    return False  #9个数都试完了，都不行，那么就返回false
+            return True  #遍历完没有返回false，说明找到了合适棋盘位置了
+        def isValid(row,col,val,board):
+            for i in range(9):  #判断行里是否重复
+                if board[row][i] == str(val):
+                    return False
+            for j in range(9):  #判断列里是否重复
+                if board[j][col] == str(val):
+                    return False
+            startRow = (row // 3) * 3
+            startcol = (col // 3) * 3
+            for i in range(startRow,startRow + 3):  #判断9方格里是否重复
+                for j in range(startcol,startcol + 3):
+                    if board[i][j] == str(val):
+                        return False
+            return True
+        backtrack(board)
+```
+
 
 ### 九、贪心算法 [↑](./README.md)
 
+### 1、简单题目 455 1005 860
+
+### (1) 455、分发饼干
+题目链接：https://leetcode-cn.com/problems/assign-cookies/
+```python
+class Solution:
+    def findContentChildren(self, g: List[int], s: List[int]) -> int:
+        g.sort()
+        s.sort()
+        res = 0
+        for i in range(len(s)):
+            if res <len(g) and s[i] >= g[res]:  #小饼干先喂饱小胃口
+                res += 1
+        return res
+```
+### (2) 1005、K次取反后最大化的数组和
+题目链接：https://leetcode-cn.com/problems/maximize-sum-of-array-after-k-negations/
+```python
+class Solution:
+    def largestSumAfterKNegations(self, A: List[int], K: int) -> int:
+        A = sorted(A, key=abs, reverse=True) # 将A按绝对值从大到小排列
+        for i in range(len(A)):
+            if K > 0 and A[i] < 0:
+                A[i] *= -1
+                K -= 1
+        if K > 0:
+            A[len(A) - 1] *= ((-1)**K)
+        return sum(A)
+```
+### (3) 860、柠檬水找零
+题目链接：https://leetcode-cn.com/problems/lemonade-change/
+```python
+class Solution:
+    def lemonadeChange(self, bills: List[int]) -> bool:
+        five, ten, twenty = 0, 0, 0
+        for bill in bills:
+            if bill == 5:
+                five += 1
+            elif bill == 10:
+                if five < 1: return False
+                five -= 1
+                ten += 1
+            else:
+                if ten > 0 and five > 0:
+                    ten -= 1
+                    five -= 1
+                    twenty += 1
+                elif five > 2:
+                    five -= 3
+                    twenty += 1
+                else:
+                    return False
+        return True
+```
+### 2、序列问题 376 738
+
+### (4) 376、摆动序列
+题目链接：https://leetcode-cn.com/problems/wiggle-subsequence/
+```python
+class Solution:
+    def wiggleMaxLength(self, nums: List[int]) -> int:
+        preC,curC,res = 0,0,1  #题目里nums长度大于等于1，当长度为1时，其实到不了for循环里去，所以不用考虑nums长度
+        for i in range(len(nums) - 1):
+            curC = nums[i + 1] - nums[i]
+            if curC * preC <= 0 and curC !=0:  #差值为0时，不算摆动
+                res += 1
+                preC = curC  #如果当前差值和上一个差值为一正一负时，才需要用当前差值替代上一个差值
+        return res
+```
+### (5) 738、单调递增的数字
+题目链接：https://leetcode-cn.com/problems/monotone-increasing-digits/
+```python
+class Solution:
+    def monotoneIncreasingDigits(self, n: int) -> int:
+        strNum = list(str(n))
+        flag = len(strNum)
+        for i in range(len(strNum) - 1, 0, -1):
+            if int(strNum[i]) < int(strNum[i - 1]):
+                strNum[i - 1] = str(int(strNum[i - 1]) - 1)
+                flag = i
+        for i in range(flag, len(strNum)):
+            strNum[i] = '9'
+        return int("".join(strNum))
+```
+### 3、贪心算法解决股票问题 122 714 
+
+### (6) 122、买卖股票的最佳时机II
+题目链接：https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-ii/
+```python
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        result = 0
+        for i in range(1, len(prices)):
+            result += max(prices[i] - prices[i - 1], 0)
+        return result
+```
+
+### (7) 714、买卖股票的最佳时机含手续费
+题目链接：https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/
+```python
+class Solution: # 贪心思路
+    def maxProfit(self, prices: List[int], fee: int) -> int:
+        result = 0
+        minPrice = prices[0]
+        for i in range(1, len(prices)):
+            if prices[i] < minPrice:
+                minPrice = prices[i]
+            elif prices[i] >= minPrice and prices[i] <= minPrice + fee: 
+                continue
+            else: 
+                result += prices[i] - minPrice - fee
+                minPrice = prices[i] - fee
+        return result
+```
+
+### 4、两个维度的权衡问题 135 406 
+
+### (8) 135、分发糖果
+题目链接：https://leetcode-cn.com/problems/candy/
+```python
+class Solution:
+    def candy(self, ratings: List[int]) -> int:
+        candyVec = [1] * len(ratings)
+        for i in range(1, len(ratings)):
+            if ratings[i] > ratings[i - 1]:
+                candyVec[i] = candyVec[i - 1] + 1
+        for j in range(len(ratings) - 2, -1, -1):
+            if ratings[j] > ratings[j + 1]:
+                candyVec[j] = max(candyVec[j], candyVec[j + 1] + 1)
+        return sum(candyVec)
+```
+### (9) 406、根据身高重建序列
+题目链接：https://leetcode-cn.com/problems/queue-reconstruction-by-height/
+```python
+class Solution:
+    def reconstructQueue(self, people: List[List[int]]) -> List[List[int]]:
+        people.sort(key=lambda x: (x[0], -x[1]), reverse=True)
+        que = []
+        for p in people:
+            if p[1] > len(que):
+                que.append(p)
+            else:
+                que.insert(p[1], p)
+        return que
+```
+
+### 5、区间问题 55 45 452 435 763 56
+### (10) 55、跳跃游戏
+题目链接：https://leetcode-cn.com/problems/jump-game/
+```python
+class Solution:
+    def canJump(self, nums: List[int]) -> bool:
+        cover = 0
+        if len(nums) == 1: return True
+        i = 0
+        # python不支持动态修改for循环中变量,使用while循环代替
+        while i <= cover:
+            cover = max(i + nums[i], cover)
+            if cover >= len(nums) - 1: return True
+            i += 1
+        return False
+```
+### (11) 45、跳跃游戏II
+题目链接：https://leetcode-cn.com/problems/jump-game-ii/
+```python
+class Solution:
+    def jump(self, nums: List[int]) -> int:
+        if len(nums) == 1: return 0
+        ans = 0
+        curDistance = 0
+        nextDistance = 0
+        for i in range(len(nums)):
+            nextDistance = max(i + nums[i], nextDistance)
+            if i == curDistance: 
+                if curDistance != len(nums) - 1:
+                    ans += 1
+                    curDistance = nextDistance
+                    if nextDistance >= len(nums) - 1: break
+        return ans
+```
+
+### (12) 452、用最少数量的箭引爆气球
+题目链接：https://leetcode-cn.com/problems/minimum-number-of-arrows-to-burst-balloons/
+```python
+class Solution:
+    def findMinArrowShots(self, points: List[List[int]]) -> int:
+        if len(points) == 0: return 0
+        points.sort(key=lambda x: x[0])
+        result = 1
+        for i in range(1, len(points)):
+            if points[i][0] > points[i - 1][1]: # 气球i和气球i-1不挨着，注意这里不是>=
+                result += 1     
+            else:
+                points[i][1] = min(points[i - 1][1], points[i][1]) # 更新重叠气球最小右边界
+        return result
+```
+
+### (13) 435、无重叠区间
+题目链接：https://leetcode-cn.com/problems/non-overlapping-intervals/
+```python
+class Solution:
+    def eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:
+        if len(intervals) == 0: return 0
+        intervals.sort(key=lambda x: x[1])
+        count = 1 # 记录非交叉区间的个数
+        end = intervals[0][1] # 记录区间分割点
+        for i in range(1, len(intervals)):
+            if end <= intervals[i][0]:
+                count += 1
+                end = intervals[i][1]
+        return len(intervals) - count
+```
+
+### (14) 763、划分字母区间
+题目链接： https://leetcode-cn.com/problems/partition-labels/
+```python
+class Solution:
+    def partitionLabels(self, s: str) -> List[int]:
+        hash = [0] * 26
+        for i in range(len(s)):
+            hash[ord(s[i]) - ord('a')] = i
+        result = []
+        left = 0
+        right = 0
+        for i in range(len(s)):
+            right = max(right, hash[ord(s[i]) - ord('a')])
+            if i == right:
+                result.append(right - left + 1)
+                left = i + 1
+        return result
+	
+```
+
+### (15) 56、合并区间
+题目链接：https://leetcode-cn.com/problems/merge-intervals/
+```python
+class Solution:
+    def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+        if len(intervals) == 0: return intervals
+        intervals.sort(key=lambda x: x[0])
+        result = []
+        result.append(intervals[0])
+        for i in range(1, len(intervals)):
+            last = result[-1]
+            if last[1] >= intervals[i][0]:
+                result[-1] = [last[0], max(last[1], intervals[i][1])]
+            else:
+                result.append(intervals[i])
+        return result
+```
+### 6、其他 53 134 968
+
+### (16) 134、加油站
+题目链接：https://leetcode-cn.com/problems/gas-station/
+```python
+class Solution:
+    def canCompleteCircuit(self, gas: List[int], cost: List[int]) -> int:
+        start = 0
+        curSum = 0
+        totalSum = 0
+        for i in range(len(gas)):
+            curSum += gas[i] - cost[i]
+            totalSum += gas[i] - cost[i]
+            if curSum < 0:
+                curSum = 0
+                start = i + 1
+        if totalSum < 0: return -1
+        return start
+```
+### (17) 53、最大子序和
+题目链接：https://leetcode-cn.com/problems/maximum-subarray/
+```python
+class Solution:
+    def maxSubArray(self, nums: List[int]) -> int:
+        result = -float('inf')
+        count = 0
+        for i in range(len(nums)):
+            count += nums[i]
+            if count > result:
+                result = count
+            if count <= 0:
+                count = 0
+        return result
+```
+### (18) 968、监控二叉树
+题目链接：https://leetcode-cn.com/problems/binary-tree-cameras/
+```python
+class Solution:
+    def minCameraCover(self, root: TreeNode) -> int:
+        result = 0
+        def traversal(cur):
+            nonlocal result
+            if not cur:
+                return 2
+            left = traversal(cur.left)
+            right = traversal(cur.right)
+            if left == 2 and right == 2:
+                return 0
+            elif left == 0 or right == 0:
+                result += 1
+                return 1
+            elif left == 1 or right == 1:
+                return 2
+            else: return -1
+        if traversal(root) == 0: result += 1
+        return result
+```
 ### 十、动态规划问题 [↑](./README.md)
 
 ### 1、基础题目 [↑](./README.md)
