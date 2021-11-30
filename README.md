@@ -5069,7 +5069,7 @@ class Solution:
 
 ### 九、贪心算法 [↑](./README.md)
 
-### 1、简单题目 455 1005 860
+### 1、简单题目 [↑](./README.md)
 
 ### (1) 455、分发饼干
 题目链接：https://leetcode-cn.com/problems/assign-cookies/
@@ -5123,7 +5123,7 @@ class Solution:
                     return False
         return True
 ```
-### 2、序列问题 376 738
+### 2、序列问题 [↑](./README.md)
 
 ### (4) 376、摆动序列
 题目链接：https://leetcode-cn.com/problems/wiggle-subsequence/
@@ -5153,7 +5153,7 @@ class Solution:
             strNum[i] = '9'
         return int("".join(strNum))
 ```
-### 3、贪心算法解决股票问题 122 714 
+### 3、贪心算法解决股票问题 [↑](./README.md)
 
 ### (6) 122、买卖股票的最佳时机II
 题目链接：https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-ii/
@@ -5184,7 +5184,7 @@ class Solution: # 贪心思路
         return result
 ```
 
-### 4、两个维度的权衡问题 135 406 
+### 4、两个维度的权衡问题 [↑](./README.md)
 
 ### (8) 135、分发糖果
 题目链接：https://leetcode-cn.com/problems/candy/
@@ -5215,7 +5215,7 @@ class Solution:
         return que
 ```
 
-### 5、区间问题 55 45 452 435 763 56
+### 5、区间问题 [↑](./README.md)
 ### (10) 55、跳跃游戏
 题目链接：https://leetcode-cn.com/problems/jump-game/
 ```python
@@ -5319,7 +5319,7 @@ class Solution:
                 result.append(intervals[i])
         return result
 ```
-### 6、其他 53 134 968
+### 6、其他 [↑](./README.md)
 
 ### (16) 134、加油站
 题目链接：https://leetcode-cn.com/problems/gas-station/
@@ -5378,30 +5378,876 @@ class Solution:
 ```
 ### 十、动态规划问题 [↑](./README.md)
 
+
 ### 1、基础题目 [↑](./README.md)
+
+### (1) 509、斐波那契数
+题目链接：https://leetcode-cn.com/problems/fibonacci-number/
+```python
+class Solution:
+    def fib(self, n: int) -> int:
+        if n < 2:
+            return n
+        a, b, c = 0, 1, 0
+        for i in range(1, n):
+            c = a + b
+            a, b = b, c
+        return c
+
+# 递归实现
+class Solution:
+    def fib(self, n: int) -> int:
+        if n < 2:
+            return n
+        return self.fib(n - 1) + self.fib(n - 2)
+```
+### (2) 70、爬楼梯
+题目链接：https://leetcode-cn.com/problems/climbing-stairs/
+```python
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        # dp[i]表示爬到第i级楼梯的种数， (1, 2) (2, 1)是两种不同的类型
+        dp = [0] * (n + 1)
+        dp[0] = 1
+        for i in range(n+1):
+            for j in range(1, 3):
+                if i>=j:
+                    dp[i] += dp[i-j]
+        return dp[-1]
+```
+
+### (3) 746、使用最小花费爬楼梯
+题目链接：https://leetcode-cn.com/problems/min-cost-climbing-stairs/
+```python
+class Solution:
+    def minCostClimbingStairs(self, cost: List[int]) -> int:
+        dp = [0] * (len(cost))
+        dp[0] = cost[0]
+        dp[1] = cost[1]
+        for i in range(2, len(cost)):
+            dp[i] = min(dp[i - 1], dp[i - 2]) + cost[i]
+        return min(dp[len(cost) - 1], dp[len(cost) - 2])
+```
+
+### (4) 62、不同路径
+题目链接：https://leetcode-cn.com/problems/unique-paths/
+```python
+class Solution: # 动态规划
+    def uniquePaths(self, m: int, n: int) -> int:
+        dp = [[0 for i in range(n)] for j in range(m)]
+        for i in range(m): dp[i][0] = 1
+        for j in range(n): dp[0][j] = 1
+        for i in range(1, m):
+            for j in range(1, n):
+                dp[i][j] = dp[i][j - 1] + dp[i - 1][j]
+        return dp[m - 1][n - 1]
+```
+
+### (5) 63、不同路径II
+题目链接：https://leetcode-cn.com/problems/unique-paths-ii/
+```python
+class Solution:
+    def uniquePathsWithObstacles(self, obstacleGrid: List[List[int]]) -> int:
+        # 构造一个DP table
+        row = len(obstacleGrid)
+        col = len(obstacleGrid[0])
+        dp = [[0 for _ in range(col)] for _ in range(row)]
+
+        dp[0][0] = 1 if obstacleGrid[0][0] != 1 else 0
+        if dp[0][0] == 0: return 0  # 如果第一个格子就是障碍，return 0
+        # 第一行
+        for i in range(1, col):
+            if obstacleGrid[0][i] != 1:
+                dp[0][i] = dp[0][i-1]
+
+        # 第一列
+        for i in range(1, row):
+            if obstacleGrid[i][0] != 1:
+                dp[i][0] = dp[i-1][0]
+        print(dp)
+
+        for i in range(1, row):
+            for j in range(1, col):
+                if obstacleGrid[i][j] != 1:
+                    dp[i][j] = dp[i-1][j] + dp[i][j-1]
+        return dp[-1][-1]
+```
+
+### (6) 343、整数拆分
+题目链接：https://leetcode-cn.com/problems/integer-break/
+```python
+class Solution:
+    def integerBreak(self, n: int) -> int:
+        dp = [0] * (n + 1)
+        dp[2] = 1
+        for i in range(3, n + 1):
+            # 假设对正整数 i 拆分出的第一个正整数是 j（1 <= j < i），则有以下两种方案：
+            # 1) 将 i 拆分成 j 和 i−j 的和，且 i−j 不再拆分成多个正整数，此时的乘积是 j * (i-j)
+            # 2) 将 i 拆分成 j 和 i−j 的和，且 i−j 继续拆分成多个正整数，此时的乘积是 j * dp[i-j]
+            for j in range(1, i):
+                dp[i] = max(dp[i], max(j * (i - j), j * dp[i - j]))
+        return dp[n]
+```
+
+### (7) 96、不同的二叉搜索树
+题目链接：https://leetcode-cn.com/problems/unique-binary-search-trees/
+```python
+class Solution:
+    def numTrees(self, n: int) -> int:
+        dp = [0] * (n + 1)
+        dp[0], dp[1] = 1, 1
+        for i in range(2, n + 1):
+            for j in range(1, i + 1):
+                dp[i] += dp[j - 1] * dp[i - j]
+        return dp[-1]
+```
 
 ### 2、背包问题 [↑](./README.md)
 
 ### 2.1 01背包 [↑](./README.md)
 
+### (8) 01背包问题
+#### 问题描述:
+```
+有N件物品和一个最多能被重量为W 的背包。第i件物品的重量是weight[i]，得到的价值是value[i] 。每件物品只能用一次，求解将哪些物品装入背包里物品价值总和最大。
+```
+#### C++实现
+```C++
+void test_2_wei_bag_problem1() {
+    vector<int> weight = {1, 3, 4};
+    vector<int> value = {15, 20, 30};
+    int bagWeight = 4;
+
+    // 二维数组
+    vector<vector<int>> dp(weight.size() + 1, vector<int>(bagWeight + 1, 0));
+
+    // 初始化
+    for (int j = weight[0]; j <= bagWeight; j++) {
+        dp[0][j] = value[0];
+    }
+
+    // weight数组的大小 就是物品个数
+    for(int i = 1; i < weight.size(); i++) { // 遍历物品
+        for(int j = 0; j <= bagWeight; j++) { // 遍历背包容量
+            if (j < weight[i]) dp[i][j] = dp[i - 1][j];
+            else dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - weight[i]] + value[i]);
+
+        }
+    }
+
+    cout << dp[weight.size() - 1][bagWeight] << endl;
+}
+
+int main() {
+    test_2_wei_bag_problem1();
+}
+```
+
+### (9) 416、分割等和子集
+题目链接：https://leetcode-cn.com/problems/partition-equal-subset-sum/
+```python
+class Solution:
+    def canPartition(self, nums: List[int]) -> bool:
+        taraget = sum(nums)
+        if taraget % 2 == 1: return False
+        taraget //= 2
+        dp = [0] * 10001
+        for i in range(len(nums)):
+            for j in range(taraget, nums[i] - 1, -1):
+                dp[j] = max(dp[j], dp[j - nums[i]] + nums[i])
+        return taraget == dp[taraget]
+```
+### (10) 1049、最后一块石头的重量II
+题目链接：https://leetcode-cn.com/problems/last-stone-weight-ii/
+```python
+class Solution:
+    def lastStoneWeightII(self, stones: List[int]) -> int:
+        sumweight = sum(stones)
+        target = sumweight // 2
+        dp = [0] * 15001
+        for i in range(len(stones)):
+            for j in range(target, stones[i] - 1, -1):
+                dp[j] = max(dp[j], dp[j - stones[i]] + stones[i])
+        return sumweight -  2 * dp[target]
+```
+
+### (11) 494、目标和
+题目链接：https://leetcode-cn.com/problems/target-sum/
+```python
+class Solution:
+    def findTargetSumWays(self, nums: List[int], target: int) -> int:
+        sumValue = sum(nums)
+        if target > sumValue or (sumValue + target) % 2 == 1: return 0
+        bagSize = (sumValue + target) // 2
+        dp = [0] * (bagSize + 1)
+        dp[0] = 1
+        for i in range(len(nums)):
+            for j in range(bagSize, nums[i] - 1, -1):
+                dp[j] += dp[j - nums[i]]
+        return dp[bagSize]
+```
+
+### (12) 474、一和零
+题目链接：https://leetcode-cn.com/problems/ones-and-zeroes/
+```python
+class Solution:
+    def findMaxForm(self, strs: List[str], m: int, n: int) -> int:
+        dp = [[0] * (n + 1) for _ in range(m + 1)]	# 默认初始化0
+        # 遍历物品
+        for str in strs:
+            ones = str.count('1')
+            zeros = str.count('0')
+            # 遍历背包容量且从后向前遍历！
+            for i in range(m, zeros - 1, -1):
+                for j in range(n, ones - 1, -1):
+                    dp[i][j] = max(dp[i][j], dp[i - zeros][j - ones] + 1)
+        return dp[m][n]
+```
 ### 2.2 完全背包 [↑](./README.md)
+
+### (13) 完全背包问题
+#### 问题描述:
+```
+有N件物品和一个最多能背重量为W的背包。第i件物品的重量是weight[i]，得到的价值是value[i] 。每件物品都有无限个（也就是可以放入背包多次），求解将哪些物品装入背包里物品价值总和最大。
+```
+#### C++代码实现
+```C++
+// 先遍历物品，在遍历背包
+void test_CompletePack() {
+    vector<int> weight = {1, 3, 4};
+    vector<int> value = {15, 20, 30};
+    int bagWeight = 4;
+    vector<int> dp(bagWeight + 1, 0);
+    for(int i = 0; i < weight.size(); i++) { // 遍历物品
+        for(int j = weight[i]; j <= bagWeight; j++) { // 遍历背包容量
+            dp[j] = max(dp[j], dp[j - weight[i]] + value[i]);
+        }
+    }
+    cout << dp[bagWeight] << endl;
+}
+int main() {
+    test_CompletePack();
+}
+```
+
+### (14) 518、零钱兑换II
+题目链接：https://leetcode-cn.com/problems/coin-change-2/
+```python
+class Solution:
+    def change(self, amount: int, coins: List[int]) -> int:
+        dp = [0]*(amount + 1)
+        dp[0] = 1
+        # 遍历物品
+        for i in range(len(coins)):
+            # 遍历背包
+            for j in range(coins[i], amount + 1):
+                dp[j] += dp[j - coins[i]]
+        return dp[amount]
+```
+
+### (15) 377、组合总和IV
+题目链接：https://leetcode-cn.com/problems/combination-sum-iv/
+```python
+class Solution:
+    def combinationSum4(self, nums, target):
+        dp = [0] * (target + 1)
+        dp[0] = 1
+
+        for i in range(1, target+1):
+            for j in nums:
+                if i >= j:
+                    dp[i] += dp[i - j]
+
+        return dp[-1]
+```
+
+### (16) 70、爬楼梯
+题目链接：https://leetcode-cn.com/problems/climbing-stairs/
+```c++
+class Solution {
+public:
+    int climbStairs(int n) {
+        vector<int> dp(n + 1, 0);
+        dp[0] = 1;
+        for (int i = 1; i <= n; i++) { // 遍历背包
+            for (int j = 1; j <= m; j++) { // 遍历物品
+                if (i - j >= 0) dp[i] += dp[i - j];
+            }
+        }
+        return dp[n];
+    }
+};
+```
+
+### (17) 322、零钱兑换
+题目链接：https://leetcode-cn.com/problems/coin-change/
+```c++
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        vector<int> dp(amount + 1, INT_MAX);
+        dp[0] = 0;
+        for (int i = 0; i < coins.size(); i++) { // 遍历物品
+            for (int j = coins[i]; j <= amount; j++) { // 遍历背包
+                if (dp[j - coins[i]] != INT_MAX) { // 如果dp[j - coins[i]]是初始值则跳过
+                    dp[j] = min(dp[j - coins[i]] + 1, dp[j]);
+                }
+            }
+        }
+        if (dp[amount] == INT_MAX) return -1;
+        return dp[amount];
+    }
+};
+```
+
+### (18) 276、完全平方数
+题目链接：https://leetcode-cn.com/problems/perfect-squares/
+```c++
+class Solution {
+public:
+    int numSquares(int n) {
+        vector<int> dp(n + 1, INT_MAX);
+        dp[0] = 0;
+        for (int i = 0; i <= n; i++) { // 遍历背包
+            for (int j = 1; j * j <= i; j++) { // 遍历物品
+                dp[i] = min(dp[i - j * j] + 1, dp[i]);
+            }
+        }
+        return dp[n];
+    }
+};
+```
+
+### (19) 139、单词拆分
+题目链接：https://leetcode-cn.com/problems/word-break/
+```C++
+class Solution {
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        unordered_set<string> wordSet(wordDict.begin(), wordDict.end());
+        vector<bool> dp(s.size() + 1, false);
+        dp[0] = true;
+        for (int i = 1; i <= s.size(); i++) {   // 遍历背包
+            for (int j = 0; j < i; j++) {       // 遍历物品
+                string word = s.substr(j, i - j); //substr(起始位置，截取的个数)
+                if (wordSet.find(word) != wordSet.end() && dp[j]) {
+                    dp[i] = true;
+                }
+            }
+        }
+        return dp[s.size()];
+    }
+};
+```
 
 ### 2.3 多重背包 [↑](./README.md)
 
+### (20) 多重背包问题:
+#### 问题描述： 
+```
+有N种物品和一个容量为V 的背包。第i种物品最多有Mi件可用，每件耗费的空间是Ci ，价值是Wi 。求解将哪些物品装入背包可使这些物品的耗费的空间 总和不超过背包容量，且价值总和最大
+```
+#### C++实现
+```C++
+void test_multi_pack() {
+    vector<int> weight = {1, 3, 4};
+    vector<int> value = {15, 20, 30};
+    vector<int> nums = {2, 3, 2};
+    int bagWeight = 10;
+    for (int i = 0; i < nums.size(); i++) {
+        while (nums[i] > 1) { // nums[i]保留到1，把其他物品都展开
+            weight.push_back(weight[i]);
+            value.push_back(value[i]);
+            nums[i]--;
+        }
+    }
+
+    vector<int> dp(bagWeight + 1, 0);
+    for(int i = 0; i < weight.size(); i++) { // 遍历物品
+        for(int j = bagWeight; j >= weight[i]; j--) { // 遍历背包容量
+            dp[j] = max(dp[j], dp[j - weight[i]] + value[i]);
+        }
+        for (int j = 0; j <= bagWeight; j++) {
+            cout << dp[j] << " ";
+        }
+        cout << endl;
+    }
+    cout << dp[bagWeight] << endl;
+
+}
+int main() {
+    test_multi_pack();
+}
+```
+
 ### 3、打家劫舍 [↑](./README.md)
+
+### (21) 198、打家劫舍
+题目链接：https://leetcode-cn.com/problems/house-robber/
+```python
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+        if len(nums) == 0:
+            return 0
+        if len(nums) == 1:
+            return nums[0]
+        dp = [0] * len(nums)
+        dp[0] = nums[0]
+        dp[1] = max(nums[0], nums[1])
+        for i in range(2, len(nums)):
+            dp[i] = max(dp[i-2]+nums[i], dp[i-1])
+        return dp[-1]
+```
+
+### (22) 213、打家劫舍II
+题目链接：https://leetcode-cn.com/problems/house-robber-ii/
+```python
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+      if (n := len(nums)) == 0:
+        return 0
+      if n == 1:
+        return nums[0]
+      result1 = self.robRange(nums, 0, n - 2)
+      result2 = self.robRange(nums, 1, n - 1)
+      return max(result1 , result2)
+
+    def robRange(self, nums: List[int], start: int, end: int) -> int:
+      if end == start: return nums[start]
+      dp = [0] * len(nums)
+      dp[start] = nums[start]
+      dp[start + 1] = max(nums[start], nums[start + 1])
+      for i in range(start + 2, end + 1):
+        dp[i] = max(dp[i -2] + nums[i], dp[i - 1])
+      return dp[end]
+```
+
+### (23) 337、打家劫舍III
+题目链接：https://leetcode-cn.com/problems/house-robber-iii/
+```python
+class Solution:
+    def rob(self, root: TreeNode) -> int:
+        result = self.robTree(root)
+        return max(result[0], result[1])
+    
+    #长度为2的数组，0：不偷，1：偷
+    def robTree(self, cur):
+        if not cur:
+            return (0, 0) #这里返回tuple, 也可以返回list
+        left = self.robTree(cur.left)
+        right = self.robTree(cur.right)
+        #偷cur
+        val1 = cur.val + left[0] + right[0]
+        #不偷cur
+        val2 = max(left[0], left[1]) + max(right[0], right[1])
+        return (val2, val1)
+```
+
 
 ### 4、股票问题 [↑](./README.md)
 
+### (24) 121、买卖股票的最佳时机
+题目链接：https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/
+```c++
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int len = prices.size();
+        if (len == 0) return 0;
+        vector<vector<int>> dp(len, vector<int>(2));
+        dp[0][0] -= prices[0];
+        dp[0][1] = 0;
+        for (int i = 1; i < len; i++) {
+            dp[i][0] = max(dp[i - 1][0], -prices[i]);
+            dp[i][1] = max(dp[i - 1][1], prices[i] + dp[i - 1][0]);
+        }
+        return dp[len - 1][1];
+    }
+};
+```
+
+### (25) 122、买卖股票的最佳时机II
+题目链接：https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-ii/
+```c++
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int len = prices.size();
+        vector<vector<int>> dp(len, vector<int>(2, 0));
+        dp[0][0] -= prices[0];
+        dp[0][1] = 0;
+        for (int i = 1; i < len; i++) {
+            dp[i][0] = max(dp[i - 1][0], dp[i - 1][1] - prices[i]); // 注意这里是和121. 买卖股票的最佳时机唯一不同的地方。
+            dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] + prices[i]);
+        }
+        return dp[len - 1][1];
+    }
+};
+```
+
+### (26) 123、买卖股票的最佳时机III
+题目链接：https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iii/
+```C++
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        if (prices.size() == 0) return 0;
+        vector<vector<int>> dp(prices.size(), vector<int>(5, 0));
+        dp[0][1] = -prices[0];
+        dp[0][3] = -prices[0];
+        for (int i = 1; i < prices.size(); i++) {
+            dp[i][0] = dp[i - 1][0];
+            dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] - prices[i]);
+            dp[i][2] = max(dp[i - 1][2], dp[i - 1][1] + prices[i]);
+            dp[i][3] = max(dp[i - 1][3], dp[i - 1][2] - prices[i]);
+            dp[i][4] = max(dp[i - 1][4], dp[i - 1][3] + prices[i]);
+        }
+        return dp[prices.size() - 1][4];
+    }
+};
+```
+
+### (27) 188、买卖股票的最佳时机IV
+题目链接：https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/
+```C++
+class Solution {
+public:
+    int maxProfit(int k, vector<int>& prices) {
+
+        if (prices.size() == 0) return 0;
+        vector<vector<int>> dp(prices.size(), vector<int>(2 * k + 1, 0));
+        for (int j = 1; j < 2 * k; j += 2) {
+            dp[0][j] = -prices[0];
+        }
+        for (int i = 1;i < prices.size(); i++) {
+            for (int j = 0; j < 2 * k - 1; j += 2) {
+                dp[i][j + 1] = max(dp[i - 1][j + 1], dp[i - 1][j] - prices[i]);
+                dp[i][j + 2] = max(dp[i - 1][j + 2], dp[i - 1][j + 1] + prices[i]);
+            }
+        }
+        return dp[prices.size() - 1][2 * k];
+    }
+};
+```
+
+### (28) 309、最佳买卖股票时机含冷冻期
+题目链接：https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/
+```C++
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int n = prices.size();
+        if (n == 0) return 0;
+        vector<vector<int>> dp(n, vector<int>(4, 0));
+        dp[0][0] -= prices[0]; // 持股票
+        for (int i = 1; i < n; i++) {
+            dp[i][0] = max(dp[i - 1][0], max(dp[i - 1][3], dp[i - 1][1]) - prices[i]);
+            dp[i][1] = max(dp[i - 1][1], dp[i - 1][3]);
+            dp[i][2] = dp[i - 1][0] + prices[i];
+            dp[i][3] = dp[i - 1][2];
+        }
+        return max(dp[n - 1][3],max(dp[n - 1][1], dp[n - 1][2]));
+    }
+};
+```
+
+### (29) 714、买卖股票的最佳时机含手续费
+题目链接：https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/
+```C++
+class Solution {
+public:
+    int maxProfit(vector<int>& prices, int fee) {
+        int n = prices.size();
+        vector<vector<int>> dp(n, vector<int>(2, 0));
+        dp[0][0] -= prices[0]; // 持股票
+        for (int i = 1; i < n; i++) {
+            dp[i][0] = max(dp[i - 1][0], dp[i - 1][1] - prices[i]);
+            dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] + prices[i] - fee);
+        }
+        return max(dp[n - 1][0], dp[n - 1][1]);
+    }
+};
+```
 ### 5、子序列问题 [↑](./README.md)
 
 ### 5.1 子序列不连续 [↑](./README.md)
 
+### (30) 300、最长递增子序列
+题目链接：https://leetcode-cn.com/problems/longest-increasing-subsequence/
+```c++
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        if (nums.size() <= 1) return nums.size();
+        vector<int> dp(nums.size(), 1);
+        int result = 0;
+        for (int i = 1; i < nums.size(); i++) {
+            for (int j = 0; j < i; j++) {
+                if (nums[i] > nums[j]) dp[i] = max(dp[i], dp[j] + 1);
+            }
+            if (dp[i] > result) result = dp[i]; // 取长的子序列
+        }
+        return result;
+    }
+};
+```
+
+### (31) 1143、最长公共子序列
+题目链接：https://leetcode-cn.com/problems/longest-common-subsequence/
+```C++
+class Solution {
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        vector<vector<int>> dp(text1.size() + 1, vector<int>(text2.size() + 1, 0));
+        for (int i = 1; i <= text1.size(); i++) {
+            for (int j = 1; j <= text2.size(); j++) {
+                if (text1[i - 1] == text2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        return dp[text1.size()][text2.size()];
+    }
+};
+```
+
+```python
+class Solution:
+    def longestCommonSubsequence(self, text1: str, text2: str) -> int:
+        len1, len2 = len(text1)+1, len(text2)+1
+        dp = [[0 for _ in range(len1)] for _ in range(len2)] # 先对dp数组做初始化操作
+        for i in range(1, len2):
+            for j in range(1, len1): # 开始列出状态转移方程
+                if text1[j-1] == text2[i-1]:
+                    dp[i][j] = dp[i-1][j-1]+1 
+                else:
+                    dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+        return dp[-1][-1]
+```
+
+### (32) 1035、不相交的线
+题目链接：https://leetcode-cn.com/problems/uncrossed-lines/
+```c++
+class Solution {
+public:
+    int maxUncrossedLines(vector<int>& A, vector<int>& B) {
+        vector<vector<int>> dp(A.size() + 1, vector<int>(B.size() + 1, 0));
+        for (int i = 1; i <= A.size(); i++) {
+            for (int j = 1; j <= B.size(); j++) {
+                if (A[i - 1] == B[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        return dp[A.size()][B.size()];
+    }
+};
+```
+
 ### 5.2 子序列连续 [↑](./README.md)
 
-### 5.3 编辑距离 [↑](./README.md)
 
+### (33) 674、最长连读递增序列
+题目链接：https://leetcode-cn.com/problems/longest-continuous-increasing-subsequence/
+```C++
+class Solution {
+public:
+    int findLengthOfLCIS(vector<int>& nums) {
+        if (nums.size() == 0) return 0;
+        int result = 1;
+        vector<int> dp(nums.size() ,1);
+        for (int i = 0; i < nums.size() - 1; i++) {
+            if (nums[i + 1] > nums[i]) { // 连续记录
+                dp[i + 1] = dp[i] + 1;
+            }
+            if (dp[i + 1] > result) result = dp[i + 1];
+        }
+        return result;
+    }
+};
+```
+
+### (34) 718、最长重复子数组
+题目链接：https://leetcode-cn.com/problems/maximum-length-of-repeated-subarray/
+```C++
+class Solution {
+public:
+    int findLength(vector<int>& A, vector<int>& B) {
+        vector<vector<int>> dp (A.size() + 1, vector<int>(B.size() + 1, 0));
+        int result = 0;
+        for (int i = 1; i <= A.size(); i++) {
+            for (int j = 1; j <= B.size(); j++) {
+                if (A[i - 1] == B[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                }
+                if (dp[i][j] > result) result = dp[i][j];
+            }
+        }
+        return result;
+    }
+};
+```
+
+
+### (35) 53、最大子序和
+题目链接：https://leetcode-cn.com/problems/maximum-subarray/
+```c++
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        if (nums.size() == 0) return 0;
+        vector<int> dp(nums.size());
+        dp[0] = nums[0];
+        int result = dp[0];
+        for (int i = 1; i < nums.size(); i++) {
+            dp[i] = max(dp[i - 1] + nums[i], nums[i]); // 状态转移公式
+            if (dp[i] > result) result = dp[i]; // result 保存dp[i]的最大值
+        }
+        return result;
+    }
+};
+```
+
+### 5.3 编辑距离 [↑](./README.md)
+### (36) 392、判断子序列
+题目链接：https://leetcode-cn.com/problems/is-subsequence/
+```c++
+class Solution {
+public:
+    bool isSubsequence(string s, string t) {
+        vector<vector<int>> dp(s.size() + 1, vector<int>(t.size() + 1, 0));
+        for (int i = 1; i <= s.size(); i++) {
+            for (int j = 1; j <= t.size(); j++) {
+                if (s[i - 1] == t[j - 1]) dp[i][j] = dp[i - 1][j - 1] + 1;
+                else dp[i][j] = dp[i][j - 1];
+            }
+        }
+        if (dp[s.size()][t.size()] == s.size()) return true;
+        return false;
+    }
+};
+```
+
+### (37) 115、不同的子序列
+题目链接：https://leetcode-cn.com/problems/distinct-subsequences/
+```C++
+class Solution {
+public:
+    int numDistinct(string s, string t) {
+        vector<vector<uint64_t>> dp(s.size() + 1, vector<uint64_t>(t.size() + 1));
+        for (int i = 0; i < s.size(); i++) dp[i][0] = 1;
+        for (int j = 1; j < t.size(); j++) dp[0][j] = 0;
+        for (int i = 1; i <= s.size(); i++) {
+            for (int j = 1; j <= t.size(); j++) {
+                if (s[i - 1] == t[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];
+                } else {
+                    dp[i][j] = dp[i - 1][j];
+                }
+            }
+        }
+        return dp[s.size()][t.size()];
+    }
+};
+```
+
+### (38) 583、两个字符串的删除操作
+题目链接：https://leetcode-cn.com/problems/delete-operation-for-two-strings/
+```C++
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+        vector<vector<int>> dp(word1.size() + 1, vector<int>(word2.size() + 1));
+        for (int i = 0; i <= word1.size(); i++) dp[i][0] = i;
+        for (int j = 0; j <= word2.size(); j++) dp[0][j] = j;
+        for (int i = 1; i <= word1.size(); i++) {
+            for (int j = 1; j <= word2.size(); j++) {
+                if (word1[i - 1] == word2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = min({dp[i - 1][j - 1] + 2, dp[i - 1][j] + 1, dp[i][j - 1] + 1});
+                }
+            }
+        }
+        return dp[word1.size()][word2.size()];
+    }
+};
+```
+
+### (39) 72、编辑距离
+题目链接：https://leetcode-cn.com/problems/edit-distance/
+```C++
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+        vector<vector<int>> dp(word1.size() + 1, vector<int>(word2.size() + 1, 0));
+        for (int i = 0; i <= word1.size(); i++) dp[i][0] = i;
+        for (int j = 0; j <= word2.size(); j++) dp[0][j] = j;
+        for (int i = 1; i <= word1.size(); i++) {
+            for (int j = 1; j <= word2.size(); j++) {
+                if (word1[i - 1] == word2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                }
+                else {
+                    dp[i][j] = min({dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]}) + 1;
+                }
+            }
+        }
+        return dp[word1.size()][word2.size()];
+    }
+};
+```
 ### 5.4 回文 [↑](./README.md)
 
+### (40) 647、回文子串
+题目链接：https://leetcode-cn.com/problems/palindromic-substrings/
+```C++
+class Solution {
+public:
+    int countSubstrings(string s) {
+        vector<vector<bool>> dp(s.size(), vector<bool>(s.size(), false));
+        int result = 0;
+        for (int i = s.size() - 1; i >= 0; i--) {  // 注意遍历顺序
+            for (int j = i; j < s.size(); j++) {
+                if (s[i] == s[j]) {
+                    if (j - i <= 1) { // 情况一 和 情况二
+                        result++;
+                        dp[i][j] = true;
+                    } else if (dp[i + 1][j - 1]) { // 情况三
+                        result++;
+                        dp[i][j] = true;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+};
+```
 
-
+### (41) 516、最长回文子序列
+题目链接：https://leetcode-cn.com/problems/longest-palindromic-subsequence/
+```C++
+class Solution {
+public:
+    int longestPalindromeSubseq(string s) {
+        vector<vector<int>> dp(s.size(), vector<int>(s.size(), 0));
+        for (int i = 0; i < s.size(); i++) dp[i][i] = 1;
+        for (int i = s.size() - 1; i >= 0; i--) {
+            for (int j = i + 1; j < s.size(); j++) {
+                if (s[i] == s[j]) {
+                    dp[i][j] = dp[i + 1][j - 1] + 2;
+                } else {
+                    dp[i][j] = max(dp[i + 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        return dp[0][s.size() - 1];
+    }
+};
+```
 
