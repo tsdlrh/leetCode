@@ -5532,8 +5532,7 @@ class Solution:
             c=a+b
             a,b=b,c
         return c      
-···
-
+```
 ### (3) 746、使用最小花费爬楼梯
 题目链接：https://leetcode-cn.com/problems/min-cost-climbing-stairs/
 ```python
