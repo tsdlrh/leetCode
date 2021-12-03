@@ -5521,6 +5521,19 @@ class Solution:
         return dp[-1]
 ```
 
+```python
+#法二：
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        if n<=2:
+            return n
+        a,b,c=1,2,0
+        for i in range(2,n):
+            c=a+b
+            a,b=b,c
+        return c      
+···
+
 ### (3) 746、使用最小花费爬楼梯
 题目链接：https://leetcode-cn.com/problems/min-cost-climbing-stairs/
 ```python
