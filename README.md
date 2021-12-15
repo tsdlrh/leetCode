@@ -5488,6 +5488,22 @@ class Solution:
 
 ### (1) 509、斐波那契数
 题目链接：https://leetcode-cn.com/problems/fibonacci-number/
+```c++
+class Solution {
+public:
+    int fib(int N) {
+        if (N <= 1) return N;
+        vector<int> dp(N + 1);
+        dp[0] = 0;
+        dp[1] = 1;
+        for (int i = 2; i <= N; i++) {
+            dp[i] = dp[i - 1] + dp[i - 2];
+        }
+        return dp[N];
+    }
+};
+```
+
 ```python
 class Solution:
     def fib(self, n: int) -> int:
@@ -5506,8 +5522,25 @@ class Solution:
             return n
         return self.fib(n - 1) + self.fib(n - 2)
 ```
+
 ### (2) 70、爬楼梯
 题目链接：https://leetcode-cn.com/problems/climbing-stairs/
+```c++
+class Solution {
+public:
+    int climbStairs(int n) {
+        if (n <= 1) return n; // 因为下面直接对dp[2]操作了，防止空指针
+        vector<int> dp(n + 1);
+        dp[1] = 1;
+        dp[2] = 2;
+        for (int i = 3; i <= n; i++) { // 注意i是从3开始的
+            dp[i] = dp[i - 1] + dp[i - 2];
+        }
+        return dp[n];
+    }
+};
+```
+
 ```python
 class Solution:
     def climbStairs(self, n: int) -> int:
@@ -5535,6 +5568,22 @@ class Solution:
 ```
 ### (3) 746、使用最小花费爬楼梯
 题目链接：https://leetcode-cn.com/problems/min-cost-climbing-stairs/
+```c++
+class Solution {
+public:
+    int minCostClimbingStairs(vector<int>& cost) {
+        vector<int> dp(cost.size());
+        dp[0] = cost[0];
+        dp[1] = cost[1];
+        for (int i = 2; i < cost.size(); i++) {
+            dp[i] = min(dp[i - 1], dp[i - 2]) + cost[i];
+        }
+        // 注意最后一步可以理解为不用花费，所以取倒数第一步，第二步的最少值
+        return min(dp[cost.size() - 1], dp[cost.size() - 2]);
+    }
+};
+```
+
 ```python
 class Solution:
     def minCostClimbingStairs(self, cost: List[int]) -> int:
@@ -5548,6 +5597,23 @@ class Solution:
 
 ### (4) 62、不同路径
 题目链接：https://leetcode-cn.com/problems/unique-paths/
+```c++
+class Solution {
+public:
+    int uniquePaths(int m, int n) {
+        vector<vector<int>> dp(m, vector<int>(n, 0));
+        for (int i = 0; i < m; i++) dp[i][0] = 1;
+        for (int j = 0; j < n; j++) dp[0][j] = 1;
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+};
+```
+
 ```python
 class Solution: # 动态规划
     def uniquePaths(self, m: int, n: int) -> int:
@@ -5562,6 +5628,26 @@ class Solution: # 动态规划
 
 ### (5) 63、不同路径II
 题目链接：https://leetcode-cn.com/problems/unique-paths-ii/
+```c++
+class Solution {
+public:
+    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+        int m = obstacleGrid.size();
+        int n = obstacleGrid[0].size();
+        vector<vector<int>> dp(m, vector<int>(n, 0));
+        for (int i = 0; i < m && obstacleGrid[i][0] == 0; i++) dp[i][0] = 1;
+        for (int j = 0; j < n && obstacleGrid[0][j] == 0; j++) dp[0][j] = 1;
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                if (obstacleGrid[i][j] == 1) continue;
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+};
+```
+
 ```python
 class Solution:
     def uniquePathsWithObstacles(self, obstacleGrid: List[List[int]]) -> int:
@@ -5592,6 +5678,22 @@ class Solution:
 
 ### (6) 343、整数拆分
 题目链接：https://leetcode-cn.com/problems/integer-break/
+```c++
+class Solution {
+public:
+    int integerBreak(int n) {
+        vector<int> dp(n + 1);
+        dp[2] = 1;
+        for (int i = 3; i <= n ; i++) {
+            for (int j = 1; j < i - 1; j++) {
+                dp[i] = max(dp[i], max((i - j) * j, dp[i - j] * j));
+            }
+        }
+        return dp[n];
+    }
+};
+```
+
 ```python
 class Solution:
     def integerBreak(self, n: int) -> int:
@@ -5608,6 +5710,22 @@ class Solution:
 
 ### (7) 96、不同的二叉搜索树
 题目链接：https://leetcode-cn.com/problems/unique-binary-search-trees/
+```c++
+class Solution {
+public:
+    int numTrees(int n) {
+        vector<int> dp(n + 1);
+        dp[0] = 1;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= i; j++) {
+                dp[i] += dp[j - 1] * dp[i - j];
+            }
+        }
+        return dp[n];
+    }
+};
+```
+
 ```python
 class Solution:
     def numTrees(self, n: int) -> int:
@@ -5662,6 +5780,35 @@ int main() {
 
 ### (9) 416、分割等和子集
 题目链接：https://leetcode-cn.com/problems/partition-equal-subset-sum/
+```c++
+class Solution {
+public:
+    bool canPartition(vector<int>& nums) {
+        int sum = 0;
+
+        // dp[i]中的i表示背包内总和
+        // 题目中说：每个数组中的元素不会超过 100，数组的大小不会超过 200
+        // 总和不会大于20000，背包最大只需要其中一半，所以10001大小就可以了
+        vector<int> dp(10001, 0);
+        for (int i = 0; i < nums.size(); i++) {
+            sum += nums[i];
+        }
+        if (sum % 2 == 1) return false;
+        int target = sum / 2;
+
+        // 开始 01背包
+        for(int i = 0; i < nums.size(); i++) {
+            for(int j = target; j >= nums[i]; j--) { // 每一个元素一定是不可重复放入，所以从大到小遍历
+                dp[j] = max(dp[j], dp[j - nums[i]] + nums[i]);
+            }
+        }
+        // 集合中的元素正好可以凑成总和target
+        if (dp[target] == target) return true;
+        return false;
+    }
+};
+```
+
 ```python
 class Solution:
     def canPartition(self, nums: List[int]) -> bool:
@@ -5676,6 +5823,24 @@ class Solution:
 ```
 ### (10) 1049、最后一块石头的重量II
 题目链接：https://leetcode-cn.com/problems/last-stone-weight-ii/
+```c++
+class Solution {
+public:
+    int lastStoneWeightII(vector<int>& stones) {
+        vector<int> dp(15001, 0);
+        int sum = 0;
+        for (int i = 0; i < stones.size(); i++) sum += stones[i];
+        int target = sum / 2;
+        for (int i = 0; i < stones.size(); i++) { // 遍历物品
+            for (int j = target; j >= stones[i]; j--) { // 遍历背包
+                dp[j] = max(dp[j], dp[j - stones[i]] + stones[i]);
+            }
+        }
+        return sum - dp[target] - dp[target];
+    }
+};
+```
+
 ```python
 class Solution:
     def lastStoneWeightII(self, stones: List[int]) -> int:
@@ -5690,6 +5855,27 @@ class Solution:
 
 ### (11) 494、目标和
 题目链接：https://leetcode-cn.com/problems/target-sum/
+```c++
+class Solution {
+public:
+    int findTargetSumWays(vector<int>& nums, int S) {
+        int sum = 0;
+        for (int i = 0; i < nums.size(); i++) sum += nums[i];
+        if (S > sum) return 0; // 此时没有方案
+        if ((S + sum) % 2 == 1) return 0; // 此时没有方案
+        int bagSize = (S + sum) / 2;
+        vector<int> dp(bagSize + 1, 0);
+        dp[0] = 1;
+        for (int i = 0; i < nums.size(); i++) {
+            for (int j = bagSize; j >= nums[i]; j--) {
+                dp[j] += dp[j - nums[i]];
+            }
+        }
+        return dp[bagSize];
+    }
+};
+```
+
 ```python
 class Solution:
     def findTargetSumWays(self, nums: List[int], target: int) -> int:
@@ -5706,6 +5892,28 @@ class Solution:
 
 ### (12) 474、一和零
 题目链接：https://leetcode-cn.com/problems/ones-and-zeroes/
+```c++
+class Solution {
+public:
+    int findMaxForm(vector<string>& strs, int m, int n) {
+        vector<vector<int>> dp(m + 1, vector<int> (n + 1, 0)); // 默认初始化0
+        for (string str : strs) { // 遍历物品
+            int oneNum = 0, zeroNum = 0;
+            for (char c : str) {
+                if (c == '0') zeroNum++;
+                else oneNum++;
+            }
+            for (int i = m; i >= zeroNum; i--) { // 遍历背包容量且从后向前遍历！
+                for (int j = n; j >= oneNum; j--) {
+                    dp[i][j] = max(dp[i][j], dp[i - zeroNum][j - oneNum] + 1);
+                }
+            }
+        }
+        return dp[m][n];
+    }
+};
+```
+
 ```python
 class Solution:
     def findMaxForm(self, strs: List[str], m: int, n: int) -> int:
@@ -5749,6 +5957,22 @@ int main() {
 
 ### (14) 518、零钱兑换II
 题目链接：https://leetcode-cn.com/problems/coin-change-2/
+```c++
+class Solution {
+public:
+    int change(int amount, vector<int>& coins) {
+        vector<int> dp(amount + 1, 0);
+        dp[0] = 1;
+        for (int i = 0; i < coins.size(); i++) { // 遍历物品
+            for (int j = coins[i]; j <= amount; j++) { // 遍历背包
+                dp[j] += dp[j - coins[i]];
+            }
+        }
+        return dp[amount];
+    }
+};
+```
+
 ```python
 class Solution:
     def change(self, amount: int, coins: List[int]) -> int:
@@ -5764,6 +5988,24 @@ class Solution:
 
 ### (15) 377、组合总和IV
 题目链接：https://leetcode-cn.com/problems/combination-sum-iv/
+```c++
+class Solution {
+public:
+    int combinationSum4(vector<int>& nums, int target) {
+        vector<int> dp(target + 1, 0);
+        dp[0] = 1;
+        for (int i = 0; i <= target; i++) { // 遍历背包
+            for (int j = 0; j < nums.size(); j++) { // 遍历物品
+                if (i - nums[j] >= 0 && dp[i] < INT_MAX - dp[i - nums[j]]) {
+                    dp[i] += dp[i - nums[j]];
+                }
+            }
+        }
+        return dp[target];
+    }
+};
+```
+
 ```python
 class Solution:
     def combinationSum4(self, nums, target):
@@ -5901,6 +6143,23 @@ int main() {
 
 ### (21) 198、打家劫舍
 题目链接：https://leetcode-cn.com/problems/house-robber/
+```c++
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        if (nums.size() == 0) return 0;
+        if (nums.size() == 1) return nums[0];
+        vector<int> dp(nums.size());
+        dp[0] = nums[0];
+        dp[1] = max(nums[0], nums[1]);
+        for (int i = 2; i < nums.size(); i++) {
+            dp[i] = max(dp[i - 2] + nums[i], dp[i - 1]);
+        }
+        return dp[nums.size() - 1];
+    }
+};
+```
+
 ```python
 class Solution:
     def rob(self, nums: List[int]) -> int:
@@ -5918,6 +6177,31 @@ class Solution:
 
 ### (22) 213、打家劫舍II
 题目链接：https://leetcode-cn.com/problems/house-robber-ii/
+```c++
+// 注意注释中的情况二情况三，以及把198.打家劫舍的代码抽离出来了
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        if (nums.size() == 0) return 0;
+        if (nums.size() == 1) return nums[0];
+        int result1 = robRange(nums, 0, nums.size() - 2); // 情况二
+        int result2 = robRange(nums, 1, nums.size() - 1); // 情况三
+        return max(result1, result2);
+    }
+    // 198.打家劫舍的逻辑
+    int robRange(vector<int>& nums, int start, int end) {
+        if (end == start) return nums[start];
+        vector<int> dp(nums.size());
+        dp[start] = nums[start];
+        dp[start + 1] = max(nums[start], nums[start + 1]);
+        for (int i = start + 2; i <= end; i++) {
+            dp[i] = max(dp[i - 2] + nums[i], dp[i - 1]);
+        }
+        return dp[end];
+    }
+};
+```
+
 ```python
 class Solution:
     def rob(self, nums: List[int]) -> int:
@@ -5941,6 +6225,27 @@ class Solution:
 
 ### (23) 337、打家劫舍III
 题目链接：https://leetcode-cn.com/problems/house-robber-iii/
+```c++
+class Solution {
+public:
+    int rob(TreeNode* root) {
+        vector<int> result = robTree(root);
+        return max(result[0], result[1]);
+    }
+    // 长度为2的数组，0：不偷，1：偷
+    vector<int> robTree(TreeNode* cur) {
+        if (cur == NULL) return vector<int>{0, 0};
+        vector<int> left = robTree(cur->left);
+        vector<int> right = robTree(cur->right);
+        // 偷cur
+        int val1 = cur->val + left[0] + right[0];
+        // 不偷cur
+        int val2 = max(left[0], left[1]) + max(right[0], right[1]);
+        return {val2, val1};
+    }
+};
+```
+
 ```python
 class Solution:
     def rob(self, root: TreeNode) -> int:
