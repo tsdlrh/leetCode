@@ -5178,6 +5178,28 @@ class Solution:
 
 ### (1) 455、分发饼干
 题目链接：https://leetcode-cn.com/problems/assign-cookies/
+```C++
+class Solution {
+public:
+    int findContentChildren(vector<int>& g, vector<int>& s) {
+    //先对小孩和饼干数组排序
+    sort(g.begin(),g.end());
+    sort(s.begin(),s.end());
+
+    //从后向前遍历小孩
+    int index=s.size()-1;
+    int res=0;
+    for(int i=g.size()-1;i>=0;i--){
+        if(index>=0 && s[index]>=g[i]){
+            res++;
+            index--;
+        }
+    }
+    return res;
+    }
+};
+```
+
 ```python
 class Solution:
     def findContentChildren(self, g: List[int], s: List[int]) -> int:
@@ -5191,6 +5213,34 @@ class Solution:
 ```
 ### (2) 1005、K次取反后最大化的数组和
 题目链接：https://leetcode-cn.com/problems/maximize-sum-of-array-after-k-negations/
+```C++
+class Solution {
+static bool cmp(int a,int b){
+    return abs(a)>abs(b);
+}
+public:
+    int largestSumAfterKNegations(vector<int>& nums, int k) {
+      //按照绝对值从大到小排序
+      sort(nums.begin(),nums.end(),cmp);
+      //从前向后遍历
+      for(int i=0;i<nums.size();i++){
+          if(nums[i]<0 && k>0){
+              nums[i]=-nums[i];
+              k--;
+          }
+      }
+      //如果k还大于0，反复转变最小元素
+      if(k%2==1){
+          nums[nums.size()-1]*=(-1);
+      }
+      //求和
+      int res=0;
+      for(int a:nums) res+=a;
+      return res;
+    }
+};
+```
+
 ```python
 class Solution:
     def largestSumAfterKNegations(self, A: List[int], K: int) -> int:
@@ -5205,6 +5255,37 @@ class Solution:
 ```
 ### (3) 860、柠檬水找零
 题目链接：https://leetcode-cn.com/problems/lemonade-change/
+```C++
+class Solution {
+public:
+    bool lemonadeChange(vector<int>& bills) {
+     int five=0,ten=0;
+     for(int i=0;i<bills.size();i++){
+         if(bills[i]==5) five++;
+         if(bills[i]==10){
+             if(five>0){
+                 five--;
+                 ten++;
+             }else{
+                 return false;
+             }
+         }
+         if(bills[i]==20){
+             if(five>0 && ten>0){
+                 five--;
+                 ten--;
+             }else if(five>=3){
+                 five-=3;
+             }else{
+                 return false;
+             }
+         }
+     }
+     return true;
+    }
+};
+```
+
 ```python
 class Solution:
     def lemonadeChange(self, bills: List[int]) -> bool:
@@ -5232,6 +5313,24 @@ class Solution:
 
 ### (4) 376、摆动序列
 题目链接：https://leetcode-cn.com/problems/wiggle-subsequence/
+```C++
+class Solution {
+public:
+    int wiggleMaxLength(vector<int>& nums) {
+       int curDiff=0;
+       int preDiff=0;
+       int res=1;
+       for(int i=1;i<nums.size();i++){
+           curDiff=nums[i]-nums[i-1];
+           if((preDiff<=0 && curDiff>0) || (preDiff>=0 && curDiff<0)){
+               res++;
+               preDiff=curDiff;
+           }
+       }
+       return res;
+    }
+};
+```
 ```python
 class Solution:
     def wiggleMaxLength(self, nums: List[int]) -> int:
@@ -5245,6 +5344,26 @@ class Solution:
 ```
 ### (5) 738、单调递增的数字
 题目链接：https://leetcode-cn.com/problems/monotone-increasing-digits/
+```C++
+class Solution {
+public:
+    int monotoneIncreasingDigits(int n) {
+       string strNum=to_string(n);
+       int flag=strNum.size();
+       for(int i=strNum.size()-1;i>0;i--){
+           if(strNum[i-1]>strNum[i]){
+               flag=i;
+               strNum[i-1]--;
+           }
+       }
+       for(int i=flag;i<strNum.size();i++){
+           strNum[i]='9';
+       }
+       return stoi(strNum);
+    }
+};
+```
+
 ```python
 class Solution:
     def monotoneIncreasingDigits(self, n: int) -> int:
@@ -5262,6 +5381,37 @@ class Solution:
 
 ### (6) 122、买卖股票的最佳时机II
 题目链接：https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-ii/
+```C++
+
+class Solution {
+public:
+     //动态规划解法
+    int maxProfit(vector<int>& prices) {
+     vector<vector<int>> dp(prices.size(),vector<int>(2,0));
+     dp[0][0]=-prices[0];
+     dp[0][1]=0;
+     for(int i=1;i<prices.size();i++){
+         dp[i][0]=max(dp[i-1][0],dp[i-1][1]-prices[i]);
+         dp[i][1]=max(dp[i-1][1],prices[i]+dp[i-1][0]);
+     }
+     return max(dp[prices.size()-1][1],dp[prices.size()-1][0]);
+    }
+};
+
+class Solution{
+    public:
+    //贪心解法：只收集正利润
+    int maxProfit(vector<int>& prices) {
+        int res=0;
+        for(int i=1;i<prices.size();i++){
+            res += max(prices[i] - prices[i - 1], 0);
+        }
+        return res;
+    }
+};
+
+```
+
 ```python
 class Solution:
     def maxProfit(self, prices: List[int]) -> int:
@@ -5273,6 +5423,52 @@ class Solution:
 
 ### (7) 714、买卖股票的最佳时机含手续费
 题目链接：https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/
+```C++
+class Solution {
+public:
+    //动态规划法求解
+    int maxProfit(vector<int>& prices,int fee) {
+     vector<vector<int>> dp(prices.size(),vector<int>(2,0));
+     dp[0][0]=-prices[0];
+     dp[0][1]=0;
+     for(int i=1;i<prices.size();i++){
+         dp[i][0]=max(dp[i-1][0],dp[i-1][1]-prices[i]);
+         dp[i][1]=max(dp[i-1][1],prices[i]+dp[i-1][0]-fee);
+     }
+     return max(dp[prices.size()-1][1],dp[prices.size()-1][0]);
+    }
+};
+
+
+class Solution{
+    public:
+    //贪心解法
+    int maxProfit(vector<int>& prices,int fee) {
+        int minPrice=prices[0];
+        int profit=0;
+        for(int i=1;i<prices.size();i++){
+            //情况一:买入。遇到更低点，就记录买入日期
+            if(prices[i]<minPrice){
+                minPrice=prices[i];
+            }
+
+            //情况二：不操作
+            if(prices[i]>minPrice && prices[i]<minPrice+fee){
+                continue;
+            }
+
+            //情况三：卖出。计算收获利润，更新买入价格
+            if(prices[i]>minPrice+fee){
+                profit+=prices[i]-minPrice-fee;
+                minPrice=prices[i]-fee;
+            }
+        }
+        return profit;
+    }
+};
+```
+
+
 ```python
 class Solution: # 贪心思路
     def maxProfit(self, prices: List[int], fee: int) -> int:
@@ -5293,6 +5489,29 @@ class Solution: # 贪心思路
 
 ### (8) 135、分发糖果
 题目链接：https://leetcode-cn.com/problems/candy/
+```C++
+class Solution {
+public:
+    int candy(vector<int>& ratings) {
+       int n=ratings.size();
+       vector<int> candy(n,1);
+
+        //从前向后遍历，判断i与i-1
+       for(int i=1;i<n;i++){
+           if(ratings[i]>ratings[i-1]) candy[i]=candy[i-1]+1;
+       }
+       //从后向前遍历，判断i与i+1
+       for(int i=n-2;i>=0;i--){
+           if(ratings[i]>ratings[i+1]) candy[i]=max(candy[i],candy[i+1]+1);
+       }
+
+       int res=0;
+       for(int k:candy) res+=k;
+       return res;
+    }
+};
+```
+
 ```python
 class Solution:
     def candy(self, ratings: List[int]) -> int:
@@ -5307,6 +5526,25 @@ class Solution:
 ```
 ### (9) 406、根据身高重建序列
 题目链接：https://leetcode-cn.com/problems/queue-reconstruction-by-height/
+```C++
+class Solution {
+public:
+    static bool cmp(const vector<int> a,const vector<int> b){
+        if(a[0]==b[0]) return a[1]<b[1];
+        return a[0]>b[0];
+    }
+    vector<vector<int>> reconstructQueue(vector<vector<int>>& people) {
+        sort(people.begin(),people.end(),cmp);
+        vector<vector<int>> res;
+        for(int i=0;i<people.size();i++){
+            int pos=people[i][1];
+            res.insert(res.begin()+pos,people[i]);
+        }
+    return res;
+    }
+};
+```
+
 ```python
 class Solution:
     def reconstructQueue(self, people: List[List[int]]) -> List[List[int]]:
@@ -5323,6 +5561,21 @@ class Solution:
 ### 5、区间问题 [↑](./README.md)
 ### (10) 55、跳跃游戏
 题目链接：https://leetcode-cn.com/problems/jump-game/
+```C++
+class Solution {
+public:
+    bool canJump(vector<int>& nums) {
+      int cover=0;
+      if(nums.size()==1) return true;
+      for(int i=0;i<=cover;i++){
+          cover=max(i+nums[i],cover);
+          if(cover>=nums.size()-1) return true;
+      }
+      return false;
+    }
+};
+```
+
 ```python
 class Solution:
     def canJump(self, nums: List[int]) -> bool:
@@ -5338,6 +5591,30 @@ class Solution:
 ```
 ### (11) 45、跳跃游戏II
 题目链接：https://leetcode-cn.com/problems/jump-game-ii/
+```C++
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+      int ans=0;
+      int curDis=0;
+      int nextDis=0;
+      for(int i=0;i<nums.size();i++){
+          nextDis=max(nums[i]+i,nextDis);//下一步的最大覆盖范围下标
+          if(i==curDis){
+              if(curDis!=nums.size()-1)//如果当前的最大覆盖最远距离下标没达到终点
+              {
+                  ans++;//步长加一
+                  curDis=nextDis;//下一步的最大覆盖范围
+                  if(nextDis>=nums.size()-1) break;
+              }else break;
+          }
+      }
+      return ans;
+
+    }
+};
+```
+
 ```python
 class Solution:
     def jump(self, nums: List[int]) -> int:
@@ -5357,6 +5634,29 @@ class Solution:
 
 ### (12) 452、用最少数量的箭引爆气球
 题目链接：https://leetcode-cn.com/problems/minimum-number-of-arrows-to-burst-balloons/
+```C++
+class Solution {
+public:
+    static bool cmp(const vector<int>& a,const vector<int>& b){
+        return a[0]<b[0];
+    }
+    int findMinArrowShots(vector<vector<int>>& points) {
+        if(points.size()==0) return 0;
+        int res=1;
+        sort(points.begin(),points.end(),cmp);
+        for(int i=1;i<points.size();i++){
+            if(points[i][0]>points[i-1][1]){//两个气球不挨着
+               res++;
+            }else{
+                points[i][1]=min(points[i-1][1],points[i][1]);//更新最小右边界
+            }
+        }
+        return res;
+
+    }
+};
+```
+
 ```python
 class Solution:
     def findMinArrowShots(self, points: List[List[int]]) -> int:
@@ -5373,6 +5673,28 @@ class Solution:
 
 ### (13) 435、无重叠区间
 题目链接：https://leetcode-cn.com/problems/non-overlapping-intervals/
+```C++
+class Solution {
+public:
+    static bool cmp(const vector<int>& a,const vector<int>& b){
+        return a[1]<b[1];
+    }
+    int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+        if(intervals.size()<=1) return 0;
+        int res=1;
+        sort(intervals.begin(),intervals.end(),cmp);
+        int end=intervals[0][1];//区间分割点（最小右边界）
+        for(int i=1;i<intervals.size();i++){
+            if(end<=intervals[i][0]){
+                end=intervals[i][1];
+                res++;
+            }
+        }
+        return intervals.size()-res;
+    }
+};
+```
+
 ```python
 class Solution:
     def eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:
@@ -5389,6 +5711,29 @@ class Solution:
 
 ### (14) 763、划分字母区间
 题目链接： https://leetcode-cn.com/problems/partition-labels/
+```C++
+class Solution {
+public:
+    vector<int> partitionLabels(string s) {
+      int hash[27]={0};//字母i最后出现的位置
+      for(int i=0;i<s.size();i++){
+          hash[s[i]-'a']=i;
+      }
+      vector<int> res;
+      int right=0;
+      int left=0;
+      for(int i=0;i<s.size();i++){
+          right=max(right,hash[s[i]-'a']);
+          if(i==right){
+            res.push_back(right-left+1);
+            left=i+1;
+          }
+      }
+      return res;
+    }
+};
+```
+
 ```python
 class Solution:
     def partitionLabels(self, s: str) -> List[int]:
@@ -5409,6 +5754,31 @@ class Solution:
 
 ### (15) 56、合并区间
 题目链接：https://leetcode-cn.com/problems/merge-intervals/
+```C++
+class Solution {
+public:
+    static bool cmp(const vector<int>& a, const vector<int>& b){
+        return a[0]<b[0];
+    }
+    vector<vector<int>> merge(vector<vector<int>>& intervals) {
+       int n=intervals.size();
+       if(n<=1) return intervals;
+       sort(intervals.begin(),intervals.end(),cmp);
+       vector<vector<int>> res;
+       res.push_back(intervals[0]);
+     
+       for(int i=1;i<n;i++){
+           if(res.back()[1]>=intervals[i][0]){
+               res.back()[1]=max(res.back()[1],intervals[i][1]);
+           }else{
+               res.push_back(intervals[i]);
+           }
+       }
+       return res;
+    }
+};
+```
+
 ```python
 class Solution:
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
@@ -5428,6 +5798,49 @@ class Solution:
 
 ### (16) 134、加油站
 题目链接：https://leetcode-cn.com/problems/gas-station/
+```C++
+class Solution {
+public:
+    //暴力解法
+    int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
+      for(int i=0;i<cost.size();i++){
+          int rest=gas[i]-cost[i];
+          int index=(i+1)%cost.size();
+          while(index!=i && rest>0){
+              rest+=gas[index]-cost[index];
+              index=(index+1)%cost.size();
+          }
+          if(rest>=0 && index==i) return i;
+      }
+      return -1;
+    }
+    
+};
+
+
+class Solution {
+public:
+    //贪心解法
+    int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
+      int totalSum=0;
+      int curSum=0;
+      int start=0;
+
+      for(int i=start;i<gas.size();i++){
+          curSum+=gas[i]-cost[i];
+          totalSum+=gas[i]-cost[i];
+          if(curSum<0){
+              start=i+1;
+              curSum=0;
+          }
+      }
+      if(totalSum<0) return -1;
+      return start;
+    }
+    
+};
+```
+
 ```python
 class Solution:
     def canCompleteCircuit(self, gas: List[int], cost: List[int]) -> int:
@@ -5445,6 +5858,41 @@ class Solution:
 ```
 ### (17) 53、最大子序和
 题目链接：https://leetcode-cn.com/problems/maximum-subarray/
+```C++
+//动态规划法
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+      int n=nums.size();
+      if(n==1) return nums[0];
+      if(n==0) return 0;
+      vector<int> dp(n,0);
+      int res=nums[0];
+      dp[0]=nums[0];
+      for(int i=1;i<n;i++){
+            dp[i]=max(dp[i-1]+nums[i],nums[i]);   
+            res=max(res,dp[i]);
+      }
+      return res;
+    }
+};
+
+//贪心解法
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+      int res=INT32_MIN;
+      int count=0;
+      for(int i=0;i<nums.size();i++){
+         count+=nums[i];
+         res=max(res,count);
+         if(count<=0) count=0;
+      }
+      return res;
+    }
+};
+```
+
 ```python
 class Solution:
     def maxSubArray(self, nums: List[int]) -> int:
@@ -5460,7 +5908,55 @@ class Solution:
 ```
 ### (18) 968、监控二叉树
 题目链接：https://leetcode-cn.com/problems/binary-tree-cameras/
+```C++
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+private:
+    int res;
+    int traversal(TreeNode* cur){
+        if(cur==NULL) return 2; //空节点对应有覆盖状态
+        int left=traversal(cur->left);
+        int right=traversal(cur->right);
+        if(left==2 && right==2) return 0; //左右节点都有覆盖，其父节点无覆盖
+        if(left==0 || right==0) {   //左右节点至少有一个无覆盖，本节点有摄像头，摄像头数量加一
+            res++;
+            return 1;
+        }
+        if(left==1 || right==1) return 2; //左右节点至少有一个有摄像头，其父节点有覆盖
+        return -1;
+    }
+public:
+    int minCameraCover(TreeNode* root) {
+     res=0;
+     if(traversal(root)==0){//头结点无覆盖的情况，增加一个头结点摄像头，数量加一
+         res++;
+     }
+     return res;
+
+    }
+};
+
+```
+
+
 ```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
 class Solution:
     def minCameraCover(self, root: TreeNode) -> int:
         result = 0
