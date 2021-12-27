@@ -4743,6 +4743,31 @@ class Solution:
 
 ### (1) 77、组合
 题目链接：https://leetcode-cn.com/problems/combinations/
+```C++
+class Solution {
+private:
+    vector<vector<int>> res;
+    vector<int> path;
+    void backtracking(int n,int k,int startIndex){
+        if(path.size()==k){  //终止条件
+            res.push_back(path); //存放结果
+            return;
+        }
+
+        for(int i=startIndex;i<=n;i++){  //选择本层集合元素
+            path.push_back(i);  //处理节点
+            backtracking(n,k,i+1); //回溯
+            path.pop_back(); //撤销处理结果
+        }
+    }
+public:
+    vector<vector<int>> combine(int n, int k) {
+       backtracking(n,k,1);
+       return res;
+    }
+};
+```
+
 ```python
 #方法一：
 class Solution:
@@ -4780,6 +4805,36 @@ class Solution:
 
 ### (2) 216、组合总和III
 题目链接：https://leetcode-cn.com/problems/combination-sum-iii/
+```c++
+class Solution {
+private:
+    vector<vector<int>> res;
+    vector<int> path;
+    void backtracking(int n,int k,int totalSum,int startIndex){
+        if(path.size()==k){
+            if(totalSum==n){
+              res.push_back(path);  //终止条件包括组合中的个数为K并且，组合中的总和为N
+            }
+            return;
+        }
+
+        for(int i=startIndex;i<=9;i++){
+            totalSum+=i;
+            path.push_back(i);
+            backtracking(n,k,totalSum,i+1);
+            totalSum-=i;  //回溯向前一步，需要减去当前的值，接着上一个集合的结果重新累加
+            path.pop_back(); //回溯，删除最后一个元素
+            
+        }
+    }
+public:
+    vector<vector<int>> combinationSum3(int k, int n) {
+       backtracking(n,k,0,1);
+       return res;
+    }
+};
+```
+
 ```python
 class Solution:
     def combinationSum3(self, k: int, n: int) -> List[List[int]]:
@@ -4802,6 +4857,49 @@ class Solution:
 
 ### (3) 17、电话号码的字母组合
 题目链接：https://leetcode-cn.com/problems/letter-combinations-of-a-phone-number/
+```c++
+class Solution {
+private:
+    const string tell[10]={ "", // 0
+        "", // 1
+        "abc", // 2
+        "def", // 3
+        "ghi", // 4
+        "jkl", // 5
+        "mno", // 6
+        "pqrs", // 7
+        "tuv", // 8
+        "wxyz" // 9
+        };
+    vector<string> res;
+    string s;
+    void backtracking(string digits,int index){
+        //终止条件
+        if(index==digits.size()){
+            res.push_back(s);
+            return;
+        }
+
+        //单步搜索过程
+        int digit = digits[index]-'0';  //将index指向的数字转换成int
+        string letters = tell[digit]; //取出数字对应的字符集
+        for(int i=0;i<letters.size();i++){
+            s.push_back(letters[i]);
+            backtracking(digits,index+1);
+            s.pop_back();
+            
+        }
+    }
+public:
+    vector<string> letterCombinations(string digits) {
+     if(digits=="") return res;
+     backtracking(digits,0);
+     return res;
+    }
+};
+```
+
+
 ```python
 class Solution:
     ans = []
@@ -4838,6 +4936,38 @@ class Solution:
 
 ### (4) 39、组合总和
 题目链接：https://leetcode-cn.com/problems/combination-sum/
+```C++
+class Solution {
+private:
+    vector<vector<int>> res;
+    vector<int> path;
+    void backtracking(vector<int>& candidates, int target, int sum,int startIndex){
+    
+        if(sum==target){
+            res.push_back(path);
+            return;
+        }
+        //关键点一：终止条件需要添加sum>target的情况
+        if(sum>target){
+           return;
+        }
+        for(int i=startIndex;i<candidates.size();i++){
+            sum+=candidates[i];
+            path.push_back(candidates[i]);
+            backtracking(candidates,target,sum,i); //关键点二：次数选取i作为回溯的值，实现重复选取
+            sum-=candidates[i];
+            path.pop_back();
+
+        }
+    }
+public:
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+      backtracking(candidates,target,0,0);
+      return res;
+    }
+};
+```
+
 ```python
 class Solution:
     def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
@@ -4860,6 +4990,44 @@ class Solution:
 
 ### (5) 40、组合总和II
 题目链接：https://leetcode-cn.com/problems/combination-sum-ii/
+```c++
+class Solution {
+private:
+    vector<vector<int>> res;
+    vector<int> path;
+    void backtracking(vector<int>& candidates, int target,int sum,int startIndex, vector<bool>& used){
+        //终止条件
+        if(sum>target){
+            return;
+        }
+        if(sum==target){
+            res.push_back(path);
+            return;
+        }
+        //单步搜索过程
+        for(int i=startIndex;i<candidates.size();i++){
+            if(i>0 && candidates[i]==candidates[i-1] && used[i-1]==false){
+                continue;//如果同一树层中有相同的元素，则跳过
+            }
+            sum+=candidates[i];
+            path.push_back(candidates[i]);
+            used[i]=true;  //标记该元素被使用过
+            backtracking(candidates,target,sum,i+1,used);
+            used[i]=false;  //回溯过程，重新标记为未使用过
+            sum-=candidates[i];
+            path.pop_back();
+        }
+    }
+public:
+    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+       vector<bool> used(candidates.size(),false);  //used的大小与candidates数组的长度相等
+       sort(candidates.begin(),candidates.end());
+       backtracking(candidates,target,0,0,used);
+       return res;
+    }
+};
+```
+
 ```python
 class Solution:
     def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
@@ -4885,6 +5053,48 @@ class Solution:
 
 ### (6) 131、分割回文串
 题目链接：https://leetcode-cn.com/problems/palindrome-partitioning/
+```C++
+class Solution {
+private:
+    vector<vector<string>> res;
+    vector<string> path;
+    //使用双指针法判断当前子串是否为回文串
+    bool isHuiWen(const string& s,int start,int end){
+        for(int i=start,j=end;i<j;i++,j--){
+            if(s[i]!=s[j])
+             return false;
+        }
+        return true;
+    }
+    //输入参数中的startIndex表示分割的位置
+    void backtacking(const string& s,int startIndex){
+        //终止条件：如果分割的位置大于字符串的长度，说明分割成功，添加字串
+        if(startIndex>=s.size()){
+            res.push_back(path);
+            return;
+        }
+        //单步搜索过程
+        for(int i=startIndex;i<s.size();i++){
+            //如果子串为回文串，就加到path中
+            if(isHuiWen(s,startIndex,i)){
+                string str=s.substr(startIndex,i-startIndex+1);
+                path.push_back(str);
+            }else{
+                continue;
+            }
+            //startIndex=i+1表示求取不重复的子串，分割的位置不同
+            backtacking(s,i+1);
+            path.pop_back();
+        }
+    }
+public:
+    vector<vector<string>> partition(string s) {
+        backtacking(s,0);
+        return res;
+    }
+};
+```
+
 ```python
 class Solution:
     def partition(self, s: str) -> List[List[str]]:
@@ -4905,6 +5115,68 @@ class Solution:
 
 ### (7) 93、复原IP地址
 题目链接：https://leetcode-cn.com/problems/restore-ip-addresses/
+```C++
+class Solution {
+private:
+    vector<string> res;
+    string ipstr;
+    
+    bool isValid(const string& s,int start, int end){
+        //起始位置大于结束位置的不合法
+        if(start>end){
+            return false;
+        }
+        //0开头的数字出现不合法
+        if(s[start]=='0' && start!=end){
+            return false;
+        }
+        int num=0;
+        for(int i=start;i<=end;i++){
+            if(s[i]>'9'||s[i]<'0'){//遇到非数字字符不合法
+                return false;
+            }
+            num=num*10+(s[i]-'0');
+            if(num>255){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    void backtracking(string s,int startIndex,int dotnum){
+        //终止条件
+        if(dotnum>3){
+            return;
+        }
+        if(dotnum==3){
+            //判断第四段子串是否合法，如果合法就放进resullt中
+            if(isValid(s,startIndex,s.size()-1)){
+              res.push_back(s);
+            }
+            return;
+        }
+
+        for(int i=startIndex;i<s.size();i++){
+            if(isValid(s,startIndex,i)){//判断这个区间的子串是否合法
+                s.insert(s.begin()+i+1,'.');//如果合法的话，就在i的后面加一个逗点
+                dotnum++;
+                backtracking(s,i+2,dotnum);//插入逗点之后，下一个子串的起始位置为i+2
+                dotnum--;
+                s.erase(s.begin()+i+1);//回溯，删掉逗点
+            }
+            else{
+                break; //不合法，直接结束本层循环
+            }            
+        }
+    }
+public:
+    vector<string> restoreIpAddresses(string s) {
+      backtracking(s,0,0);
+      return res;
+    }
+};
+```
+
 ```python
 class Solution(object):
     def restoreIpAddresses(self, s):
@@ -4938,6 +5210,30 @@ class Solution(object):
 
 ### (8) 78、子集
 题目链接：https://leetcode-cn.com/problems/subsets/
+```c++
+class Solution {
+private:
+    vector<vector<int>> res;
+    vector<int> path;
+    void backtracking(vector<int>& nums,int startIndex){
+         res.push_back(path);
+        if(startIndex>=nums.size()){
+            return;
+        }
+        for(int i=startIndex;i<nums.size();i++){
+            path.push_back(nums[i]);
+            backtracking(nums,i+1);
+            path.pop_back();
+        }
+    }
+public:
+    vector<vector<int>> subsets(vector<int>& nums) {
+      backtracking(nums,0);
+      return res;
+    }
+};
+```
+
 ```python
 class Solution:
     def subsets(self, nums: List[int]) -> List[List[int]]:
@@ -4955,6 +5251,34 @@ class Solution:
 
 ### (9) 90、子集II
 题目链接：https://leetcode-cn.com/problems/subsets-ii/
+```C++
+class Solution {
+private:
+    vector<vector<int>> res;
+    vector<int> path;
+    void backtracking(vector<int>& nums, int startIndex,vector<bool> used){
+        res.push_back(path);
+        for(int i=startIndex;i<nums.size();i++){
+            if(i>0 && nums[i]==nums[i-1] && used[i-1]==false){
+                continue; 
+            }
+            path.push_back(nums[i]);
+            used[i]=true;
+            backtracking(nums,i+1,used);
+            used[i]=false;
+            path.pop_back();
+        }
+    }
+public:
+    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+       vector<bool> used(nums.size(),false);
+       sort(nums.begin(),nums.end());
+       backtracking(nums,0,used);
+       return res;
+    }
+};
+```
+
 ```python
 class Solution:
     def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
@@ -4977,6 +5301,38 @@ class Solution:
 
 ### (10) 491、递增子序列
 题目链接：https://leetcode-cn.com/problems/increasing-subsequences/
+```c++
+class Solution {
+private:
+    vector<vector<int>> res;
+    vector<int> path;
+    void backtracking(vector<int>& nums,int startIndex){
+        
+        if(path.size()>1){//终止条件，递增子序列的大小至少为2
+           res.push_back(path);
+           //这里不需要加return,因为要取树上的所有节点
+        }
+
+        unordered_set<int> used;//使用set来对本层元素进行去重
+        for(int i=startIndex;i<nums.size();i++){
+            if((!path.empty() && nums[i]<path.back())
+            || used.find(nums[i])!=used.end()){// 当前元素比之前一个元素小 或者 同一父节点下的同层上使用过的元素就不能使用了 则跳过
+                continue;
+            }
+            used.insert(nums[i]);//记录这个元素在本层中用过了，本层后面不能再用了
+            path.push_back(nums[i]);
+            backtracking(nums,i+1);
+            path.pop_back();
+        }
+    }
+public:
+    vector<vector<int>> findSubsequences(vector<int>& nums) {
+       backtracking(nums,0);
+       return res;
+    }
+};
+```
+
 ```python
 class Solution:
     def findSubsequences(self, nums: List[int]) -> List[List[int]]:
@@ -5002,6 +5358,36 @@ class Solution:
 
 ### (11) 46、全排列
 题目链接：https://leetcode-cn.com/problems/permutations/
+```C++
+class Solution {
+private:
+    vector<vector<int>> res;
+    vector<int> path;
+    void backtracking(vector<int>& nums,vector<bool>& used){
+        
+        if(path.size()==nums.size()){
+            res.push_back(path);
+            return;
+        }
+        for(int i=0;i<nums.size();i++){
+            if(used[i]==true) continue;
+            used[i]=true;
+            path.push_back(nums[i]);
+            backtracking(nums,used);
+            used[i]=false;
+            path.pop_back();
+        }
+    }
+public:
+    vector<vector<int>> permute(vector<int>& nums) {
+      vector<bool> used(nums.size(),false);
+      backtracking(nums,used);
+      return res;
+    }
+};
+```
+
+
 ```python
 class Solution:
     def permute(self, nums: List[int]) -> List[List[int]]:
@@ -5025,6 +5411,40 @@ class Solution:
 
 ### (12) 47、全排列II
 题目链接：https://leetcode-cn.com/problems/permutations-ii/
+```c++
+class Solution {
+private:
+    vector<vector<int>> res;
+    vector<int> path;
+    void backtracking(vector<int>& nums,vector<bool> used){
+        if(path.size()==nums.size()){
+            res.push_back(path);
+            return;
+        }
+
+        for(int i=0;i<nums.size();i++){
+            if(i>0 && nums[i]==nums[i-1] && used[i-1]==false){
+                continue;
+            }
+            if(used[i]==false){
+                used[i]=true;
+                path.push_back(nums[i]);
+                backtracking(nums,used);
+                used[i]=false;
+                path.pop_back();
+            }
+        }
+    }
+public:
+    vector<vector<int>> permuteUnique(vector<int>& nums) {
+       vector<bool> used(nums.size(),false);
+       sort(nums.begin(),nums.end());
+       backtracking(nums,used);
+       return res;
+    }
+};
+```
+
 ```python
 class Solution:
     def permuteUnique(self, nums: List[int]) -> List[List[int]]:
@@ -5054,6 +5474,41 @@ class Solution:
 
 ### (13) 332、重新安排行程
 题目链接：https://leetcode-cn.com/problems/reconstruct-itinerary/
+```C++
+class Solution {
+private:
+// unordered_map<出发机场，map<到达机场,航班次数>> target
+unordered_map<string,map<string, int>> target;
+bool backtracking(int ticketNum,vector<string>& res){
+    if(res.size()==ticketNum+1){//遇到的机场个数，如果达到了（航班数量+1),说明就找到一种行程把所有的航班串在一起
+        return true;
+    }
+
+    for(pair<const string, int>& target: target[res[res.size()-1]]){
+        if(target.second>0){//记录到达机场是否飞过了
+            res.push_back(target.first);
+            target.second--;
+            if(backtracking(ticketNum,res)) return true;
+            res.pop_back();
+            target.second++;
+        }
+    }
+    return false;
+
+}
+public:
+    vector<string> findItinerary(vector<vector<string>>& tickets) {
+      vector<string> res;
+      for (const vector<string>& vec: tickets){
+          target[vec[0]][vec[1]]++;
+      }
+      res.push_back("JFK");
+      backtracking(tickets.size(),res);
+      return res;
+    }
+};
+```
+
 ```python
 class Solution:
     def findItinerary(self, tickets: List[List[str]]) -> List[str]:
@@ -5089,6 +5544,53 @@ class Solution:
 
 ### (14) 51、N皇后问题
 题目链接：https://leetcode-cn.com/problems/n-queens/
+```C++
+class Solution {
+private:
+    vector<vector<string>> res;
+    bool isValid(int row, int col, vector<string>& chessboard,int n){
+        for(int i=0;i<row;i++){
+            if(chessboard[i][col]=='Q')
+                return false;
+        }
+
+        for(int i=row-1,j=col-1;i>=0&&j>=0;i--,j--){
+            if(chessboard[i][j]=='Q')
+                return false;
+        }
+
+        for(int i=row-1,j=col+1;i>=0 && j<n;i--,j++){
+            if(chessboard[i][j]=='Q'){
+                return false;
+            }
+        }
+        return true;
+    }
+    void backtracking(int n,int row,vector<string>& chessboard){
+        if(row==n){
+            res.push_back(chessboard);
+            return;
+        }
+
+        for(int col=0;col<n;col++){
+            if(isValid(row,col,chessboard,n)){
+                chessboard[row][col]='Q';
+                backtracking(n,row+1,chessboard);
+                chessboard[row][col]='.';
+
+            }
+        }
+    }
+public:
+    vector<vector<string>> solveNQueens(int n) {
+         vector<string> chessboard(n,string(n,'.'));
+         backtracking(n,0,chessboard);
+         return res;
+    }
+};
+```
+
+
 ```python
 class Solution:
     def solveNQueens(self, n: int) -> List[List[str]]:
@@ -5137,6 +5639,54 @@ class Solution:
 ```
 ### (15) 37、解数独
 题目链接：https://leetcode-cn.com/problems/sudoku-solver/
+```c++
+class Solution {
+private:
+    bool isValid(int row, int col,char val,vector<vector<char>>& board){
+        for(int i=0;i<9;i++){
+            if(board[row][i]==val)
+               return false;
+        }
+
+        for(int j=0;j<9;j++){
+            if(board[j][col]==val)
+               return false;
+        }
+
+        int startRow=(row/3)*3;
+        int startCol=(col/3)*3;
+        for(int i=startRow;i<startRow+3;i++){
+            for(int j=startCol;j<startCol+3;j++){
+                if(board[i][j]==val){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    bool backtracking(vector<vector<char>>& board){
+        for(int i=0;i<board.size();i++){
+            for(int j=0;j<board[0].size();j++){
+                if(board[i][j]!='.') continue;
+                for(char k='1'; k<='9';k++){
+                    if(isValid(i,j,k,board)){
+                        board[i][j]=k;
+                        if(backtracking(board)) return true;
+                        board[i][j]='.';
+                    }
+                }
+                return false;
+            }
+        }
+        return true;
+    }
+public:
+    void solveSudoku(vector<vector<char>>& board) {
+        backtracking(board);
+    }
+};
+```
+
 ```python
 class Solution:
     def solveSudoku(self, board: List[List[str]]) -> None:
