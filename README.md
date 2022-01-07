@@ -3434,6 +3434,51 @@ class Solution:
 
 ### （1）144、二叉树的前序遍历
 题目链接：https://leetcode-cn.com/problems/binary-tree-preorder-traversal/
+```C++
+//递归法
+class Solution {
+public:
+    void traversal(TreeNode* cur,vector<int>& vec){
+        if(cur==NULL) return;
+        vec.push_back(cur->val);
+        traversal(cur->left,vec);
+        traversal(cur->right,vec);
+    }
+
+    vector<int> preorderTraversal(TreeNode* root) {
+      vector<int> res;
+       traversal(root,res);
+       return res;
+    }
+};
+
+
+//迭代法
+class Solution{
+public:
+    vector<int> preorderTraversal(TreeNode* root){
+        vector<int> res;
+        stack<TreeNode*> st;
+        if(root!=NULL) st.push(root);
+        while(!st.empty()){
+            TreeNode* node=st.top();
+            if(node!=NULL){
+                st.pop();
+                if(node->right) st.push(node->right);
+                if(node->left) st.push(node->left);
+                st.push(node);
+                st.push(NULL);
+            }else{
+                st.pop();
+                node=st.top();
+                st.pop();
+                res.push_back(node->val);
+            }
+        }
+        return res;
+    }
+};
+```
 
 ```python
 class Solution:
@@ -3459,6 +3504,23 @@ class Solution:
 
 ### （2）145、二叉树的后序遍历
 题目链接：https://leetcode-cn.com/problems/binary-tree-postorder-traversal/
+```c++
+class Solution {
+public:
+    void traversal(TreeNode* cur, vector<int>& vec){
+        if(cur==NULL) return;
+        traversal(cur->left,vec);
+        traversal(cur->right,vec);
+        vec.push_back(cur->val);
+    }
+    vector<int> postorderTraversal(TreeNode* root) {
+      vector<int> vec;
+      traversal(root,vec);
+      return vec;
+    }
+};
+```
+
 ```python
 class Solution:
     def postorderTraversal(self, root: TreeNode) -> List[int]:
@@ -3485,6 +3547,23 @@ class Solution:
 
 ### （3）94、二叉树的中序遍历
 题目链接：https://leetcode-cn.com/problems/binary-tree-inorder-traversal/
+```C++
+class Solution {
+public:
+    void traversal(TreeNode* cur,vector<int>& vec){
+        if(cur==NULL) return;
+        traversal(cur->left,vec);
+        vec.push_back(cur->val);
+        traversal(cur->right,vec);
+    }
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int> vec;
+        traversal(root,vec);
+        return vec;
+    }
+};
+```
+
 
 ```python
 class Solution:
@@ -3512,6 +3591,30 @@ class Solution:
 
 ### （4）102、二叉树的层序遍历
 题目链接：https://leetcode-cn.com/problems/binary-tree-level-order-traversal/
+```c++
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        queue<TreeNode*> que;
+        if(root!=NULL) que.push(root);
+        vector<vector<int>> res;
+        while(!que.empty()){
+            int size=que.size();
+            vector<int> vec;
+            for(int i=0;i<size;i++){
+                TreeNode* node=que.front();
+                que.pop();
+                vec.push_back(node->val);
+                if(node->left) que.push(node->left);
+                if(node->right) que.push(node->right);
+            }
+            res.push_back(vec);
+        }
+     return res;
+    }
+};
+```
+
 
 ```python
 # Definition for a binary tree node.
@@ -3543,6 +3646,31 @@ class Solution:
 
 ### （5）107、二叉树的层序遍历II
 题目链接：https://leetcode-cn.com/problems/binary-tree-level-order-traversal-ii/
+```C++
+lass Solution {
+public:
+    vector<vector<int>> levelOrderBottom(TreeNode* root) {
+        vector<vector<int>> res;
+        queue<TreeNode*> que;
+        if(root!=NULL) que.push(root);
+        while(!que.empty()){
+            int size=que.size();
+            vector<int> vec;
+            for(int i=0;i<size;i++){
+                TreeNode* node=que.front();
+                que.pop();
+                vec.push_back(node->val);
+                if(node->left) que.push(node->left);
+                if(node->right) que.push(node->right);
+            }
+            res.push_back(vec);
+        }
+        reverse(res.begin(),res.end());
+        return res;
+    }
+};
+```
+
 
 ```python
 # Definition for a binary tree node.
@@ -3576,6 +3704,30 @@ class Solution:
 
 ### (6) 199、二叉树的右视图
 题目链接：https://leetcode-cn.com/problems/binary-tree-right-side-view/
+```c++
+class Solution {
+public:
+    vector<int> rightSideView(TreeNode* root) {
+        queue<TreeNode*> que;
+        vector<int> res;
+        if(root!=NULL) que.push(root);
+        while(!que.empty()){
+            int size=que.size();
+            for(int i=0;i<size;i++){
+                TreeNode* node=que.front();
+                que.pop();
+                //将每一层的最后一个元素放入res数组中
+                if(i==(size-1)) res.push_back(node->val);
+
+                if(node->left) que.push(node->left);
+                if(node->right) que.push(node->right);
+            }
+        }
+    return res;
+    }
+};
+```
+
 
 ```python
 # Definition for a binary tree node.
@@ -3614,6 +3766,30 @@ class Solution:
 
 ### (7) 637、二叉树的层平均值
 题目链接：https://leetcode-cn.com/problems/average-of-levels-in-binary-tree/
+```C++
+class Solution {
+public:
+    vector<double> averageOfLevels(TreeNode* root) {
+        queue<TreeNode*> que;
+        vector<double> res;
+        if(root!=NULL) que.push(root);
+        while(!que.empty()){
+            int size=que.size();
+            double sum=0;
+            for(int i=0;i<size;i++){
+                TreeNode* node=que.front();
+                que.pop();
+                sum+=node->val;
+                if(node->left) que.push(node->left);
+                if(node->right) que.push(node->right);
+            }
+            res.push_back(sum/size);
+        }
+    return res;
+    }
+};
+```
+
 
 ```python
 # Definition for a binary tree node.
@@ -3650,6 +3826,33 @@ class Solution:
 
 ### (8) 429、N叉树的层序遍历
 题目链接：https://leetcode-cn.com/problems/n-ary-tree-level-order-traversal/
+```c++
+class Solution {
+public:
+    vector<vector<int>> levelOrder(Node* root) {
+        queue<Node*> que;
+        vector<vector<int>> res;
+        if(root!=NULL) que.push(root);
+        while(!que.empty()){
+            int size=que.size();
+            vector<int> vec;
+            for(int i=0;i<size;i++){
+                Node* node=que.front();
+                que.pop();
+                vec.push_back(node->val);
+                for(int i=0;i<node->children.size();i++){
+                    if(node->children[i])
+                    que.push(node->children[i]);
+                }
+            }
+            res.push_back(vec);
+        }
+     return res;
+    }
+};
+```
+
+
 ```python
 """
 # Definition for a Node.
@@ -3661,46 +3864,21 @@ class Node:
 
 class Solution:
     def levelOrder(self, root: 'Node') -> List[List[int]]:
-        if not root:
-            return []
-        
-        quene = deque([root])
-        out_list = []
-
-        while quene:
-            in_list = []
-
-            for _ in range(len(quene)):
-                node = quene.popleft()
-                in_list.append(node.val)
-                if node.children:
-                    # 这个地方要用extend而不是append，我们看下面的例子：
-                    # In [18]: alist=[]
-                    # In [19]: alist.append([1,2,3])
-                    # In [20]: alist
-                    # Out[20]: [[1, 2, 3]]
-                    # In [21]: alist.extend([4,5,6])
-                    # In [22]: alist
-                    # Out[22]: [[1, 2, 3], 4, 5, 6]
-                    # 可以看到extend对要添加的list进行了一个解包操作
-                    # print(root.children)，可以得到children是一个包含
-                    # 孩子节点地址的list，我们使用for遍历quene的时候，
-                    # 希望quene是一个单层list，所以要用extend
-                    # 使用extend的情况，如果print(quene),结果是
-                    # deque([<__main__.Node object at 0x7f60763ae0a0>])
-				   # deque([<__main__.Node object at 0x7f607636e6d0>, <__main__.Node object at 0x7f607636e130>, <__main__.Node object at 0x7f607636e310>])
-				  # deque([<__main__.Node object at 0x7f607636e880>, <__main__.Node object at 0x7f607636ef10>])
-				  # 可以看到是单层list
-                    # 如果使用append，print(quene)的结果是
-                    # deque([<__main__.Node object at 0x7f18907530a0>])
-				  # deque([[<__main__.Node object at 0x7f18907136d0>, <__main__.Node object at 0x7f1890713130>, <__main__.Node object at 0x7f1890713310>]])
-				  # 可以看到是两层list，这样for的遍历就会报错
-                    
-                    quene.extend(node.children)
-                
-            out_list.append(in_list)
-        
-        return out_list
+        que=[]
+        res=[]
+        if root!=None:
+            que.append(root)
+        while que:
+            size=len(que)
+            vec=[]
+            for i in range(size):
+                node=que.pop(0)
+                vec.append(node.val)
+                for i in range(len(node.children)):
+                    if node.children[i]:
+                        que.append(node.children[i])
+            res.append(vec)
+        return res
 ```
 
 ### (9) 515、在每个树行中找最大值
@@ -3729,9 +3907,66 @@ public:
     }
 };
 ```
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def largestValues(self, root: TreeNode) -> List[int]:
+        que=[]
+        res=[]
+        if root!=None:
+            que.append(root)
+        while que:
+            size=len(que)
+            maxVal=-float('inf')
+            for i in range(size):
+                node=que.pop(0)
+                maxVal=max(maxVal,node.val)
+                if node.left: que.append(node.left)
+                if node.right: que.append(node.right)
+            res.append(maxVal)
+        return res
+```
+
 ### (10) 116、填充每个节点的下一个右侧节点指针
 题目链接：https://leetcode-cn.com/problems/populating-next-right-pointers-in-each-node/
-
+```C++
+class Solution {
+public:
+    Node* connect(Node* root) {
+        queue<Node*> que;
+        if(root!=NULL) que.push(root);
+        while(!que.empty()){
+            int size=que.size();
+            vector<int> vec;
+            Node* nodePre;
+            Node* cur;
+            for(int i=0;i<size;i++){
+               if(i==0){
+                   nodePre=que.front();
+                   que.pop();
+                   cur=nodePre;
+               }else{
+                   cur=que.front();
+                   que.pop();
+                   nodePre->next=cur;
+                   nodePre=nodePre->next;
+               }
+               if(cur->left) que.push(cur->left);
+               if(cur->right) que.push(cur->right);
+            }
+            nodePre->next=NULL;//本层最后一个节点指向NULL
+        }
+        return root;
+        
+    }
+};
+```
 ```python
 class Solution {
 public:
@@ -3799,10 +4034,48 @@ public:
     }
 };
 ```
+
+```python
+class Solution:
+    def connect(self, root: 'Node') -> 'Node':
+        que=[]
+        if root!=None:
+            que.append(root)
+        while que:
+            size=len(que)
+            nodePre=[]
+            cur=[]
+            for i in range(size):
+                if i==0:
+                    nodePre=que.pop(0)
+                    cur=nodePre
+                else:
+                    cur=que.pop(0)
+                    nodePre.next=cur
+                    nodePre=nodePre.next
+                if cur.left: que.append(cur.left)
+                if cur.right: que.append(cur.right)
+            nodePre.next=None
+        return root
+```
+
 ### 2、 求二叉树的属性 [↑](./README.md)
 
 ### (12) 226、翻转二叉树
 题目链接：https://leetcode-cn.com/problems/invert-binary-tree/
+```C++
+class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if(root==NULL) return root;
+        swap(root->left,root->right);
+        invertTree(root->left);
+        invertTree(root->right);
+        return root;
+    }
+};
+```
+
 
 ```python
 #递归法：前序遍历
@@ -3853,6 +4126,31 @@ class Solution:
 
 ### (13) 101、对称二叉树
 题目链接：https://leetcode-cn.com/problems/symmetric-tree/
+```C++
+class Solution {
+public:
+    bool isSymmetric(TreeNode* root) {
+        if(root==NULL) return false;
+        return Compare(root->left,root->right);
+    }
+
+    bool Compare(TreeNode* curleft,TreeNode* curright){
+        //排除空节点的情况，左空右不空， 右空左不空， 左右都空 （左右都不空的话，就继续下面的递归了）
+        if(curleft!=NULL && curright==NULL) return false;
+        if(curleft==NULL && curright==NULL) return true;
+        if(curleft==NULL && curright!=NULL) return false;
+        
+        //排除左右都不空时，两者的数值不同的情况
+        if(curleft->val != curright->val) return false;
+        bool outside=Compare(curleft->left,curright->right);
+        bool inside=Compare(curleft->right,curright->left);
+        bool isSame=outside && inside;
+        return isSame;
+
+    }
+};
+```
+
 ```python
 
 #递归法
@@ -3926,6 +4224,38 @@ class Solution:
 
 ### (14) 104、二叉树的最大深度
 题目链接：https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/
+```c++
+ //迭代法
+class Solution {
+public:
+    int maxDepth(TreeNode* root) {
+        queue<TreeNode*> que;
+        int res=0;
+        if(root!=NULL) que.push(root);
+        while(!que.empty()){
+            int size=que.size();
+            for(int i=0;i<size;i++){
+                TreeNode* cur=que.front();
+                que.pop();
+                if(cur->left) que.push(cur->left);
+                if(cur->right) que.push(cur->right);
+            }
+            res++;
+        }
+        return res;
+    }
+};
+
+//递归法
+class Solution{
+public:
+    int maxDepth(TreeNode* root){
+        if(root==NULL) return 0;
+        return 1+max(maxDepth(root->left),maxDepth(root->right));
+    }
+};
+```
+
 
 ```python
 #递归法：
@@ -3973,6 +4303,44 @@ class Solution:
 
 ### (15）559、N叉树的最大深度
 题目链接：https://leetcode-cn.com/problems/maximum-depth-of-n-ary-tree/
+```C++
+//递归法
+class Solution {
+public:
+    int maxDepth(Node* root) {
+        if(root==NULL) return 0;
+        int size=root->children.size();
+        int res=0;
+        for(int i=0;i<size;i++){
+           res = max(maxDepth(root->children[i]),res);
+        }
+        return 1+res;
+    }
+};
+
+//迭代法
+class Solution {
+public:
+    int maxDepth(Node* root) {
+        queue<Node*> que;
+        int res=0;
+        if(root!=NULL) que.push(root);
+        while(!que.empty()){
+            int size=que.size();
+            for(int i=0;i<size;i++){
+                Node* cur=que.front();
+                que.pop();
+                for(int j=0;j<cur->children.size();j++){
+                    if(cur->children[j]) 
+                    que.push(cur->children[j]);
+                }
+            }
+            res++;
+        }
+        return res;
+    }
+};
+```
 
 ```python
 #递归法：
@@ -4031,6 +4399,54 @@ class Solution:
 
 ### (16) 111、二叉树的最小深度
 题目链接：https://leetcode-cn.com/problems/minimum-depth-of-binary-tree/
+```C++
+/  //迭代法
+class Solution {
+public:
+    int minDepth(TreeNode* root) {
+        queue<TreeNode*> que;
+        if(root!=NULL){
+           que.push(root);
+        }else{
+           return 0;
+        }
+        int res=1;
+        while(!que.empty()){
+            int size=que.size();
+            for(int i=0;i<size;i++){
+                TreeNode* cur=que.front();
+                que.pop();
+                if(cur->left==NULL && cur->right==NULL) return res;
+                if(cur->left) que.push(cur->left);
+                if(cur->right) que.push(cur->right);
+            }
+            res++;
+        } 
+        return res;
+    }
+};
+
+
+class Solution{
+public: 
+    int minDepth(TreeNode* root){
+        if(root==NULL) return 0;
+        if(root->left==NULL && root->right==NULL){
+            return 1;
+        }
+
+        int res=INT32_MAX;
+        if(root->left){
+            res=min(res,minDepth(root->left));
+        }
+        if(root->right){
+            res=min(res,minDepth(root->right));
+        }
+        return res+1;
+    }
+};
+```
+
 
 ```python
 #递归法：
@@ -4073,6 +4489,45 @@ class Solution:
 ```
 ### (17) 222、完全二叉树的节点个数
 题目链接：https://leetcode-cn.com/problems/count-complete-tree-nodes/
+```C++
+
+ //迭代法
+class Solution {
+public:
+    int countNodes(TreeNode* root) {
+        queue<TreeNode*> que;
+        if(root==NULL){
+            return 0;
+        }else{
+            que.push(root);
+        }
+        int res=0;
+        while(!que.empty()){
+            int size=que.size();
+            for(int i=0;i<size;i++){
+                TreeNode* cur=que.front();
+                que.pop();
+                res++;
+                if(cur->left) que.push(cur->left);
+                if(cur->right) que.push(cur->right);
+            }
+        }
+        return res;
+
+    }
+};
+
+//递归法
+class Solution{
+public:
+    int countNodes(TreeNode* root){
+        if(root==NULL) return 0;
+        int leftNum=countNodes(root->left);
+        int rightNum=countNodes(root->right);
+        return leftNum+rightNum+1;
+    }
+};
+```
 
 ```python
 #递归法：
@@ -4137,6 +4592,20 @@ class Solution:
 
 ### (18) 110、平衡二叉树
 题目链接：https://leetcode-cn.com/problems/balanced-binary-tree/
+```C++
+class Solution {
+public:
+    int heightNum(TreeNode* node){
+        if(node==NULL) return 0;
+        return 1+max(heightNum(node->left),heightNum(node->right));
+    }
+    bool isBalanced(TreeNode* root) {
+      if(root==NULL) return true;
+      if(abs(heightNum(root->left)-heightNum(root->right))>1) return false;
+      return isBalanced(root->left)&&isBalanced(root->right);
+    }
+};
+```
 
 ```python
 #递归法：
@@ -4195,6 +4664,44 @@ class Solution:
 
 ### (19) 257、二叉树的所有路径
 题目链接：https://leetcode-cn.com/problems/binary-tree-paths/
+```C++
+class Solution {
+private:
+    vector<string> res;
+    void backtracking(TreeNode* cur, vector<int>& path, vector<string>& res){
+        path.push_back(cur->val);
+        if(cur->left==NULL && cur->right==NULL){
+            string s="";
+            for(int i=0;i<path.size()-1;i++){
+                s+=to_string(path[i]);
+                s+="->";
+            }
+            s+=to_string(path[path.size()-1]);
+            res.push_back(s);
+            return;
+        }
+
+        if(cur->left){
+            backtracking(cur->left,path,res);
+            path.pop_back();
+        }
+        if(cur->right){
+            backtracking(cur->right,path,res);
+            path.pop_back();
+        }
+
+    }
+public:
+    vector<string> binaryTreePaths(TreeNode* root) {
+      if(root==NULL) return res;
+      vector<int> path;
+      backtracking(root,path,res);
+      return res;
+
+    }
+};
+```
+
 ```python
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):
@@ -4251,6 +4758,46 @@ class Solution:
   
 ### (20) 404、左叶子之和
 题目链接：https://leetcode-cn.com/problems/sum-of-left-leaves/
+```c++
+//使用迭代法
+class Solution {
+public:
+    int sumOfLeftLeaves(TreeNode* root) {
+        if(root==NULL) return 0;
+        queue<TreeNode*> que;
+        int res=0;
+        que.push(root);
+        while(!que.empty()){
+            int size=que.size();
+            TreeNode* cur=que.front();
+            que.pop();
+            //判断是左叶子节点，不是左侧的节点！！！注意，
+            if(cur->left!=NULL && cur->left->left==NULL && cur->left->right==NULL){
+                res+=cur->left->val;
+            }
+            if(cur->left) que.push(cur->left);
+            if(cur->right) que.push(cur->right);
+
+        }
+       return res;
+    }
+};
+
+//使用递归法
+
+class Solution{
+public:
+    int sumOfLeftLeaves(TreeNode* root){
+        if(root==NULL) return 0;
+        int res=0;
+        if(root->left!=NULL && root->left->left==NULL && root->left->right==NULL){
+            res+=root->left->val;
+        }
+        return res+sumOfLeftLeaves(root->left)+sumOfLeftLeaves(root->right);
+    }
+};
+```
+
 ```python
   **递归**
 # Definition for a binary tree node.
@@ -4273,6 +4820,29 @@ class Solution:
 
 ### (21) 513、找树左下角的值
 题目链接：https://leetcode-cn.com/problems/find-bottom-left-tree-value/
+```C++
+class Solution {
+public:
+    int findBottomLeftValue(TreeNode* root) {
+      queue<TreeNode*> que;
+      if(root!=NULL) que.push(root);
+      int res=0;
+      while(!que.empty()){
+          int size=que.size();
+          for(int i=0;i<size;i++){
+            TreeNode* cur=que.front();
+            que.pop();
+            if(i==0) res=cur->val;  //记录每一行的第一个元素，循环SIZE次之后，记录的是最左下角的元素
+            if(cur->left) que.push(cur->left);
+            if(cur->right) que.push(cur->right);
+          }
+      } 
+      return res;
+
+    }
+};
+```
+
 ```python
 //递归法
 # Definition for a binary tree node.
@@ -4298,6 +4868,36 @@ class Solution:
 
 ### (22) 112、路径总和
 题目链接：https://leetcode-cn.com/problems/path-sum/
+```c++
+class Solution {
+private:
+    int res = 0;
+    bool backtracking(TreeNode* cur,int count){
+       if(!cur->left && !cur->right && count==0) return true;//遇到叶子节点并且目标数为0，返回true
+       if(!cur->left && !cur->right) return false;//遇到叶子节点直接返回
+
+       if(cur->left){
+           count-=cur->left->val;
+           if(backtracking(cur->left,count)) return true;
+           count+=cur->left->val;
+       } 
+
+       if(cur->right){
+           count-=cur->right->val;
+           if(backtracking(cur->right,count)) return true;
+           count+=cur->right->val;
+       }
+       return false;
+       
+    }
+public:
+    bool hasPathSum(TreeNode* root, int targetSum) {
+        if(root==NULL) return false;
+        return backtracking(root,targetSum-root->val);
+    }
+};
+```
+
 ```python
 # Definition for a binary tree node.
 # class TreeNode:
@@ -4329,6 +4929,49 @@ class Solution:
 
 ### (23) 113、路径总和II
 题目链接：https://leetcode-cn.com/problems/path-sum-ii/
+```c++
+class Solution {
+private:
+    vector<vector<int>> res;
+    vector<int> path;
+    void backtracking(TreeNode* cur, int count){
+        if(!cur->left && !cur->right && count==0){
+            res.push_back(path);
+            return;
+        }
+
+        if(!cur->left && !cur->right){
+            return;
+        }
+
+        if(cur->left){
+            count-=cur->left->val;
+            path.push_back(cur->left->val);
+            backtracking(cur->left,count);
+            count+=cur->left->val; 
+            path.pop_back();
+        }
+
+        if(cur->right){
+            count-=cur->right->val;
+            path.push_back(cur->right->val);
+            backtracking(cur->right,count);
+            count+=cur->right->val;
+            path.pop_back();
+        }
+        return;
+    }
+public:
+    vector<vector<int>> pathSum(TreeNode* root, int targetSum) {
+        if(root==NULL) return res;
+        //把根节点放进路径中
+        path.push_back(root->val);
+        backtracking(root,targetSum-root->val);
+        return res;
+    }
+};
+```
+
 ```python
 # Definition for a binary tree node.
 # class TreeNode:
@@ -4371,6 +5014,44 @@ class Solution:
 
 ### (24) 106、从中序与后序遍历序列构造二叉树
 题目链接：https://leetcode-cn.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/
+```c++
+class Solution {
+public:
+    TreeNode* traversal(vector<int>& inorder, vector<int>& postorder){
+        if(postorder.size()==0) return NULL;
+
+        int rootValue=postorder[postorder.size()-1];
+        TreeNode* root = new TreeNode(rootValue);
+
+        if(postorder.size()==1) return root;
+
+        //找到中序遍历的切割点
+        int del;
+        for(del=0;del<inorder.size();del++){
+            if(inorder[del]==rootValue) break;
+        }
+
+        //切割中序数组
+        vector<int> leftInorder(inorder.begin(),inorder.begin()+del);
+        vector<int> rightInorde(inorder.begin()+del+1,inorder.end());
+
+        //切割后序数组
+        postorder.resize(postorder.size()-1);
+        vector<int> leftPostorder(postorder.begin(),postorder.begin()+leftInorder.size());
+        vector<int> rightPostorder(postorder.begin()+leftInorder.size(),postorder.end());
+
+        root->left=traversal(leftInorder,leftPostorder);
+        root->right=traversal(rightInorde,rightPostorder);
+
+        return root;
+    }
+    TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
+      if(inorder.size()==0 || postorder.size()==0) return NULL;
+      return traversal(inorder,postorder);
+    }
+};
+```
+
 ```python
 # Definition for a binary tree node.
 # class TreeNode:
@@ -4391,6 +5072,38 @@ class Solution:
 
 ### (25) 105、从前序与中序遍历序列构造二叉树
 题目链接：https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/
+```C++
+class Solution {
+public:
+    TreeNode* traversal(vector<int>& preorder,vector<int>& inorder){
+        if(preorder.size()==0) return NULL;
+        int rootValue=preorder[0];
+        TreeNode* root=new TreeNode(rootValue);
+        if(preorder.size()==1) return root;
+
+        int del;
+        for(del=0;del<inorder.size();del++){
+            if(inorder[del]==rootValue)
+             break;
+        }
+
+        vector<int> leftInorder(inorder.begin(),inorder.begin()+del);
+        vector<int> rightInorder(inorder.begin()+del+1,inorder.end());
+
+        vector<int> leftPreorder(preorder.begin()+1,preorder.begin()+leftInorder.size()+1);
+        vector<int> rightPreorder(preorder.begin()+leftInorder.size()+1,preorder.end());
+
+        root->left=traversal(leftPreorder,leftInorder);
+        root->right=traversal(rightPreorder,rightInorder);
+        return root;
+    }
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        if(preorder.size()==0 || inorder.size()==0) return NULL;
+        return traversal(preorder,inorder);
+    }
+};
+```
+
 ```python
 # Definition for a binary tree node.
 # class TreeNode:
@@ -4411,6 +5124,42 @@ class Solution:
 
 ### (26) 654、最大二叉树
 题目链接：https://leetcode-cn.com/problems/maximum-binary-tree/
+```c++
+class Solution {
+public:
+    TreeNode* constructMaximumBinaryTree(vector<int>& nums) {
+        TreeNode* node=new TreeNode(0);
+        if(nums.size()==1){
+            node->val=nums[0];
+            return node;
+        }
+
+        int maxValue=nums[0];
+        int maxValueIndex=0;
+        for(int i=0;i<nums.size();i++){
+            if(nums[i]>maxValue){
+                maxValue=nums[i];
+                maxValueIndex=i;
+            }
+        }
+        node->val=maxValue;
+
+        if(maxValueIndex>0){
+            vector<int> newLeft(nums.begin(),nums.begin()+maxValueIndex);
+            node->left=constructMaximumBinaryTree(newLeft);
+        }
+
+        if(maxValueIndex<nums.size()-1){
+            vector<int> newRight(nums.begin()+maxValueIndex+1,nums.end());
+            node->right=constructMaximumBinaryTree(newRight);
+        }
+
+        return node;
+
+    }
+};
+```
+
 ```python
 # Definition for a binary tree node.
 # class TreeNode:
@@ -4434,6 +5183,21 @@ class Solution:
 
 ### (27) 617、合并二叉树
 题目链接：https://leetcode-cn.com/problems/merge-two-binary-trees/
+```C++
+class Solution {
+public:
+    TreeNode* mergeTrees(TreeNode* root1, TreeNode* root2) {
+          if(root1==NULL) return root2;
+          if(root2==NULL) return root1;
+
+          root1->val=root1->val+root2->val;
+          root1->left=mergeTrees(root1->left,root2->left);
+          root1->right=mergeTrees(root1->right,root2->right);
+          return root1;
+    }
+};
+```
+
 ```python
 # Definition for a binary tree node.
 # class TreeNode:
@@ -4456,6 +5220,22 @@ class Solution:
 
 ### (28) 700、二叉搜索树中的搜索
 题目链接:https://leetcode-cn.com/problems/search-in-a-binary-search-tree/
+```c++
+class Solution {
+public:
+    TreeNode* searchBST(TreeNode* root, int val) {
+        if(root==NULL || root->val==val) return root;
+        if(root->val > val){
+            return searchBST(root->left,val);
+        }else{
+            return searchBST(root->right,val);
+        }
+        return NULL;
+
+    }
+};
+```
+
 ```python
 
 #递归法：
@@ -4485,6 +5265,22 @@ class Solution:
 
 ### (29) 98、验证二叉搜索树
 题目链接：https://leetcode-cn.com/problems/validate-binary-search-tree/
+```C++
+class Solution {
+public:
+    long long maxValue=LONG_MIN;
+    bool isValidBST(TreeNode* root) {
+         if(root==NULL) return true;
+         bool left=isValidBST(root->left);
+         if(maxValue<root->val) maxValue=root->val;
+         else return false;
+         bool right=isValidBST(root->right);
+         return left&&right;
+
+    }
+};
+```
+
 ```python
 # Definition for a binary tree node.
 # class TreeNode:
@@ -4508,6 +5304,28 @@ class Solution:
 
 ### (30) 530、二叉搜索树的最小绝对差
 题目链接：https://leetcode-cn.com/problems/minimum-absolute-difference-in-bst/
+```c++
+class Solution {
+private:
+int res=INT_MAX;
+TreeNode* pre;
+    void traversal(TreeNode* cur){
+        if(cur==NULL) return ;
+        traversal(cur->left);
+        if(pre!=NULL){
+            res=min(res,cur->val-pre->val);
+        }
+        pre=cur;
+        traversal(cur->right);
+    }
+public:
+    int getMinimumDifference(TreeNode* root) {
+        traversal(root);
+        return res;
+    }
+};
+```
+
 ```python
 
 # Definition for a binary tree node.
@@ -4536,6 +5354,50 @@ class Solution:
 
 ### (31) 501、二叉树搜索树中的众数
 题目链接：https://leetcode-cn.com/problems/find-mode-in-binary-search-tree/solution/
+```C++
+class Solution {
+private:
+    int maxCount;
+    int count;
+    TreeNode* pre;
+    vector<int> res;
+    void traversal(TreeNode* cur){
+        if(cur==NULL) return;
+
+        traversal(cur->left);
+        if(pre==NULL){
+            count=1;
+        }else if(cur->val==pre->val){
+            count++;
+        }else{
+            count=1;
+        }
+        pre=cur;
+
+        if(count==maxCount){
+            res.push_back(cur->val);
+        }
+        if(count>maxCount){
+            maxCount=count;
+            res.clear();
+            pre=cur;
+            res.push_back(cur->val);
+        }
+        traversal(cur->right);
+    }
+public:
+    vector<int> findMode(TreeNode* root) {
+        maxCount=0;
+        count=0;
+        pre=NULL;
+        traversal(root);
+        return res;
+        
+
+    }
+};
+```
+
 ```python
 # Definition for a binary tree node.
 # class TreeNode:
@@ -4574,6 +5436,21 @@ class Solution:
 
 ### (32) 236、二叉树的最近公共祖先
 题目链接：https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-tree/
+```c++
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if(root==NULL || root==q || root==p) return root;
+        TreeNode* left=lowestCommonAncestor(root->left,p,q);
+        TreeNode* right=lowestCommonAncestor(root->right,p,q);
+        if (left != NULL && right != NULL) return root;
+        if(left == NULL ) return right; 
+        return left;
+            
+    }
+};
+```
+
 ```python
  Definition for a binary tree node.
 # class TreeNode:
@@ -4595,6 +5472,22 @@ class Solution:
 
 ### (33) 235、二叉搜索树的最近公共祖先
 题目链接：https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-search-tree/
+```C++
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if(root->val>p->val && root->val>q->val){
+            return lowestCommonAncestor(root->left,p,q);
+        }else if(root->val<p->val && root->val<q->val){
+            return lowestCommonAncestor(root->right,p,q);
+        }else{
+            return root;
+        }
+        
+    }
+};
+```
+
 ```python
 # Definition for a binary tree node.
 # class TreeNode:
@@ -4617,6 +5510,23 @@ class Solution:
 
 ### (34) 701、二叉搜索树中的插入操作
 题目链接：https://leetcode-cn.com/problems/insert-into-a-binary-search-tree/
+```c++
+class Solution {
+public:
+    TreeNode* insertIntoBST(TreeNode* root, int val) {
+        if(root==NULL){
+            TreeNode* node=new TreeNode(val);
+            return node;
+        }
+        if(root->val>val) root->left=insertIntoBST(root->left,val);
+        if(root->val<val) root->right=insertIntoBST(root->right,val);
+        return root;
+
+
+    }
+};
+```
+
 ```python
 class Solution:
     def insertIntoBST(self, root: TreeNode, val: int) -> TreeNode:
@@ -4631,6 +5541,34 @@ class Solution:
 
 ### (35) 450、删除二叉搜索树中的节点
 题目链接：https://leetcode-cn.com/problems/delete-node-in-a-bst/
+```C++
+class Solution {
+public:
+    TreeNode* deleteNode(TreeNode* root, int key) {
+        if(root==nullptr) return root;
+        if(root->val==key){
+            if(root->left==nullptr && root->right!=nullptr) return root->right;
+            else if(root->right==nullptr) return root->left;
+            else{
+                TreeNode* cur=root->right;
+                while(cur->left!=nullptr){
+                    cur=cur->left;
+                }
+                cur->left=root->left;
+                TreeNode* tmp=root;
+                root=root->right;
+                delete tmp;
+                return root;
+            }
+        }
+        if(root->val>key) root->left=deleteNode(root->left,key);
+        if(root->val<key) root->right=deleteNode(root->right,key);
+        return root;
+
+    }
+};
+```
+
 ```python
 # Definition for a binary tree node.
 # class TreeNode:
@@ -4671,6 +5609,21 @@ class Solution:
 
 ### (36) 669、修剪二叉搜索树
 题目链接：https://leetcode-cn.com/problems/trim-a-binary-search-tree/
+```C++
+class Solution {
+public:
+    TreeNode* trimBST(TreeNode* root, int low, int high) {
+        if (root == nullptr) return nullptr;
+        if (root->val < low) return trimBST(root->right, low, high);
+        if (root->val > high) return trimBST(root->left, low, high);
+        root->left = trimBST(root->left, low, high);
+        root->right = trimBST(root->right, low, high);
+        return root;
+       
+    }
+};
+```
+
 ```python
 # Definition for a binary tree node.
 # class TreeNode:
@@ -4692,6 +5645,26 @@ class Solution:
 
 ### (37) 108、将有序数组转换为二叉搜索树
 题目链接：https://leetcode-cn.com/problems/convert-sorted-array-to-binary-search-tree/
+```c++
+class Solution {
+private:
+    TreeNode* traversal(vector<int>& nums, int left, int right){
+        if(left>right) return nullptr;
+        int mid=left+(right-left)/2;
+        TreeNode* root=new TreeNode(nums[mid]);
+        root->left=traversal(nums,left,mid-1);
+        root->right=traversal(nums,mid+1,right);
+        return root;
+    }
+public:
+    TreeNode* sortedArrayToBST(vector<int>& nums) {
+       return traversal(nums,0,nums.size()-1);
+
+    }
+};
+
+```
+
 ```python
 # Definition for a binary tree node.
 # class TreeNode:
@@ -4716,6 +5689,27 @@ class Solution:
 
 ### (38) 538、把二叉搜索树转换为累加树
 题目链接：https://leetcode-cn.com/problems/convert-bst-to-greater-tree/
+```C++
+class Solution {
+private:
+    int pre;
+    void traversal(TreeNode* cur){
+        if(cur==NULL) return;
+        traversal(cur->right);
+        cur->val+=pre;
+        pre=cur->val;
+        traversal(cur->left);
+        
+    }
+public:
+    TreeNode* convertBST(TreeNode* root) {
+       traversal(root);
+       return root;
+    }
+};
+```
+
+
 ```python
 # Definition for a binary tree node.
 # class TreeNode:
