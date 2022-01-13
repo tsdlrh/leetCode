@@ -3207,102 +3207,149 @@ class Solution:
 
 ### （1）232、用栈实现队列
 题目链接：https://leetcode-cn.com/problems/implement-queue-using-stacks/
+```C++
+class MyQueue {
+public:
+    stack<int> stIn;
+    stack<int> stOut;
+
+    MyQueue() {
+
+    }
+    
+    void push(int x) {
+       stIn.push(x);
+    }
+    
+    int pop() {
+      if(stOut.empty()){
+          while(!stIn.empty()){
+              stOut.push(stIn.top());
+              stIn.pop();
+          }
+      }
+      int res=stOut.top();
+      stOut.pop();
+      return res;
+    }
+    
+    int peek() {
+      int res=this->pop();
+      stOut.push(res);
+      return res;
+    }
+    
+    bool empty() {
+      return stIn.empty()&&stOut.empty();
+    }
+};
+
+/**
+ * Your MyQueue object will be instantiated and called as such:
+ * MyQueue* obj = new MyQueue();
+ * obj->push(x);
+ * int param_2 = obj->pop();
+ * int param_3 = obj->peek();
+ * bool param_4 = obj->empty();
+ */
+ ```
+ 
 ```python
 # 使用两个栈实现先进先出的队列
 class MyQueue:
+
     def __init__(self):
-        """
-        Initialize your data structure here.
-        """
-        self.stack1 = list()
-        self.stack2 = list()
+        self.stIn=list()
+        self.stOut=list()
 
     def push(self, x: int) -> None:
-        """
-        Push element x to the back of queue.
-        """
-        # self.stack1用于接受元素
-        self.stack1.append(x)
+        self.stIn.append(x)
 
     def pop(self) -> int:
-        """
-        Removes the element from in front of queue and returns that element.
-        """
-        # self.stack2用于弹出元素，如果self.stack2为[],则将self.stack1中元素全部弹出给self.stack2
-        if self.stack2 == []:
-            while self.stack1:
-                tmp = self.stack1.pop()
-                self.stack2.append(tmp)
-        return self.stack2.pop()
+        if self.stOut==[]:
+            while self.stIn:
+                self.stOut.append(self.stIn[-1])
+                self.stIn.pop()
+        return self.stOut.pop()
 
     def peek(self) -> int:
-        """
-        Get the front element.
-        """
-        if self.stack2 == []:
-            while self.stack1:
-                tmp = self.stack1.pop()
-                self.stack2.append(tmp)
-        return self.stack2[-1]
+        res=self.pop()
+        self.stOut.append(res)
+        return res
 
     def empty(self) -> bool:
-        """
-        Returns whether the queue is empty.
-        """
-        return self.stack1 == [] and self.stack2 == []
+        return self.stOut==[] and self.stIn==[]
  ```
  
  ### (2) 225、用队列实现栈
  题目链接：https://leetcode-cn.com/problems/implement-stack-using-queues/
+ ```c++
+ class MyStack {
+public:
+    queue<int> que;
+
+    MyStack() {
+
+    }
+    
+    void push(int x) {
+     que.push(x);
+    }
+    
+    int pop() {
+        int size=que.size();
+        size--;
+        while(size--){
+            que.push(que.front());
+            que.pop();
+        }
+        int res=que.front();
+        que.pop();
+        return res;
+
+    }
+    
+    int top() {
+      return que.back();
+    }
+    
+    bool empty() {
+      return que.empty();
+    }
+};
+
+/**
+ * Your MyStack object will be instantiated and called as such:
+ * MyStack* obj = new MyStack();
+ * obj->push(x);
+ * int param_2 = obj->pop();
+ * int param_3 = obj->top();
+ * bool param_4 = obj->empty();
+ */
+ ```
  
  ```python
- from collections import deque
-class MyStack:
+ class MyStack:
+
     def __init__(self):
-        """
-        Initialize your data structure here.
-        """
-        #使用两个队列来实现
-        self.que1 = deque()
-        self.que2 = deque()
+        self.que=[]
 
     def push(self, x: int) -> None:
-        """
-        Push element x onto stack.
-        """
-        self.que1.append(x)
+        self.que.append(x)
 
     def pop(self) -> int:
-        """
-        Removes the element on top of the stack and returns that element.
-        """
-        size = len(self.que1)
-        size -= 1#这里先减一是为了保证最后面的元素
-        while size > 0:
-            size -= 1
-            self.que2.append(self.que1.popleft())
+        size=len(self.que)
+        while size>1:
+            self.que.append(self.que.pop(0))
+            size-=1
+        return self.que.pop(0)
 
-
-        result = self.que1.popleft()
-        self.que1, self.que2= self.que2, self.que1#将que2和que1交换 que1经过之前的操作应该是空了
-        #一定注意不能直接使用que1 = que2 这样que2的改变会影响que1 可以用浅拷贝
-        return result
 
     def top(self) -> int:
-        """
-        Get the top element.
-        """
-        return self.que1[-1]
+        return self.que[-1]
 
     def empty(self) -> bool:
-        """
-        Returns whether the stack is empty.
-        """
-        #print(self.que1)
-        if len(self.que1) == 0:
-            return True
-        else:
-            return False
+        return len(self.que) == 0
 
 
 # Your MyStack object will be instantiated and called as such:
@@ -3315,6 +3362,24 @@ class MyStack:
 
 ### (3) 20、有效的括号
 题目链接：https://leetcode-cn.com/problems/valid-parentheses/
+```C++
+class Solution {
+public:
+    bool isValid(string s) {
+        stack<int> st;
+        for(int i=0;i<s.size();i++){
+            if(s[i]=='(') st.push(')');
+            else if(s[i]=='[') st.push(']');
+            else if(s[i]=='{') st.push('}');
+            else if(st.empty()||st.top()!=s[i]) return false;
+            else st.pop();
+        }
+        return st.empty();
+
+    }
+};
+```
+
 ```python
 class Solution:
     def isValid(self, s: str) -> bool:
@@ -3332,6 +3397,31 @@ class Solution:
 
 ### (4) 1047、删除字符串中的所有相邻重复项
 题目链接：https://leetcode-cn.com/problems/remove-all-adjacent-duplicates-in-string/
+```C++
+class Solution {
+public:
+    string removeDuplicates(string s) {
+        stack<char> st;
+        for(int i=0;i<s.size();i++){
+            if(st.empty()||st.top()!=s[i]){
+                st.push(s[i]);
+            }else{
+                st.pop();
+            }
+    
+        }
+        string res="";
+        while(!st.empty()){
+            res+=st.top();
+            st.pop();
+        }
+        reverse(res.begin(),res.end());
+        return res;
+
+    }
+};
+```
+
 ```python
 class Solution:
     def removeDuplicates(self, s: str) -> str:
@@ -3346,6 +3436,30 @@ class Solution:
 
 ### (5) 150、逆波兰表达式求值
 题目链接：https://leetcode-cn.com/problems/evaluate-reverse-polish-notation/
+```C++
+class Solution {
+public:
+    int evalRPN(vector<string>& tokens) {
+        stack<int> st;
+        for(int i=0;i<tokens.size();i++){
+            if(tokens[i] == "+" || tokens[i] == "-" || tokens[i] == "*" || tokens[i] == "/"){
+                int t1=st.top();
+                st.pop();
+                int t2=st.top();
+                st.pop();
+                if (tokens[i] == "+") st.push(t2 + t1);
+                if (tokens[i] == "-") st.push(t2 - t1);
+                if (tokens[i] == "*") st.push(t2 * t1);
+                if (tokens[i] == "/") st.push(t2 / t1);
+            }else{
+                st.push(stoi(tokens[i]));
+            }
+        }
+        return st.top();
+    }
+};
+```
+
 ```python
 def evalRPN(tokens) -> int:
     stack = list()
@@ -3362,6 +3476,49 @@ def evalRPN(tokens) -> int:
  
 ### (6) 239、滑动窗口最大值
 题目链接：https://leetcode-cn.com/problems/sliding-window-maximum/
+```C++
+class Solution {
+private:
+    //单调队列
+    class MyQueue{
+    public:
+        deque<int> que;
+        void pop(int val){
+            if(!que.empty()&& val==que.front()){
+                que.pop_front();
+            }
+        }
+        
+        void push(int val){
+            while(!que.empty()&& val>que.back()){
+                que.pop_back();
+            }
+            que.push_back(val);
+        }
+        
+        int front(){
+            return que.front();
+        }
+    };
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+         MyQueue que;
+         for(int i=0;i<k;i++){
+             que.push(nums[i]);
+         }
+         vector<int> res;
+         res.push_back(que.front());
+         for(int i=k;i<nums.size();i++){
+             que.pop(nums[i-k]);
+             que.push(nums[i]);
+             res.push_back(que.front());
+         }
+         return res;
+
+    }
+};
+```
+
 ```python
  class MyQueue: #单调队列（从大到小
     def __init__(self):
@@ -3400,6 +3557,40 @@ class Solution:
 
 ### (7) 347、前K个高频元素
 题目链接：https://leetcode-cn.com/problems/top-k-frequent-elements/
+```C++
+class Solution {
+public:
+    //小顶堆
+    class mycomparsion{
+    public:
+        bool operator()(const pair<int,int>& lhs, const pair<int,int>& rhs){
+            return lhs.second>rhs.second;
+        }
+    };
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+       unordered_map<int,int> map;
+       for(int i=0;i<nums.size();i++){
+           map[nums[i]]++;
+       }
+
+       priority_queue<pair<int,int>,vector<pair<int,int>>,mycomparsion> pir_que;
+       for(unordered_map<int,int>::iterator it=map.begin();it!=map.end();it++){
+            pir_que.push(*it);
+            if(pir_que.size()>k){
+                pir_que.pop();
+            }
+       }
+
+       vector<int> res(k);
+       for(int i=k-1;i>=0;i--){
+           res[i]=pir_que.top().first;
+           pir_que.pop();
+       }
+       return res;
+    }
+};
+```
+
 ```python
 #时间复杂度：O(nlogk)
 #空间复杂度：O(n)
