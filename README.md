@@ -1945,6 +1945,27 @@ class Solution:
 
 #### （1）242、有效的字母异位词
 题目链接:https://leetcode-cn.com/problems/valid-anagram/submissions/
+```C++
+class Solution {
+public:
+    bool isAnagram(string s, string t) {
+      int record[26]={0};
+      for(int i=0;i<s.size();i++){
+          record[s[i]-'a']++;
+      }
+      for(int j=0;j<t.size();j++){
+          record[t[j]-'a']--;
+      }
+      for(int i=0;i<26;i++){
+          if(record[i]!=0){
+              return false;
+          }
+      }
+      return true;
+    }
+};
+```
+
 
 ```Java
 class Solution {
@@ -1990,6 +2011,28 @@ class Solution:
 
 #### （2）383、赎金信
 题目链接：https://leetcode-cn.com/problems/ransom-note/
+```c++
+class Solution {
+public:
+    bool canConstruct(string ransomNote, string magazine) {
+        int record[26]={0};
+        for(int i=0;i<magazine.size();i++){
+            record[magazine[i]-'a']++;
+        }
+        for(int i=0;i<ransomNote.size();i++){
+            record[ransomNote[i]-'a']--;
+        }
+        for(int i=0;i<26;i++){
+            if(record[i]<0){
+                return false;
+            }
+        }
+        return true;
+
+    }
+};
+```
+
 
 ``` Java
 class Solution {
@@ -2039,6 +2082,31 @@ class Solution:
 #### （3）49、字母异位词分组
 
 题目链接：https://leetcode-cn.com/problems/group-anagrams/submissions/
+```C++
+class Solution {
+public:
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+       vector<vector<string>> ans;
+       unordered_map<string,int> map;
+       int index=0;
+       for(const string& s: strs){
+           string str=s;
+           sort(str.begin(),str.end());
+           if(map.find(str)!=map.end()){
+               int i=map[str];
+               ans[i].push_back(s);
+           }else{
+               map[str]=index;
+               ans.push_back({});
+               ans[index].push_back(s);
+               index++;
+           }
+       }
+       return ans;
+       
+    }
+};
+```
 
 ```Java
 class Solution {
@@ -2088,6 +2156,33 @@ class Solution:
 
 #### (4) 438、找到字符串中所有字母异位词
 题目链接：https://leetcode-cn.com/problems/find-all-anagrams-in-a-string/submissions/
+```c++
+class Solution {
+public:
+    vector<int> findAnagrams(string s, string p) {
+        int n=s.size();
+        int m=p.size();
+        vector<int> res;
+        if(n<m) return res;
+        vector<int> pCnt(26);
+        vector<int> sCnt(26);
+        for(int i=0;i<m;i++){
+            pCnt[p[i]-'a']++;
+            sCnt[s[i]-'a']++;
+        }
+        if(pCnt==sCnt) res.push_back(0);
+        for(int i=0;i<n-m;i++){
+            sCnt[s[i]-'a']--;
+            sCnt[s[i+m]-'a']++;
+            if(pCnt==sCnt){
+                res.push_back(i+1);
+            }
+        }
+        return res;
+
+    }
+};
+```
 
 ```Java
 class Solution {
@@ -2145,6 +2240,21 @@ class Solution:
 
 #### （5）349、两个数组的交集
 题目链接：https://leetcode-cn.com/problems/intersection-of-two-arrays/
+```C++
+class Solution {
+public:
+    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+        unordered_set<int> res;
+        unordered_set<int> nset(nums1.begin(),nums1.end());
+        for(int num:nums2){
+            if(nset.find(num)!=nset.end()){
+                res.insert(num);
+            }
+        }
+        return vector<int>(res.begin(),res.end());
+    }
+};
+```
 
 ```Java
 class Solution {
@@ -2197,6 +2307,34 @@ class Solution:
 
 ### （6）202、快乐数
 题目链接：https://leetcode-cn.com/problems/happy-number/
+```c++
+class Solution {
+public:
+    int getSum(int n){
+        int sum=0;
+        while(n){
+            sum+=(n%10)*(n%10);
+            n/=10;
+        }
+        return sum;
+    }
+    bool isHappy(int n) {
+       unordered_set<int> set;
+       while(true){
+           int sum=getSum(n);
+           if(sum==1){
+               return true;
+           }
+           if(set.find(sum)!=set.end()){
+               return false;
+           }else{
+               set.insert(sum);
+           }
+           n=sum;
+       }
+    }
+};
+```
 
 ```Java
 class Solution {
@@ -2252,6 +2390,24 @@ class Solution:
 
 ### （7）1、两数之和
 题目链接：https://leetcode-cn.com/problems/two-sum/
+```C++
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int,int> map;
+        for(int i=0;i<nums.size();i++){
+            auto iter=map.find(target-nums[i]);
+            if(iter!=map.end()){
+                return {iter->second,i};
+            }
+            map.insert(pair<int,int>(nums[i],i));
+        }
+        return {};
+
+    }
+};
+```
+
 ```Java
 public int[] twoSum(int[] nums, int target) {
     int[] res = new int[2];
@@ -2287,6 +2443,28 @@ class Solution:
 
 ### （8）454、四数相加II
 题目链接：https://leetcode-cn.com/problems/4sum-ii/
+```C++
+class Solution {
+public:
+    int fourSumCount(vector<int>& nums1, vector<int>& nums2, vector<int>& nums3, vector<int>& nums4) {
+        unordered_map<int,int> map;
+        for(int a: nums1){
+           for(int b:nums2){
+               map[a+b]++;
+           }
+        }
+        int count=0;
+        for(int c:nums3){
+            for(int d:nums4){
+                if(map.find(0-(c+d))!=map.end()){
+                    count+=map[0-(c+d)];
+                }
+            }
+        }
+        return count;
+    }
+};
+```
 
 ```Java
 class Solution {
@@ -2333,6 +2511,40 @@ class Solution:
 
 ### (9) 15、三数之和
 题目链接：https://leetcode-cn.com/problems/3sum/
+```c++
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<vector<int>> res;
+        sort(nums.begin(),nums.end());
+        for(int i=0;i<nums.size();i++){
+            if(nums[i]>0){
+                return res;
+            }
+            if(i>0 && nums[i]==nums[i-1]){
+                continue;
+            }
+            int left=i+1;
+            int right=nums.size()-1;
+            while(left<right){
+                if(nums[i]+nums[left]+nums[right]>0){
+                    right--;
+                }else if(nums[i]+nums[left]+nums[right]<0){
+                    left++;
+                }else{
+                    res.push_back(vector<int>{nums[i],nums[left],nums[right]});
+                    while(left<right && nums[right]==nums[right-1]) right--;
+                    while(left<right && nums[left]==nums[left+1]) left++;
+                    right--;
+                    left++;
+                }
+            }
+        }
+        return res;
+
+    }
+};
+```
 
 ```Java
 class Solution {
@@ -2404,6 +2616,43 @@ class Solution:
 
 ### (10) 18、四数之和
 题目链接：https://leetcode-cn.com/problems/4sum/
+```C++
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        vector<vector<int>> res;
+        sort(nums.begin(),nums.end());
+        for(int i=0;i<nums.size();i++){
+            if(i>0 && nums[i]==nums[i-1]){
+                continue;
+            }
+            for(int j=i+1;j<nums.size();j++){
+                if(j>i+1 && nums[j]==nums[j-1]){
+                    continue;
+                }
+                int left=j+1;
+                int right=nums.size()-1;
+                while(left<right){
+                    int sum=(long)nums[i]+nums[j]+nums[left]+nums[right];
+                    if(sum>target){
+                        right--;
+                    }else if(sum<target){
+                        left++;
+                    }else{
+                        res.push_back(vector<int>{nums[i],nums[j],nums[left],nums[right]});
+                        while(left<right && nums[right]==nums[right-1]) right--;
+                        while(left<right && nums[left]==nums[left+1]) left++;
+                        left++;
+                        right--;
+                    }
+                }
+            }
+           
+        } return res;
+
+    }
+};
+```
 
 ```Java
 class Solution {
@@ -2477,6 +2726,22 @@ class Solution:
 
 ### （1）344、反转字符串
 题目链接：https://leetcode-cn.com/problems/reverse-string/
+```c++
+class Solution {
+public:
+    void reverseString(vector<char>& s) {
+        int left=0;
+        int right=s.size()-1;
+        while(left<right){
+            swap(s[left],s[right]);
+            left++;
+            right--;
+        }
+        
+    }
+};
+```
+
 
 ```Java
 class Solution {
@@ -2514,6 +2779,27 @@ class Solution:
 
 ### (2) 541、反转字符串II
 题目链接：https://leetcode-cn.com/problems/reverse-string-ii/
+```C++
+class Solution {
+public:
+    void reverse(string& s, int start, int end){
+        for(int i=start,j=end;i<j;i++,j--){
+            swap(s[i],s[j]);
+        }
+    }
+    string reverseStr(string s, int k) {
+      for(int i=0;i<s.size();i+=(2*k)){
+          if(i+k<=s.size()){
+              reverse(s,i,i+k-1);
+              continue;
+          }
+          reverse(s,i,s.size()-1);
+      }
+      return s;
+
+    }
+};
+```
 
 ```Java
 class Solution {
@@ -2563,6 +2849,37 @@ class Solution:
 
 ### (3) 05、替换空格
 题目链接：https://leetcode-cn.com/problems/ti-huan-kong-ge-lcof/submissions/
+```C++
+class Solution {
+public:
+    string replaceSpace(string s) {
+        int oldsize=s.size();
+        int count=0;
+        for(int i=0;i<s.size();i++){
+            if(s[i]==' '){
+                count++;
+            }
+        }
+        s.resize(s.size()+count*2);
+        int newsize=s.size();
+        for(int i=newsize-1,j=oldsize-1;i>j;i--,j--){
+            if(s[j]!=' '){
+                s[i]=s[j];
+            }else{
+                s[i]='0';
+                s[i-1]='2';
+                s[i-2]='%';
+                i-=2;
+            }
+
+        }
+        return s;
+            
+
+    }
+};
+```
+
 
 ```Java
 class Solution {
@@ -2604,6 +2921,50 @@ class Solution:
 
 ### (4) 151、翻转字符串里的单词
 题目链接：https://leetcode-cn.com/problems/reverse-words-in-a-string/submissions/
+```c++
+class Solution {
+public: 
+    void reverse(string& s, int start, int end){
+        for(int i=start,j=end;i<j;i++,j--){
+            swap(s[i],s[j]);
+        }
+    }
+
+    void removeSpace(string& s){
+        int slow=0,fast=0;
+        while(s.size()>0 && fast<s.size()&&s[fast]==' '){
+            fast++;
+        }
+
+        for(;fast<s.size();fast++){
+            if(fast-1>0 && s[fast]==s[fast-1] &&s[fast]==' '){
+                continue;
+            }else{
+                s[slow++]=s[fast];
+            }
+        }
+
+        if(slow-1>0&&s[slow-1]==' '){
+            s.resize(slow-1);
+        }else{
+            s.resize(slow);
+        }
+    }
+    string reverseWords(string s) {
+      removeSpace(s);
+      reverse(s,0,s.size()-1);
+      for(int i=0;i<s.size();i++){
+          int j=i;
+          while(j<s.size()&&s[j]!=' '){
+              j++;
+          }
+          reverse(s,i,j-1);
+          i=j;
+      }
+      return s;
+    }
+};
+```
 
 ```Java
 class Solution {
@@ -2707,6 +3068,18 @@ class Solution:
 
 ### (5) 58、左旋字符串
 题目链接：https://leetcode-cn.com/problems/zuo-xuan-zhuan-zi-fu-chuan-lcof/submissions/
+```C++
+class Solution {
+public:
+    string reverseLeftWords(string s, int n) {
+      reverse(s.begin(),s.begin()+n);
+      reverse(s.begin()+n,s.end());
+      reverse(s.begin(),s.end());
+      return s;
+    }
+};
+```
+
 
 ```Java
 class Solution {
@@ -2768,6 +3141,46 @@ class Solution:
 
 ### (6) 28、实现strStr()
 题目链接：https://leetcode-cn.com/problems/implement-strstr/submissions/
+```c++
+class Solution {
+public:
+    void getNext(int* next, const string& s){
+        int j=-1;
+        next[0]=j;
+        for(int i=1;i<s.size();i++){
+            while(j>=0 && s[i]!=s[j+1]){
+                j=next[j];
+            }
+            if(s[i]==s[j+1]){
+                j++;
+            }
+            next[i]=j;
+        }
+    }
+    int strStr(string haystack, string needle) {
+        if(needle.size()==0){
+            return 0;
+        }
+        int next[needle.size()];
+        getNext(next,needle);
+        int j=-1;
+        for(int i=0;i<haystack.size();i++){
+            while(j>=0 && haystack[i]!=needle[j+1]){
+                j=next[j];
+            }
+            if(haystack[i]==needle[j+1]){
+                j++;
+            }
+            if(j==(needle.size()-1)){
+                return (i-needle.size()+1);
+            }
+        }
+        return -1;
+
+    }
+};
+```
+
 
 ```Java
 class Solution {
@@ -2847,6 +3260,38 @@ class Solution:
 
 ### (6) 459、重复的字符串
 题目链接：https://leetcode-cn.com/problems/repeated-substring-pattern/
+```C++
+class Solution {
+public:
+    void getNext(int* next, const string& s){
+        next[0]=-1;
+        int j=-1;
+        for(int i=1;i<s.size();i++){
+            while(j>=0&&s[i]!=s[j+1]){
+                j=next[j];
+            }
+            if(s[i]==s[j+1]){
+                j++;
+            }
+            next[i]=j;
+        }
+    }
+    bool repeatedSubstringPattern(string s) {
+        if(s.size()==0){
+            return false;
+        }
+        int next[s.size()];
+        getNext(next,s);
+        int len=s.size();
+        if(next[len-1]!=-1 && len%(len-(next[len-1]+1))==0){
+            return true;
+        }
+        return false;
+
+    }
+};
+```
+
 
 ```Java
 class Solution {
@@ -2892,6 +3337,25 @@ class Solution:
 
 ### (1) 27、移除元素
 题目链接：https://leetcode-cn.com/problems/remove-element/
+```c++
+class Solution {
+public:
+    int removeElement(vector<int>& nums, int val) {
+        if(nums.size()==0) return 0;
+        int slow=0;
+        for(int i=0;i<nums.size();i++){
+           if(nums[i]!=val){
+               nums[slow]=nums[i];
+               slow+=1;
+           }
+           
+        }
+        return slow;
+
+    }
+};
+```
+
 ```python
 class Solution:
     def removeElement(self, nums: List[int], val: int) -> int:
@@ -2905,6 +3369,22 @@ class Solution:
 
 ### (2) 344、反转字符串
 题目链接：https://leetcode-cn.com/problems/reverse-string/
+```C++
+class Solution {
+public:
+    void reverseString(vector<char>& s) {
+        int left=0;
+        int right=s.size()-1;
+        while(left<right){
+            swap(s[left],s[right]);
+            left++;
+            right--;
+        }
+        
+    }
+};
+```
+
 ```python
 class Solution:
     def reverseString(self, s: List[str]) -> None:
@@ -3032,6 +3512,26 @@ public:
 
 ### (5) 206、翻转链表
 题目链接：https://leetcode-cn.com/problems/reverse-linked-list/
+```c++
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        ListNode* pre=NULL;
+        ListNode* tmp;
+        ListNode* cur=head;
+        while(cur){
+            tmp=cur->next;
+            cur->next=pre;
+            pre=cur;
+            cur=tmp;
+        }
+        return pre;
+
+    }
+};
+```
+
+
 ```python
 #双指针
 # Definition for singly-linked list.
@@ -3054,6 +3554,29 @@ class Solution:
  
 ### (6) 19、删除链表的倒数第N个节点
 题目链接：https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/
+```C++
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode* dummy=new ListNode(0);
+        dummy->next=head;
+        ListNode* slow=dummy;
+        ListNode* fast=dummy;
+        while(n-- && fast!=NULL){
+            fast=fast->next;
+        }
+        fast=fast->next;
+        while(fast!=NULL){
+            slow=slow->next;
+            fast=fast->next;
+        }
+        slow->next=slow->next->next;
+        return dummy->next;
+
+    }
+};
+```
+
 ```python
 # Definition for singly-linked list.
 # class ListNode:
@@ -3120,6 +3643,32 @@ class Solution:
 
 ### (8) 142、环形链表II
 题目链接：https://leetcode-cn.com/problems/linked-list-cycle-ii/
+```c++
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        ListNode* fast=head;
+        ListNode* slow=head;
+        while(fast!=NULL && fast->next!=NULL){
+            slow=slow->next;
+            fast=fast->next->next;
+            if(slow==fast){
+                ListNode* index1=fast;
+                ListNode* index2=head;
+                while(index1!=index2){
+                    index1=index1->next;
+                    index2=index2->next;
+                }
+                return index2;
+            }
+        }
+        return NULL;
+        
+    }
+};
+```
+
+
 ```python
 class Solution:
     def detectCycle(self, head: ListNode) -> ListNode:
@@ -3142,6 +3691,41 @@ class Solution:
     
 ### (9) 15、三数之和
 题目链接：https://leetcode-cn.com/problems/3sum/
+```C++
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<vector<int>> res;
+        sort(nums.begin(),nums.end());
+        for(int i=0;i<nums.size();i++){
+            if(nums[i]>0){
+                return res;
+            }
+            if(i>0 && nums[i]==nums[i-1]){
+                continue;
+            }
+            int left=i+1;
+            int right=nums.size()-1;
+            while(left<right){
+                if(nums[i]+nums[left]+nums[right]>0){
+                    right--;
+                }else if(nums[i]+nums[left]+nums[right]<0){
+                    left++;
+                }else{
+                    res.push_back(vector<int>{nums[i],nums[left],nums[right]});
+                    while(left<right && nums[right]==nums[right-1]) right--;
+                    while(left<right && nums[left]==nums[left+1]) left++;
+                    right--;
+                    left++;
+                }
+            }
+        }
+        return res;
+
+    }
+};
+```
+
 ```python
 class Solution:
     def threeSum(self, nums):
@@ -3171,6 +3755,44 @@ class Solution:
  ```
  ### (10) 18、四数之和
  题目链接：https://leetcode-cn.com/problems/4sum/
+ ```c++
+ class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        vector<vector<int>> res;
+        sort(nums.begin(),nums.end());
+        for(int i=0;i<nums.size();i++){
+            if(i>0 && nums[i]==nums[i-1]){
+                continue;
+            }
+            for(int j=i+1;j<nums.size();j++){
+                if(j>i+1 && nums[j]==nums[j-1]){
+                    continue;
+                }
+                int left=j+1;
+                int right=nums.size()-1;
+                while(left<right){
+                    int sum=(long)nums[i]+nums[j]+nums[left]+nums[right];
+                    if(sum>target){
+                        right--;
+                    }else if(sum<target){
+                        left++;
+                    }else{
+                        res.push_back(vector<int>{nums[i],nums[j],nums[left],nums[right]});
+                        while(left<right && nums[right]==nums[right-1]) right--;
+                        while(left<right && nums[left]==nums[left+1]) left++;
+                        left++;
+                        right--;
+                    }
+                }
+            }
+           
+        } return res;
+
+    }
+};
+```
+
  ```python
  class Solution(object):
     def fourSum(self, nums, target):
