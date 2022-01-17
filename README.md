@@ -1503,6 +1503,30 @@ class Solution:
 
 ### （1）203.移除俩表
 题目链接：https://leetcode-cn.com/problems/remove-linked-list-elements/submissions/
+```c++
+class Solution {
+public:
+    ListNode* removeElements(ListNode* head, int val) {
+      ListNode* dummyhead=new ListNode(0);
+      dummyhead->next=head;
+      ListNode* cur=dummyhead;
+      while(cur->next!=NULL){
+          if(cur->next->val==val){
+              ListNode* tmp=cur->next;
+              cur->next=cur->next->next;
+              delete tmp;
+          }else{
+              cur=cur->next;
+          }
+      }
+      head=dummyhead->next;
+      delete dummyhead;
+      return head;
+      
+    }
+};
+```
+
 
  ``` Java
 /**
@@ -1556,6 +1580,83 @@ class Solution:
 ### （2）707、设计链表
 
 题目链接:https://leetcode-cn.com/problems/design-linked-list/submissions/
+```C++
+class MyLinkedList {
+
+public:
+    //定义链表节点结构体
+    struct LinkedNode{
+        int val;
+        LinkedNode* next;
+        LinkedNode(int val):val(val),next(nullptr){}
+    };
+    int size;
+    LinkedNode* dummyhead;
+
+    MyLinkedList() {
+      dummyhead=new LinkedNode(0);
+      size=0;
+    }
+    
+    int get(int index) {
+        if(index>(size-1)||index<0){
+            return -1;
+        }
+        LinkedNode* cur=dummyhead->next;
+        while(index){
+            cur=cur->next;
+            index--;
+        }
+        return cur->val;
+    }
+    
+    void addAtHead(int val) {
+       LinkedNode* node=new LinkedNode(val);
+       node->next=dummyhead->next;
+       dummyhead->next=node;
+       size++;
+    }
+    
+    void addAtTail(int val) {
+       LinkedNode* node=new LinkedNode(val);
+       LinkedNode* cur=dummyhead;
+       while(cur->next!=NULL){
+           cur=cur->next;
+       }
+       cur->next=node;
+       size++;
+    }
+    
+    void addAtIndex(int index, int val) {
+       if(index>size) return;
+       if(index<0){
+           addAtHead(val);
+       }
+       LinkedNode* node=new LinkedNode(val);
+       LinkedNode* cur=dummyhead;
+       while(index--){
+           cur=cur->next;
+       }
+       node->next=cur->next;
+       cur->next=node;
+       size++;
+    }
+    
+    void deleteAtIndex(int index) {
+        if(index>=size||index<0) return;
+        LinkedNode* cur=dummyhead;
+        while(index--){
+            cur=cur->next;
+        }
+        LinkedNode* tmp=cur->next;
+        cur->next=cur->next->next;
+        delete tmp;
+        size--;
+
+    }
+};
+```
+
 
 ```Java
 class MyLinkedList {
@@ -1708,7 +1809,25 @@ class MyLinkedList {
  
  ### (3) 206、反转链表
  题目链接：https://leetcode-cn.com/problems/reverse-linked-list/
- 
+ ```c++
+ class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        ListNode* pre=NULL;
+        ListNode* tmp;
+        ListNode* cur=head;
+        while(cur){
+            tmp=cur->next;
+            cur->next=pre;
+            pre=cur;
+            cur=tmp;
+        }
+        return pre;
+
+    }
+};
+```
+
  
  ```Java
  //双指针法
@@ -1747,6 +1866,26 @@ class Solution:
 
 ### (4) 24、两两交换链表中的节点
 题目链接：https://leetcode-cn.com/problems/swap-nodes-in-pairs/
+```C++
+class Solution {
+public:
+    ListNode* swapPairs(ListNode* head) {
+      ListNode* dummyhead=new ListNode(0);
+      dummyhead->next=head;
+      ListNode* cur=dummyhead;
+      while(cur->next!=NULL && cur->next->next!=NULL){
+          ListNode* tmp=cur->next;
+          ListNode* tmp2=cur->next->next->next;
+          cur->next=cur->next->next;
+          cur->next->next=tmp;
+          cur->next->next->next=tmp2;
+          cur=cur->next->next;
+
+      }
+      return dummyhead->next;
+    }
+};
+```
 
 ```Java
 /**
@@ -1814,6 +1953,29 @@ class Solution:
 
 ### (5) 19、删除链表中倒数第N个节点
 题目链接：https://leetcode-cn.com/problems/remove-nth-node-from-end-of-list/submissions/
+```c++
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode* dummyhead=new ListNode(0);
+        dummyhead->next=head;
+        ListNode* fast=dummyhead;
+        ListNode* slow=dummyhead;
+        while(n-- && fast!=NULL){
+            fast=fast->next;
+        }
+        fast=fast->next;
+        while(fast!=NULL){
+            fast=fast->next;
+            slow=slow->next;
+        }
+        slow->next=slow->next->next;
+        return dummyhead->next;
+
+    }
+};
+```
+
 
 ```Java
 /**
@@ -1882,6 +2044,31 @@ class Solution {
  ### (6) 142.环形链表
  
  题目链接：https://leetcode-cn.com/problems/linked-list-cycle-ii/submissions/
+ ```C++
+ class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        ListNode* fast=head;
+        ListNode* slow=head;
+        while(fast && fast->next){
+            fast=fast->next->next;
+            slow=slow->next;
+            if(slow==fast){
+                ListNode* index1=head;
+                ListNode* index2=fast;
+                while(index1!=index2){
+                    index1=index1->next;
+                    index2=index2->next;
+                }
+                return index2;
+            }
+        }
+        return NULL;
+        
+    }
+};
+```
+
  
  ```Java
 /**
