@@ -371,6 +371,27 @@ class Solution:
 #### （2）35. 搜索插入位置
 
 题目链接：https://leetcode-cn.com/problems/search-insert-position/
+```c++
+class Solution {
+public:
+    int searchInsert(vector<int>& nums, int target) {
+       int left=0;
+       int right=nums.size()-1;
+       int res=nums.size();
+       while(left<=right){
+           int mid=left+(right-left)/2;
+           if(nums[mid]>=target){
+               res=mid;
+               right=mid-1;
+           }else{
+               left=mid+1;
+               }
+       }
+       return res;
+    }
+};
+```
+
 
 **Java版本：**
 （版本一）左闭右闭区间
@@ -448,6 +469,35 @@ class Solution:
 #### （3）34.在排序数组中查找元素的第一个和最后一个位置
 
 题目链接：https://leetcode-cn.com/problems/find-first-and-last-position-of-element-in-sorted-array/
+```C++
+class Solution {
+public:
+    int binarySearch(vector<int>& nums, int target, bool lower){
+        int left=0;
+        int right=nums.size()-1;
+        int res=nums.size();
+        while(left<=right){
+            int mid=left+(right-left)/2;
+            if(nums[mid]>target || (lower && nums[mid]>=target)){
+                right=mid-1;
+                res=mid;
+            }else{
+                left=mid+1;
+            }
+        }
+        return res;
+    }
+    vector<int> searchRange(vector<int>& nums, int target) {
+        int leftIndex=binarySearch(nums,target,true);
+        int rightIndex=binarySearch(nums,target,false)-1;
+        if(leftIndex<=rightIndex && rightIndex<nums.size() && nums[leftIndex]==target && nums[rightIndex]==target){
+            return vector<int>{leftIndex,rightIndex};
+        }
+        return vector<int>{-1,-1};
+    }
+};
+```
+
 
 
 **Java：**
@@ -511,6 +561,25 @@ class Solution:
 #### （4）69.x的平方根
 
 题目链接：https://leetcode-cn.com/problems/sqrtx/submissions/
+```c++
+class Solution {
+public:
+    int mySqrt(int x) {
+      if(x==0) return 0;
+      double C=x;
+      double x0=x;
+      while(true){
+          double xi=0.5*(x0+C/x0);
+          if(abs(x0-xi)<1e-7){
+              break;
+          }
+          x0=xi;
+      }
+      return (int)x0;
+    }
+};
+```
+
 
 **f方法一：二分查找法**
 ```Java
@@ -586,6 +655,26 @@ class Solution:
 #### （5）367.有效的完全平方数
 
 题目链接：https://leetcode-cn.com/problems/valid-perfect-square/submissions/
+```C++
+class Solution {
+public:
+    bool isPerfectSquare(int num) {
+      int left=0,right=num;
+      int res=1;
+      while(left<=right){
+          int mid=left+(right-left)/2;
+          if((long)mid*mid>num){
+              right=mid-1;
+          }else if((long)mid*mid<num){
+              left=mid+1;
+          }else{
+              return true;
+          }
+      }
+      return false;
+    }
+};
+```
 
 
 **方法一：二分查找法**
@@ -660,6 +749,23 @@ class Solution:
 #### （6）27.移除元素
 
 题目链接：https://leetcode-cn.com/problems/remove-element/submissions/
+```c++
+class Solution {
+public:
+    int removeElement(vector<int>& nums, int val) {
+        if(nums.size()==0) return 0;
+        int slow=0;
+        for(int i=0;i<nums.size();i++){
+            if(nums[i]!=val){
+                nums[slow]=nums[i];
+                slow++;
+            }
+        }
+        return slow;
+
+    }
+};
+```
 
 ```Java
 class Solution {
@@ -698,6 +804,24 @@ class Solution:
 #### （7）26.删除有序数组中的重复项
 
 题目链接：https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/submissions/
+```C++
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+        if(nums.size()==0) return 0;
+        int slow=1;
+        for(int fast=1;fast<nums.size();fast++){
+            if(nums[fast]!=nums[fast-1]){
+                nums[slow]=nums[fast];
+                slow++;
+            }
+        }
+        return slow;
+
+    }
+};
+```
+
 
 ```Java
 class Solution {
@@ -736,6 +860,24 @@ class Solution:
 #### （8）283.移动零
 
 题目链接：https://leetcode-cn.com/problems/move-zeroes/
+```C++
+class Solution {
+public:
+    void moveZeroes(vector<int>& nums) {
+       int slow=0;
+       for(int i=0;i<nums.size();i++){
+           if(nums[i]!=0){
+               nums[slow]=nums[i];
+               slow++;
+           }
+       }
+       for(int i=slow;i<nums.size();i++){
+           nums[i]=0;
+       }
+    }
+};
+```
+
 
 ```Java
 class Solution {
@@ -778,6 +920,56 @@ class Solution:
 #### （9）844.比较含退格的字符串
 
 题目链接：https://leetcode-cn.com/problems/backspace-string-compare/submissions/
+```c++
+class Solution {
+public:
+    bool backspaceCompare(string s, string t) {
+        int skipS=0,skipT=0;
+        int i=s.size()-1,j=t.size()-1;
+        while(i>=0||j>=0){
+            while(i>=0){
+                if(s[i]=='#'){
+                    skipS++;
+                    i--;
+                }else if(skipS>0){
+                    skipS--;
+                    i--;
+                }else{
+                    break;
+                }
+            }
+
+            while(j>=0){
+                if(t[j]=='#'){
+                    skipT++;
+                    j--;
+                }else if(skipT>0){
+                    skipT--;
+                    j--;
+                }else{
+                    break;
+                }
+            }
+
+            if(i>=0 && j>=0){
+                if(s[i]!=t[j]){
+                    return false;
+                }
+            }else{
+                    if(i>=0 || j>=0){
+                        return false;
+                    }
+            }
+    
+            i--;
+            j--;
+        }
+        return true;
+
+    }
+};
+```
+
 
 **方法一：重构字符串**
 ```Java
@@ -926,6 +1118,29 @@ class Solution:
 #### （10）977.有序数组的平方
 
 题目链接：https://leetcode-cn.com/problems/squares-of-a-sorted-array/submissions/
+```C++
+class Solution {
+public:
+    vector<int> sortedSquares(vector<int>& nums) {
+      int right=nums.size()-1;
+      int left=0;
+      vector<int> res(nums.size());
+      int index=res.size()-1;
+
+      while(left<=right){
+          if(nums[left]*nums[left]>=nums[right]*nums[right]){
+              res[index--]=nums[left]*nums[left];
+              left++;
+          }else{
+              res[index--]=nums[right]*nums[right];
+              right--;
+          }
+      }
+      return res;
+    }
+};
+```
+
 
 **方法一：使用归并排序法**
 ```Java
@@ -1122,6 +1337,29 @@ class Solution:
 #### （12）904.水果成篮
 
 题目链接 ：https://leetcode-cn.com/problems/fruit-into-baskets/submissions/
+```c++
+class Solution {
+public:
+    int totalFruit(vector<int>& fruits) {
+        int left = 0,right = 0,ans = 0;
+        int ln = fruits[left],rn = fruits[right];
+        while(right < fruits.size()){
+            if(fruits[right] == rn || fruits[right] == ln){
+                ans = max(ans,right + 1 - left);
+                right++;
+            }else{
+                left = right - 1;
+                ln = fruits[left];
+                while(left >= 1 && fruits[left - 1] == ln) left--;
+                rn = fruits[right];
+                ans = max(ans,right + 1 - left);
+            }
+        }
+        return ans;
+    }
+};
+```
+
 
 **滑动窗口+哈希表**
 
@@ -1165,22 +1403,49 @@ class Counter extends HashMap<Integer,Integer>{
 ```python
 class Solution:
     def totalFruit(self, fruits: List[int]) -> int:
-        ans=i=0
-        count=collections.Counter()
-        for j,x in enumerate(fruits):
-            count[x]+=1
-            while len(count)>=3:
-                count[fruits[i]]-=1
-                if count[fruits[i]]==0:
-                    del count[fruits[i]]
-                i+=1
-            ans=max(ans,j-i+1)
-        return ans            
+        left,right=0,0
+        ans=0
+        ln=fruits[left]
+        rn=fruits[right]
+        while right<len(fruits):
+            if fruits[right]==ln or fruits[right]==rn:
+                ans=max(ans,right-left+1)
+                right+=1
+            else:
+                left=right-1
+                ln=fruits[left]
+                while left>=1 and fruits[left-1]==ln: left-=1
+                rn=fruits[right]
+                ans=max(ans,right-left+1)
+        return ans        
   ```      
 
 #### （13）76.最小覆盖子串
 
 题目链接：https://leetcode-cn.com/problems/minimum-window-substring/
+```C++
+class Solution {
+public:
+    string minWindow(string s, string t) {
+        unordered_map<char,int> hs,ht;
+        for(auto c:t) ht[c]++;
+        string res;
+        int cnt=0;
+        for(int i=0,j=0;j<s.size();j++){
+            hs[s[j]]++;
+            if(hs[s[j]]<=ht[s[j]]) cnt++;
+            while(hs[s[i]]>ht[s[i]]) hs[s[i++]]--;
+            if(cnt==t.size()){
+                if(res.empty() || j-i+1<res.size()){
+                    res=s.substr(i,j-i+1);
+                }
+            }
+        }
+        return res;
+
+    }
+};
+```
 
 ```Java
 class Solution {
@@ -1261,30 +1526,29 @@ class Solution {
  ```
  
  ```python
- def minWindow(self, s: str, t: str) -> str:
-        need=collections.defaultdict(int)
-        for c in t:
-            need[c]+=1
-        needCnt=len(t)
-        i=0
-        res=(0,float('inf'))
-        for j,c in enumerate(s):
-            if need[c]>0:
-                needCnt-=1
-            need[c]-=1
-            if needCnt==0:       #步骤一：滑动窗口包含了所有T元素
-                while True:      #步骤二：增加i，排除多余元素
-                    c=s[i] 
-                    if need[c]==0:
-                        break
-                    need[c]+=1
-                    i+=1
-                if j-i<res[1]-res[0]:   #记录结果
-                    res=(i,j)
-                need[s[i]]+=1  #步骤三：i增加一个位置，寻找新的满足条件滑动窗口
-                needCnt+=1
+from collections import defaultdict
+class Solution:
+    def minWindow(self, s: str, t: str) -> str:
+        if len(s)<len(t):
+            return ""
+        hs,ht=defaultdict(int),defaultdict(int)
+        for char in t:
+            ht[char]+=1
+        res=""
+        i,j=0,0
+        cnt=0
+        while j<len(s):
+            hs[s[j]]+=1
+            if hs[s[j]]<=ht[s[j]]:
+                cnt+=1
+            while i<=j and hs[s[i]]>ht[s[i]]:
+                hs[s[i]]-=1
                 i+=1
-        return '' if res[1]>len(s) else s[res[0]:res[1]+1]    #如果res始终没被更新过，代表无满足条件的结果
+            if cnt==len(t):
+                if not res or j-i+1<len(res):
+                    res=s[i:j+1]
+            j+=1
+        return res
 ```
 
 ### 4、螺旋矩阵 [↑](./README.md)
@@ -1292,6 +1556,39 @@ class Solution {
 #### （14）59、螺旋矩阵II
 
 题目链接：https://leetcode-cn.com/problems/spiral-matrix-ii/submissions/
+```C++
+class Solution {
+public:
+    vector<vector<int>> generateMatrix(int n) {
+        vector<vector<int>> res(n,vector<int>(n));
+        int left=0,right=n-1;
+        int up=0,down=n-1;
+        int num=1;
+
+        while(left<=right && up<=down){
+            for(int i=left;i<right+1;i++){
+                res[up][i]=num++;
+            }
+            up++;
+            for(int i=up;i<down+1;i++){
+                res[i][right]=num++;
+            }
+            right--;
+            for(int i=right;i>left-1;i--){
+                res[down][i]=num++;
+            }
+            down--;
+            for(int i=down;i>up-1;i--){
+                res[i][left]=num++;
+            }
+            left++;
+        }
+        return res;
+
+    }
+};
+```
+
 
 
 ```Java
@@ -1342,9 +1639,79 @@ class Solution {
 }
 ```
 
+```python
+class Solution:
+    def generateMatrix(self, n: int) -> List[List[int]]:
+        left,right,up,down=0,n-1,0,n-1
+        res=[ [0]*n for _ in range(n)]
+        num=1
+        
+        while left<=right and up<=down:
+            for i in range(left,right+1):
+                res[up][i]=num
+                num+=1
+            up+=1
+
+            for i in range(up,down+1):
+                res[i][right]=num
+                num+=1
+            right-=1
+
+            for i in range(right,left-1,-1):
+                res[down][i]=num
+                num+=1
+            down-=1
+
+            for i in range(down,up-1,-1):
+                res[i][left]=num
+                num+=1
+            left+=1
+        return res
+```
+
+
 #### （15）54、螺旋矩阵
 
 题目连接：https://leetcode-cn.com/problems/spiral-matrix/submissions/
+```C++
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        vector<int> order;
+        if(matrix.size()==0 || matrix[0].size()==0){
+            return order;
+        }
+        
+        int row=matrix.size();
+        int col=matrix[0].size();
+
+        int left=0,right=col-1,top=0,bottom=row-1;
+        while(left<=right && top<=bottom){
+            for(int col=left;col<=right;col++){
+                order.push_back(matrix[top][col]);
+            }
+            for(int row=top+1;row<=bottom;row++){
+                order.push_back(matrix[row][right]);
+            }
+            
+            if(left<right && top<bottom){
+                for(int col=right-1;col>left;col--){
+                    order.push_back(matrix[bottom][col]);
+                }
+                for(int row=bottom;row>top;row--){
+                    order.push_back(matrix[row][left]);
+                }
+            }
+
+            left++;
+            right--;
+            top++;
+            bottom--;
+        }
+        return order;
+    }
+};
+```
 
 ```Java
 class Solution {
@@ -1397,31 +1764,67 @@ class Solution {
 
 ```python
 class Solution:
-    def spiralOrder(matrix):
+    def spiralOrder(self, matrix: List[List[int]]) -> List[int]:
         if not matrix or not matrix[0]:
             return list()
-        rows,colums=len(matrix),len(matrix[0])
-        visited=[[False]*colums for _ in range(rows)]#辅助矩阵，标记该位置是否已经被访问过
-        total = rows*colums
-        order=[0]*total
-
-        dirs = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # 控制顺时针旋转
-        r,c,dirIdx=0,0,0
-        for i in range(total):
-            order[i]=matrix[r][c]
-            visited[r][c]=True
-            dx,dy=dirs[dirIdx]
-            nextR,nextC=r+dx,c+dy
-            if nextR<0 or nextR>=rows or nextC<0 or nextC>=colums or visited[nextR][nextC]:
-                dirIdx=(dirIdx+1)%4
-                dx, dy = dirs[dirIdx]
-            r,c=r+dx,c+dy
+        row,col=len(matrix),len(matrix[0])
+        order=[]
+        left,right=0,col-1
+        top,bottom=0,row-1
+        while left<=right and top<=bottom:
+            for i in range(left,right+1):
+                order.append(matrix[top][i])
+            for i in range(top+1,bottom+1):
+                order.append(matrix[i][right])
+            if left<right and top<bottom:
+                for i in range(right-1,left,-1):
+                    order.append(matrix[bottom][i])
+                for i in range(bottom,top,-1):
+                    order.append(matrix[i][left])
+            left+=1
+            right-=1
+            top+=1
+            bottom-=1
         return order
 ```        
 
 #### （16）29、顺时针打印矩阵
 
 题目连接：https://leetcode-cn.com/problems/shun-shi-zhen-da-yin-ju-zhen-lcof/submissions/
+```c++
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        vector<int> res;
+        if(matrix.size()==0 || matrix[0].size()==0) return res;
+        int row=matrix.size(),col=matrix[0].size();
+        int left=0,right=col-1,up=0,down=row-1;
+        while(left<=right && up<=down){
+            for(int i=left;i<right+1;i++){
+                res.push_back(matrix[up][i]);
+            }
+            for(int i=up+1;i<down+1;i++){
+                res.push_back(matrix[i][right]);
+            }
+            if(left<right && up<down){
+                for(int i=right-1;i>left;i--){
+                    res.push_back(matrix[down][i]);
+                }
+                for(int i=down;i>up;i--){
+                    res.push_back(matrix[i][left]);
+                }
+            }
+            up++;
+            down--;
+            left++;
+            right--;
+        }
+        return res;
+
+    }
+};
+```
+
 
 ```Java
 
@@ -1501,7 +1904,7 @@ class Solution:
 
 ## 二、链表 [↑](./README.md)
 
-### （1）203.移除俩表
+### （1）203.移除链表
 题目链接：https://leetcode-cn.com/problems/remove-linked-list-elements/submissions/
 ```c++
 class Solution {
